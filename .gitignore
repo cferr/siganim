@@ -1,0 +1,10 @@
+# Eclipse-related ignores
+.project
+.cproject
+.settings/
+/Default/
+
+# Other ignores
+*.o
+*.d
+moc_*.cpp

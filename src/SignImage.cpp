@@ -27,8 +27,8 @@ SignRgbPixel SignImage::defaultMonoLEDFG = { 0, 0, 0 };
 SignRgbPixel SignImage::defaultRGBLEDBG = { 0, 0, 0 };
 SignRgbPixel SignImage::defaultRGBLEDFG = { 0, 0, 0 };
 
-SignImage::SignImage(unsigned int height, unsigned int width) :
-        height(height), width(width) {
+SignImage::SignImage(unsigned int width, unsigned int height) :
+        width(width), height(height) {
     this->pixels = (SignRgbPixel*)calloc(height * width,
                 sizeof(SignRgbPixel));
 }

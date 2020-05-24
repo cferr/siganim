@@ -17,22 +17,22 @@
 #include "SignCellNode.h"
 #include <iostream>
 
-SignCellNode::SignCellNode(unsigned int height, unsigned int width) :
-        SignCellTree(height, width) {
+SignCellNode::SignCellNode(unsigned int width, unsigned int height) :
+        SignCellTree(width, height) {
 
 }
 
-SignCellNode::SignCellNode(unsigned int height, unsigned int width,
+SignCellNode::SignCellNode(unsigned int width, unsigned int height,
     const std::vector<std::tuple<SignCellTree*, unsigned int, unsigned int>>
-            children) : SignCellNode(height, width) {
+            children) : SignCellNode(width, height) {
     for (auto child : children)
         this->addCell(std::get<0>(child), std::get<1>(child),
                 std::get<2>(child));
 }
 
-SignCellNode::SignCellNode(unsigned int height, unsigned int width,
+SignCellNode::SignCellNode(unsigned int width, unsigned int height,
     std::initializer_list<std::tuple<SignCellTree*, unsigned int, unsigned int>>
-        children) : SignCellNode(height, width) {
+        children) : SignCellNode(width, height) {
 
     for (auto child : children)
         this->addCell(std::get<0>(child), std::get<1>(child),
@@ -114,7 +114,7 @@ SignCellNode::CellCoordVector SignCellNode::getChildrenCoords() {
 }
 
 std::ostream& SignCellNode::serialize(std::ostream &strm) const {
-    strm << "{ " << this->height << "x" << this->width << " : { ";
+    strm << "{ " << this->width << "x" << this->height << " : { ";
 
     SignCellNode::CellPtrVectorConstIt childIt = this->children.begin();
     SignCellNode::CellCoordVectorConstIt childCoordIt =

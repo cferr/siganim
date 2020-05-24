@@ -26,19 +26,21 @@ SignWidget::SignWidget(QWidget *parent) :
         QWidget(parent), sign(NULL) {
 
     // Mock sign just to test.
-    Sign *testSign = new Sign(80, 120,
-            { new SignDisplay(80, 120, SignPixelType::DISPLAY_FLIPDISC,
-                    new SignCellNode(80, 120,
-                            { std::make_tuple(new SignCellLeaf(80, 20), 0, 0),
-                                    std::make_tuple(new SignCellLeaf(60, 100),
-                                            20, 0) })) });
+    Sign *testSign = new Sign(120, 80,
+            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
+                    new SignCellNode(120, 80,
+                            { std::make_tuple(new SignCellLeaf(20, 80), 0, 0),
+                              std::make_tuple(new SignCellLeaf(100, 60), 20, 0)
+                            }
+                    ))
+            }
+    );
 
 
     SignRenderer r;
     Bitmap *result = r.render(testSign, 0);
 
     unsigned char* img = result->toRGB32();
-
 
     // this->image = new QImage(200, 200, QImage::Format_RGB32);
     // this->image->fill(qRgb(255, 255, 255));

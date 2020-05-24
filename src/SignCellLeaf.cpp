@@ -16,8 +16,8 @@
 
 #include "SignCellLeaf.h"
 
-SignCellLeaf::SignCellLeaf(unsigned int height, unsigned int width) :
-    SignCellTree(height, width), hasCustomBackground(false), customBackground(
+SignCellLeaf::SignCellLeaf(unsigned int width, unsigned int height) :
+    SignCellTree(width, height), hasCustomBackground(false), customBackground(
             { 0, 0, 0 }), hasCustomForeground(false),
             customForeground( { 0, 0, 0 }) {
 
@@ -40,7 +40,7 @@ bool SignCellLeaf::checkResize() const {
 }
 
 std::ostream& SignCellLeaf::serialize(std::ostream &strm) const {
-    return strm << "{ " << this->height << "x" << this->width << " }";
+    return strm << "{ " << this->width << "x" << this->height << " }";
 }
 
 std::ostream& operator<<(std::ostream &strm, const SignCellLeaf &s) {

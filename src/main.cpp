@@ -36,12 +36,15 @@ int main(int argc, char *argv[]) {
     int ret = 0;
 
     // Are we able to create a sign easily? Yes.
-    Sign *testSign = new Sign(80, 120,
-            { new SignDisplay(80, 120, SignPixelType::DISPLAY_FLIPDISC,
-                    new SignCellNode(80, 120,
-                            { std::make_tuple(new SignCellLeaf(80, 20), 0, 0),
-                                    std::make_tuple(new SignCellLeaf(80, 100),
-                                            20, 0) })) });
+    Sign *testSign = new Sign(120, 80,
+            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
+                    new SignCellNode(120, 80,
+                            { std::make_tuple(new SignCellLeaf(20, 80), 0, 0),
+                              std::make_tuple(new SignCellLeaf(100, 60), 20, 0)
+                            }
+                    ))
+            }
+    );
 
     // This will display the tree structure we just created.
     std::cout << *testSign << std::endl;

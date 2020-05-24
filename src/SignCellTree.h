@@ -26,20 +26,20 @@
 class SignCellTree: public SignTree {
 protected:
 
-    unsigned int height;
     unsigned int width;
+    unsigned int height;
 
     virtual bool checkResize() const = 0;
 
 public:
-    SignCellTree(unsigned int height, unsigned int width);
+    SignCellTree(unsigned int width, unsigned int height);
     virtual ~SignCellTree();
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     bool setHeight(const unsigned int height);
     bool setWidth(const unsigned int width);
-    bool resize(const unsigned int height, const unsigned int width);
+    bool resize(const unsigned int width, const unsigned int height);
 
     bool setParent(const SignTree *parent);
 

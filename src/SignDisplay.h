@@ -26,17 +26,17 @@
 class SignDisplay: public SignTree {
 private:
     // TODO add some geometry info (margins, display size in cm/in, dpi...)
-    unsigned int height;
     unsigned int width;
+    unsigned int height;
 
     enum SignPixelType displayType;  // LEDs (monochromatic, RGB) or flip discs.
 
     SignCellTree *rootCell;
 
 public:
-    SignDisplay(unsigned int height, unsigned int width,
+    SignDisplay(unsigned int width, unsigned int height,
             enum SignPixelType type);
-    SignDisplay(unsigned int height, unsigned int width,
+    SignDisplay(unsigned int width, unsigned int height,
             enum SignPixelType type, SignCellTree *rootCell);
     virtual ~SignDisplay();
 
@@ -53,8 +53,8 @@ public:
     unsigned int getHeight();
     unsigned int getWidth();
     bool setHeight(const unsigned int height);
-    bool setWidth(const unsigned int height);
-    bool resize(const unsigned int height, const unsigned int width);
+    bool setWidth(const unsigned int width);
+    bool resize(const unsigned int width, const unsigned int height);
 
     std::ostream& serialize(std::ostream &strm) const;
 };

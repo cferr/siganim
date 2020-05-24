@@ -22,8 +22,8 @@
 
 class SignImage {
 private:
-    unsigned int height;
     unsigned int width;
+    unsigned int height;
     SignRgbPixel foreground;
     SignRgbPixel background;
     SignRgbPixel *pixels;
@@ -36,7 +36,7 @@ public:
     static SignRgbPixel defaultRGBLEDBG;
     static SignRgbPixel defaultRGBLEDFG;
 
-    SignImage(unsigned int height, unsigned int width);
+    SignImage(unsigned int width, unsigned int height);
     virtual ~SignImage();
 
     unsigned int getWidth() const;

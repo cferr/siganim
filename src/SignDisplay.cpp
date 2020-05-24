@@ -17,15 +17,15 @@
 #include "SignDisplay.h"
 #include "SignImage.h"
 
-SignDisplay::SignDisplay(unsigned int height, unsigned int width,
+SignDisplay::SignDisplay(unsigned int width, unsigned int height,
         enum SignPixelType type) :
-        SignDisplay(height, width, type, NULL) {
+        SignDisplay(width, height, type, NULL) {
 
 }
 
-SignDisplay::SignDisplay(unsigned int height, unsigned int width,
+SignDisplay::SignDisplay(unsigned int width, unsigned int height,
         enum SignPixelType type, SignCellTree *rootCell) :
-        height(height), width(width), displayType(type), rootCell(rootCell) {
+        width(width), height(height), displayType(type), rootCell(rootCell) {
 
 }
 
@@ -89,7 +89,7 @@ bool SignDisplay::setWidth(const unsigned int height) {
     return this->resize(this->height, width);
 }
 
-bool SignDisplay::resize(const unsigned int height, const unsigned int width) {
+bool SignDisplay::resize(const unsigned int width, const unsigned int height) {
     this->height = height;
     this->width = width;
     // TODO check that children fit
@@ -97,7 +97,7 @@ bool SignDisplay::resize(const unsigned int height, const unsigned int width) {
 }
 
 std::ostream& SignDisplay::serialize(std::ostream &strm) const {
-    return strm << "Disp { " << this->height << "x" << this->width << " ("
+    return strm << "Disp { " << this->width << "x" << this->height << " ("
             << this->displayType << ") : " << *(this->rootCell) << " }";
 }
 

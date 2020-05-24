@@ -20,22 +20,22 @@
 #include <cstring>
 #include <cstdarg>
 
-Sign::Sign(unsigned int height, unsigned int width) :
-        height(height), width(width) {
+Sign::Sign(unsigned int width, unsigned int height) :
+    width(width), height(height) {
 
 }
 
-Sign::Sign(unsigned int height, unsigned int width,
+Sign::Sign(unsigned int width, unsigned int height,
         std::vector<SignDisplay*> displays) :
-        Sign(height, width) {
+        Sign(width, height) {
     for (SignDisplayVectIt i = displays.begin(); i < displays.end(); ++i) {
         this->addDisplay(*i);
     }
 }
 
-Sign::Sign(unsigned int height, unsigned int width,
+Sign::Sign(unsigned int width, unsigned int height,
         std::initializer_list<SignDisplay*> displays) :
-        Sign(height, width) {
+        Sign(width, height) {
     for (auto display : displays)
         this->addDisplay(display);
 }
@@ -91,7 +91,7 @@ std::vector<SignDisplay*> Sign::getDisplays() {
 }
 
 std::ostream& Sign::serialize(std::ostream &strm) const {
-    strm << "Sign { " << this->height << "x" << this->width << " { ";
+    strm << "Sign { " << this->width << "x" << this->height << " { ";
 
     SignDisplayVectConstIt i = this->displays.begin();
     while (i < this->displays.end()) {

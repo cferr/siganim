@@ -50,12 +50,12 @@ private:
 
 public:
 
-    SignCellNode(unsigned int height, unsigned int width);
-    SignCellNode(unsigned int height, unsigned int width,
+    SignCellNode(unsigned int width, unsigned int height);
+    SignCellNode(unsigned int width, unsigned int height,
             const std::vector<
                     std::tuple<SignCellTree*, unsigned int, unsigned int>>
                     children);
-    SignCellNode(unsigned int height, unsigned int width,
+    SignCellNode(unsigned int width, unsigned int height,
             std::initializer_list<
                     std::tuple<SignCellTree*, unsigned int, unsigned int>>
                     children);

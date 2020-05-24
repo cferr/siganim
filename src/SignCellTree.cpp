@@ -16,8 +16,8 @@
 
 #include "SignCellTree.h"
 
-SignCellTree::SignCellTree(unsigned int height, unsigned int width) :
-        height(height), width(width) {
+SignCellTree::SignCellTree(unsigned int width, unsigned int height) :
+    width(width), height(height) {
 
 }
 
@@ -41,7 +41,7 @@ bool SignCellTree::setWidth(const unsigned int width) {
     return this->resize(this->getHeight(), width);
 }
 
-bool SignCellTree::resize(const unsigned int height, const unsigned int width) {
+bool SignCellTree::resize(const unsigned int width, const unsigned int height) {
     unsigned int previousHeight = this->height;
     unsigned int previousWidth = this->width;
 

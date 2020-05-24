@@ -27,17 +27,17 @@ class Sign: public SignTree {
 private:
     std::vector<SignDisplay*> displays;
 
-    unsigned int height;
     unsigned int width;
+    unsigned int height;
 
 public:
     typedef std::vector<SignDisplay*>::iterator SignDisplayVectIt;
     typedef std::vector<SignDisplay*>::const_iterator SignDisplayVectConstIt;
 
-    Sign(unsigned int height, unsigned int width);
-    Sign(unsigned int height, unsigned int width,
+    Sign(unsigned int width, unsigned int height);
+    Sign(unsigned int width, unsigned int height,
             std::vector<SignDisplay*> displays);
-    Sign(unsigned int height, unsigned int width,
+    Sign(unsigned int width, unsigned int height,
             std::initializer_list<SignDisplay*> displays);
     virtual ~Sign();
 

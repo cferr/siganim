@@ -37,7 +37,7 @@ private:
     icu::UnicodeString text; // Unicode-encoded text
 
 public:
-    SignCellLeaf(unsigned int height, unsigned int width);
+    SignCellLeaf(unsigned int width, unsigned int height);
     virtual ~SignCellLeaf();
 
     SignTreeType getType() const;

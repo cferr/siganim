@@ -107,7 +107,7 @@ void SignRenderer::visit(SignCellNode &s) {
 }
 
 void SignRenderer::visit(SignCellLeaf &s) {
-    SignImage *leafRender = new SignImage(s.getHeight(), s.getWidth());
+    SignImage *leafRender = new SignImage(s.getWidth(), s.getHeight());
     for(unsigned int x = 0; x < s.getWidth(); x++) {
         for(unsigned int y = x % 2; y < s.getHeight(); y += 2) {
             leafRender->setPixel(x, y, { 255, 255, 255 });
@@ -146,7 +146,7 @@ SignRenderer::SignImageTree::~SignImageTree() {
 
 SignImage* SignRenderer::SignImageTree::compose() {
     if(this->type == Type::NODE) {
-        SignImage* retImg = new SignImage(this->height, this->width);
+        SignImage* retImg = new SignImage(this->width, this->height);
         for(auto i = this->children->begin();
                 i < this->children->end(); ++i) {
             struct SignImageTree::SignImageTreeChild childNode = *i;

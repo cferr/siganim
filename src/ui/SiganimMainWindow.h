@@ -21,15 +21,15 @@
 #include <QMenuBar>
 #include "SignWidget.h"
 
-class SiganimMainWindow : public QMainWindow {
+class SiganimMainWindow: public QMainWindow {
 private:
-	SignWidget *signWidget;
-	QMenuBar *menuBar;
+    SignWidget *signWidget;
+    QMenuBar *menuBar;
 
 public:
 
-	SiganimMainWindow();
-	virtual ~SiganimMainWindow();
+    SiganimMainWindow();
+    virtual ~SiganimMainWindow();
 
 };
 

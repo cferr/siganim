@@ -20,20 +20,17 @@
 #include <cstdint>
 
 enum SignPixelType {
-	DISPLAY_RGB_LED,
-	DISPLAY_MONOCHROME_LED,
-	DISPLAY_FLIPDISC
+    DISPLAY_RGB_LED, DISPLAY_MONOCHROME_LED, DISPLAY_FLIPDISC
 };
 
 struct SignRgbPixel {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
 };
 
 enum SignDotStatus {
-	DOT_OFF,
-	DOT_ON
+    DOT_OFF, DOT_ON
 };
 
 #endif /* SRC_SIGNPIXEL_H_ */

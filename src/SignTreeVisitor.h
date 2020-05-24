@@ -19,17 +19,18 @@
 
 class Sign;
 class SignDisplay;
+class SignCellTree;
 class SignCellLeaf;
 class SignCellNode;
 
 class SignTreeVisitor {
 public:
-	virtual ~SignTreeVisitor();
+    virtual ~SignTreeVisitor();
 
-	virtual void visit(Sign& s) = 0;
-	virtual void visit(SignDisplay& s) = 0;
-	virtual void visit(SignCellLeaf& s) = 0;
-	virtual void visit(SignCellNode& s) = 0;
+    virtual void visit(Sign &s) = 0;
+    virtual void visit(SignDisplay &s) = 0;
+    virtual void visit(SignCellLeaf &s) = 0;
+    virtual void visit(SignCellNode &s) = 0;
 };
 
 #endif /* SRC_SIGNTREEVISITOR_H_ */

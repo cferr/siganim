@@ -17,31 +17,38 @@
 #ifndef SRC_SIGNIMAGE_H_
 #define SRC_SIGNIMAGE_H_
 
+#include <vector>
 #include "SignPixel.h"
-
 
 class SignImage {
 private:
-	unsigned int height;
-	unsigned int width;
-	SignRgbPixel foreground;
-	SignRgbPixel background;
-	SignRgbPixel* pixels;
-
-	void initPixelMatrix();
+    unsigned int height;
+    unsigned int width;
+    SignRgbPixel foreground;
+    SignRgbPixel background;
+    SignRgbPixel *pixels;
 
 public:
-	static SignRgbPixel defaultFlipDiscBG;
-	static SignRgbPixel defaultFlipDiscFG;
-	static SignRgbPixel defaultMonoLEDBG;
-	static SignRgbPixel defaultMonoLEDFG;
-	static SignRgbPixel defaultRGBLEDBG;
-	static SignRgbPixel defaultRGBLEDFG;
+    static SignRgbPixel defaultFlipDiscBG;
+    static SignRgbPixel defaultFlipDiscFG;
+    static SignRgbPixel defaultMonoLEDBG;
+    static SignRgbPixel defaultMonoLEDFG;
+    static SignRgbPixel defaultRGBLEDBG;
+    static SignRgbPixel defaultRGBLEDFG;
 
-	SignImage(unsigned int height, unsigned int width);
-	virtual ~SignImage();
+    SignImage(unsigned int height, unsigned int width);
+    virtual ~SignImage();
 
-	void merge(const SignImage top, const unsigned int x, const unsigned int y);
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
+
+    bool setPixel(const unsigned int x, const unsigned int y,
+            const SignRgbPixel value);
+    SignRgbPixel getPixel(const unsigned int x, const unsigned int y) const;
+    const SignRgbPixel* getPixels() const;
+
+    void merge(const SignImage* top, const unsigned int x,
+            const unsigned int y);
 
 };
 

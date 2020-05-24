@@ -23,34 +23,38 @@
 #include "SignTree.h"
 #include "Bitmap.h"
 
-class Sign : public SignTree {
+class Sign: public SignTree {
 private:
-	std::vector<SignDisplay*> displays;
+    std::vector<SignDisplay*> displays;
 
-	unsigned int height;
-	unsigned int width;
+    unsigned int height;
+    unsigned int width;
 
 public:
-	Sign(unsigned int height, unsigned int width);
-	Sign(unsigned int height, unsigned int width,
-			std::vector<SignDisplay*> displays);
-	Sign(unsigned int height, unsigned int width,
-			std::initializer_list<SignDisplay*> displays);
-	virtual ~Sign();
+    typedef std::vector<SignDisplay*>::iterator SignDisplayVectIt;
+    typedef std::vector<SignDisplay*>::const_iterator SignDisplayVectConstIt;
 
-	SignTreeType getType() const;
-	bool setParent(const SignTree* parent);
-	void accept(SignTreeVisitor& visitor);
+    Sign(unsigned int height, unsigned int width);
+    Sign(unsigned int height, unsigned int width,
+            std::vector<SignDisplay*> displays);
+    Sign(unsigned int height, unsigned int width,
+            std::initializer_list<SignDisplay*> displays);
+    virtual ~Sign();
 
-	bool addDisplay(SignDisplay* display);
-	bool removeDisplay(SignDisplay* display);
-	std::vector<SignDisplay*> getDisplays();
+    unsigned int getHeight();
+    unsigned int getWidth();
 
-	void render(Bitmap* dest, unsigned int frame); // Render one frame.
+    SignTreeType getType() const;
+    bool setParent(const SignTree *parent);
+    void accept(SignTreeVisitor &visitor);
 
-	std::ostream& serialize(std::ostream &strm) const;
+    bool addDisplay(SignDisplay *display);
+    bool removeDisplay(SignDisplay *display);
+    std::vector<SignDisplay*> getDisplays();
+
+    std::ostream& serialize(std::ostream &strm) const;
 };
 
-std::ostream& operator<<(std::ostream& strm, const Sign &s);
+std::ostream& operator<<(std::ostream &strm, const Sign &s);
 
 #endif /* SRC_SIGN_H_ */

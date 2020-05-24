@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
+#include <iostream>
 
 SignRgbPixel SignImage::defaultFlipDiscBG = { 0, 0, 0 };
 SignRgbPixel SignImage::defaultFlipDiscFG = { 0, 0, 0 };
@@ -26,31 +27,56 @@ SignRgbPixel SignImage::defaultMonoLEDFG = { 0, 0, 0 };
 SignRgbPixel SignImage::defaultRGBLEDBG = { 0, 0, 0 };
 SignRgbPixel SignImage::defaultRGBLEDFG = { 0, 0, 0 };
 
-
-SignImage::SignImage(unsigned int height, unsigned int width) : height(height),
-		width(width) {
-	this->initPixelMatrix();
-}
-
-void SignImage::initPixelMatrix() {
-	this->pixels = (SignRgbPixel*)calloc(this->height * this->width,
-			sizeof(SignRgbPixel));
+SignImage::SignImage(unsigned int height, unsigned int width) :
+        height(height), width(width) {
+    this->pixels = (SignRgbPixel*)calloc(height * width,
+                sizeof(SignRgbPixel));
 }
 
 SignImage::~SignImage() {
+    free(this->pixels);
+}
+
+bool SignImage::setPixel(const unsigned int x, const unsigned int y,
+        const SignRgbPixel value) {
+    if(x < this->width && y < this->height) {
+        this->pixels[y * this->width + x] = value;
+        return true;
+    }
+    else return false;
+}
+
+SignRgbPixel SignImage::getPixel(const unsigned int x, const unsigned int y)
+    const {
+    if(x < this->width && y < this->height) {
+        return this->pixels[y * this->width + x];
+    } else return { 0, 0, 0 };
+}
+
+const SignRgbPixel* SignImage::getPixels() const {
+    return this->pixels; // Const-ifies pixels in doing this
+}
+
+unsigned int SignImage::getWidth() const {
+    return this->width;
+}
+
+unsigned int SignImage::getHeight() const {
+    return this->height;
+}
+
+void SignImage::merge(const SignImage* top, const unsigned int x,
+        const unsigned int y) {
+    assert(x + top->width <= this->width);
+    assert(y + top->height <= this->height);
+
+    const SignRgbPixel* pixelsToMerge = top->getPixels();
+
+    for (unsigned int i = 0; i < top->height; ++i) {
+        memcpy(this->pixels + ((i + y) * this->width) + x, pixelsToMerge
+                + (i * top->getWidth()),
+                top->getWidth() * sizeof(SignRgbPixel));
+    }
 
 }
 
-void SignImage::merge(const SignImage top, const unsigned int x,
-		const unsigned int y) {
-	assert(x + top.width <= this->width);
-	assert(y + top.height <= this->height);
-
-	for(unsigned int i = 0; i < this->height; ++i) {
-		memcpy(this->pixels + ((i + x) * this->width),
-				top.pixels + (x * top.width),
-				top.width * sizeof(SignRgbPixel));
-	}
-
-
-}

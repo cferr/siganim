@@ -23,35 +23,42 @@
 #include "SignPixel.h"
 #include "SignTree.h"
 
-class SignDisplay : public SignTree {
+class SignDisplay: public SignTree {
 private:
-	// TODO add some geometry info (margins, display size in cm/in, dpi...)
-	unsigned int height;
-	unsigned int width;
+    // TODO add some geometry info (margins, display size in cm/in, dpi...)
+    unsigned int height;
+    unsigned int width;
 
-	enum SignPixelType type;  // LEDs (monochromatic, RGB) or flip discs.
+    enum SignPixelType displayType;  // LEDs (monochromatic, RGB) or flip discs.
 
-	SignCellTree* rootCell;
+    SignCellTree *rootCell;
 
 public:
-	SignDisplay(unsigned int height, unsigned int width,
-				enum SignPixelType type);
-	SignDisplay(unsigned int height, unsigned int width,
-			enum SignPixelType type, SignCellTree* rootCell);
-	virtual ~SignDisplay();
+    SignDisplay(unsigned int height, unsigned int width,
+            enum SignPixelType type);
+    SignDisplay(unsigned int height, unsigned int width,
+            enum SignPixelType type, SignCellTree *rootCell);
+    virtual ~SignDisplay();
 
-	SignTreeType getType() const;
-	bool setParent(const SignTree* parent);
-	void accept(SignTreeVisitor& visitor);
+    SignTreeType getType() const;
+    bool setParent(const SignTree *parent);
+    void accept(SignTreeVisitor &visitor);
 
-	bool setRootCell(SignCellTree* rootCell);
-	SignCellTree* getRootCell();
+    bool setRootCell(SignCellTree *rootCell);
+    SignCellTree* getRootCell();
 
-	void render(Bitmap* dest, unsigned int frame);
+    enum SignPixelType getDisplayType();
+    bool setDisplayType(enum SignPixelType displayType);
 
-	std::ostream& serialize(std::ostream &strm) const;
+    unsigned int getHeight();
+    unsigned int getWidth();
+    bool setHeight(const unsigned int height);
+    bool setWidth(const unsigned int height);
+    bool resize(const unsigned int height, const unsigned int width);
+
+    std::ostream& serialize(std::ostream &strm) const;
 };
 
-std::ostream& operator<<(std::ostream& strm, const SignDisplay &s);
+std::ostream& operator<<(std::ostream &strm, const SignDisplay &s);
 
 #endif /* SRC_SIGNDISPLAY_H_ */

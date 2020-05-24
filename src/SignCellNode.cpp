@@ -18,25 +18,25 @@
 #include <iostream>
 
 SignCellNode::SignCellNode(unsigned int height, unsigned int width) :
-		SignCellTree(height, width) {
+        SignCellTree(height, width) {
 
 }
 
 SignCellNode::SignCellNode(unsigned int height, unsigned int width,
-		const std::vector<std::tuple<SignCellTree*, unsigned int,
-			unsigned int>> children) : SignCellNode(height, width) {
-	for(auto child : children)
-		this->addCell(std::get<0>(child), std::get<1>(child),
-				std::get<2>(child));
+    const std::vector<std::tuple<SignCellTree*, unsigned int, unsigned int>>
+            children) : SignCellNode(height, width) {
+    for (auto child : children)
+        this->addCell(std::get<0>(child), std::get<1>(child),
+                std::get<2>(child));
 }
 
 SignCellNode::SignCellNode(unsigned int height, unsigned int width,
-		std::initializer_list<std::tuple<SignCellTree*, unsigned int,
-			unsigned int>> children) : SignCellNode(height, width) {
+    std::initializer_list<std::tuple<SignCellTree*, unsigned int, unsigned int>>
+        children) : SignCellNode(height, width) {
 
-	for(auto child : children)
-		this->addCell(std::get<0>(child), std::get<1>(child),
-				std::get<2>(child));
+    for (auto child : children)
+        this->addCell(std::get<0>(child), std::get<1>(child),
+                std::get<2>(child));
 }
 
 SignCellNode::~SignCellNode() {
@@ -44,115 +44,98 @@ SignCellNode::~SignCellNode() {
 }
 
 SignTreeType SignCellNode::getType() const {
-	return SignTreeType::SIGN_CELL_NODE;
+    return SignTreeType::SIGN_CELL_NODE;
 }
 
-void SignCellNode::accept(SignTreeVisitor& visitor) {
-	visitor.visit(*this);
+void SignCellNode::accept(SignTreeVisitor &visitor) {
+    visitor.visit(*this);
 }
 
 bool SignCellNode::checkResize() const {
-	bool ret = true;
-	SignCellPtrVectorConstIt childIt = this->children.begin();
-	SignCellCoordVectorConstIt childCoordIt = this->childrenCoords.begin();
-	for (;
-			(childIt < this->children.end())
-					&& (childCoordIt < this->childrenCoords.end());
-			childIt++, childCoordIt++) {
-		if( ((*childIt)->getHeight() + childCoordIt->y > this->getHeight())
-			|| ((*childIt)->getWidth() + childCoordIt->x > this->getWidth()))
-			ret &= false;
-	}
+    bool ret = true;
+    CellPtrVectorConstIt childIt = this->children.begin();
+    CellCoordVectorConstIt childCoordIt = this->childrenCoords.begin();
+    for (; (childIt < this->children.end()) &&
+        (childCoordIt < this->childrenCoords.end()); childIt++, childCoordIt++)
+    {
+        if (((*childIt)->getHeight() + childCoordIt->y > this->getHeight())
+                || ((*childIt)->getWidth() + childCoordIt->x
+                        > this->getWidth()))
+            ret &= false;
+    }
 
-	return ret;
+    return ret;
 }
 
-bool SignCellNode::addCell(SignCellTree *child, unsigned int x, unsigned int y)
-{
-	if (y + child->getHeight() <= this->getHeight()) {
-		if (x + child->getWidth() <= this->getWidth()) {
+bool SignCellNode::addCell(SignCellTree *child, unsigned int x,
+        unsigned int y) {
+    if (y + child->getHeight() <= this->getHeight()) {
+        if (x + child->getWidth() <= this->getWidth()) {
 
-			SignCellCoords coords;
-			coords.x = x;
-			coords.y = y;
+            SignCellCoords coords;
+            coords.x = x;
+            coords.y = y;
 
-			child->setParent(this);
+            child->setParent(this);
 
-			this->children.push_back(child);
-			this->childrenCoords.push_back(coords);
-			return true;
-		}
-	}
-	return false;
+            this->children.push_back(child);
+            this->childrenCoords.push_back(coords);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool SignCellNode::removeCell(const SignCellTree *child) {
-	bool ret = false;
+    bool ret = false;
 
-	SignCellPtrVectorConstIt childIt = this->children.begin();
-	SignCellCoordVectorConstIt childCoordIt = this->childrenCoords.begin();
-	for (;
-			(childIt < this->children.end())
-					&& (childCoordIt < this->childrenCoords.end());
-			childIt++, childCoordIt++) {
-		if (*childIt == child) {
-			this->children.erase(childIt);
-			this->childrenCoords.erase(childCoordIt);
-			ret = true;
-		}
-	}
+    CellPtrVectorConstIt childIt = this->children.begin();
+    CellCoordVectorConstIt childCoordIt = this->childrenCoords.begin();
+    for (;
+            (childIt < this->children.end())
+                    && (childCoordIt < this->childrenCoords.end());
+            childIt++, childCoordIt++) {
+        if (*childIt == child) {
+            this->children.erase(childIt);
+            this->childrenCoords.erase(childCoordIt);
+            ret = true;
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
-void SignCellNode::render(SignImage* target, const unsigned int frame,
-		const unsigned int x, const unsigned int y, SignRgbPixel background,
-		SignRgbPixel foreground) const {
-	// TODO move this to visitor SignRenderer
-	SignRgbPixel effectiveBg = (this->hasCustomBackground)?
-			this->customBackground:background;
-	SignRgbPixel effectiveFg = (this->hasCustomForeground)?
-				this->customForeground:foreground;
-
-	// Render & merge all children.
-	SignCellPtrVectorConstIt childIt = this->children.begin();
-	SignCellCoordVectorConstIt childCoordIt = this->childrenCoords.begin();
-	for (;
-			(childIt < this->children.end())
-					&& (childCoordIt < this->childrenCoords.end());
-			childIt++, childCoordIt++) {
-		(*childIt)->render(target, frame, x + childCoordIt->x,
-				y + childCoordIt->y, effectiveBg, effectiveFg);
-	}
-
+SignCellNode::CellPtrVector SignCellNode::getChildren() {
+    return this->children;
 }
 
+SignCellNode::CellCoordVector SignCellNode::getChildrenCoords() {
+    return this->childrenCoords;
+}
 
 std::ostream& SignCellNode::serialize(std::ostream &strm) const {
-	strm << "{ " << this->height << "x" << this->width
-				<< " : { ";
+    strm << "{ " << this->height << "x" << this->width << " : { ";
 
-	SignCellNode::SignCellPtrVectorConstIt childIt = this->children.begin();
-	SignCellNode::SignCellCoordVectorConstIt childCoordIt
-		= this->childrenCoords.begin();
+    SignCellNode::CellPtrVectorConstIt childIt = this->children.begin();
+    SignCellNode::CellCoordVectorConstIt childCoordIt =
+            this->childrenCoords.begin();
 
-	while((childIt < this->children.end()) &&
-		(childCoordIt < this->childrenCoords.end()))
-	{
-		strm << "+" << (*childCoordIt).x << "+" <<
-				(*childCoordIt).y << " : " << (*(*childIt));
-		childIt++;
-		childCoordIt++;
-		if((childIt < this->children.end()) &&
-				(childCoordIt < this->childrenCoords.end())) {
-			strm << ", ";
-		}
-	}
-	strm << " } }";
+    while ((childIt < this->children.end())
+            && (childCoordIt < this->childrenCoords.end())) {
+        strm << "+" << (*childCoordIt).x << "+" << (*childCoordIt).y << " : "
+                << (*(*childIt));
+        childIt++;
+        childCoordIt++;
+        if ((childIt < this->children.end())
+                && (childCoordIt < this->childrenCoords.end())) {
+            strm << ", ";
+        }
+    }
+    strm << " } }";
 
-	return strm;
+    return strm;
 }
 
 std::ostream& operator<<(std::ostream &strm, const SignCellNode &s) {
-	return s.serialize(strm);
+    return s.serialize(strm);
 }

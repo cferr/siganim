@@ -20,94 +20,91 @@
 #include <cstring>
 #include <cstdarg>
 
-typedef std::vector<SignDisplay*>::iterator SignDisplayVectIt;
-typedef std::vector<SignDisplay*>::const_iterator SignDisplayVectConstIt;
-
-Sign::Sign(unsigned int height, unsigned int width)
-	: height(height), width(width) {
+Sign::Sign(unsigned int height, unsigned int width) :
+        height(height), width(width) {
 
 }
 
 Sign::Sign(unsigned int height, unsigned int width,
-		std::vector<SignDisplay*> displays) : Sign(height, width) {
-	for(SignDisplayVectIt i = displays.begin();
-			i < displays.end(); ++i) {
-		this->addDisplay(*i);
-	}
+        std::vector<SignDisplay*> displays) :
+        Sign(height, width) {
+    for (SignDisplayVectIt i = displays.begin(); i < displays.end(); ++i) {
+        this->addDisplay(*i);
+    }
 }
 
 Sign::Sign(unsigned int height, unsigned int width,
-		std::initializer_list<SignDisplay*> displays) : Sign(height, width) {
-	for(auto display : displays)
-		this->addDisplay(display);
+        std::initializer_list<SignDisplay*> displays) :
+        Sign(height, width) {
+    for (auto display : displays)
+        this->addDisplay(display);
 }
 
 Sign::~Sign() {
-	// Destroy every child cell
+    // Destroy every child cell
+}
+
+unsigned int Sign::getHeight() {
+    return this->height;
+}
+
+unsigned int Sign::getWidth() {
+    return this->width;
 }
 
 SignTreeType Sign::getType() const {
-	return SignTreeType::SIGN;
+    return SignTreeType::SIGN;
 }
 
-bool Sign::setParent(const SignTree* parent) {
-	if(parent != NULL) {
-		return false;
-	} else {
-		this->parent = parent;
-		return true;
-	}
+bool Sign::setParent(const SignTree *parent) {
+    if (parent != NULL) {
+        return false;
+    } else {
+        this->parent = parent;
+        return true;
+    }
 }
 
-void Sign::accept(SignTreeVisitor& visitor) {
-	visitor.visit(*this);
+void Sign::accept(SignTreeVisitor &visitor) {
+    visitor.visit(*this);
 }
 
-bool Sign::addDisplay(SignDisplay* display) {
-	displays.push_back(display);
-	return true;
+bool Sign::addDisplay(SignDisplay *display) {
+    displays.push_back(display);
+    return true;
 }
 
-bool Sign::removeDisplay(SignDisplay* display) {
-	bool ret = false;
-	for(SignDisplayVectIt i = this->displays.begin();
-			i < this->displays.end(); ++i) {
-		if(*i == display) {
-			this->displays.erase(i);
-			ret = true;
-		}
-	}
-	return ret;
+bool Sign::removeDisplay(SignDisplay *display) {
+    bool ret = false;
+    for (SignDisplayVectIt i = this->displays.begin(); i < this->displays.end();
+            ++i) {
+        if (*i == display) {
+            this->displays.erase(i);
+            ret = true;
+        }
+    }
+    return ret;
 }
 
 std::vector<SignDisplay*> Sign::getDisplays() {
-	return this->displays;
-}
-
-void Sign::render(Bitmap* dest, unsigned int frame) {
-	// TODO move this to visitor SignRenderer
-	for(SignDisplayVectIt i = this->displays.begin();
-			i < this->displays.end(); ++i) {
-		(*i)->render(dest, frame);
-	}
+    return this->displays;
 }
 
 std::ostream& Sign::serialize(std::ostream &strm) const {
-	strm << "Sign { " << this->height << "x"
-		<< this->width << " { ";
+    strm << "Sign { " << this->height << "x" << this->width << " { ";
 
-	SignDisplayVectConstIt i = this->displays.begin();
-	while(i < this->displays.end()) {
-		strm << (*(*i));
-		++i;
-		if(i < this->displays.end())
-			strm << ", ";
-	}
+    SignDisplayVectConstIt i = this->displays.begin();
+    while (i < this->displays.end()) {
+        strm << (*(*i));
+        ++i;
+        if (i < this->displays.end())
+            strm << ", ";
+    }
 
-	strm << " } }";
-	return strm;
+    strm << " } }";
+    return strm;
 }
 
-std::ostream& operator<<(std::ostream& strm, const Sign &s) {
-	return s.serialize(strm);
+std::ostream& operator<<(std::ostream &strm, const Sign &s) {
+    return s.serialize(strm);
 }

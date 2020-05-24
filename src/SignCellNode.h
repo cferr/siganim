@@ -24,50 +24,53 @@
 #include "SignCellTree.h"
 #include "SignImage.h"
 
-class SignCellNode : public SignCellTree {
+class SignCellNode: public SignCellTree {
 protected:
-	bool checkResize() const override;
-
-private:
-	struct SignCellCoords {
-		uint32_t x;
-		uint32_t y;
-	};
-
-	typedef struct SignCellCoords SignCellCoords;
-
-	typedef std::vector<SignCellTree*> SignCellPtrVector;
-	typedef std::vector<SignCellTree*>::iterator SignCellPtrVectorIt;
-	typedef std::vector<SignCellTree*>::const_iterator SignCellPtrVectorConstIt;
-	typedef std::vector<SignCellCoords> SignCellCoordVector;
-	typedef std::vector<SignCellCoords>::iterator SignCellCoordVectorIt;
-	typedef std::vector<SignCellCoords>::const_iterator
-			SignCellCoordVectorConstIt;
-
-	SignCellPtrVector children;
-	SignCellCoordVector childrenCoords;
+    bool checkResize() const override;
 
 public:
-	SignCellNode(unsigned int height, unsigned int width);
-	SignCellNode(unsigned int height, unsigned int width,
-			const std::vector<std::tuple<SignCellTree*,
-				unsigned int, unsigned int>> children);
-	SignCellNode(unsigned int height, unsigned int width,
-			std::initializer_list<std::tuple<SignCellTree*,
-				unsigned int, unsigned int>> children);
-	virtual ~SignCellNode();
+    typedef std::vector<SignCellTree*> CellPtrVector;
+    typedef std::vector<SignCellTree*>::iterator SignCellPtrVectorIt;
+    typedef std::vector<SignCellTree*>::const_iterator CellPtrVectorConstIt;
 
-	SignTreeType getType() const;
-	void accept(SignTreeVisitor& visitor);
+    struct SignCellCoords {
+        uint32_t x;
+        uint32_t y;
+    };
 
-	bool addCell(SignCellTree* child, unsigned int x, unsigned int y);
-	bool removeCell(const SignCellTree* child);
+    typedef struct SignCellCoords SignCellCoords;
+    typedef std::vector<SignCellCoords> CellCoordVector;
+    typedef std::vector<SignCellCoords>::iterator SignCellCoordVectorIt;
+    typedef std::vector<SignCellCoords>::const_iterator
+            CellCoordVectorConstIt;
 
-	void render(SignImage* target, const unsigned int frame,
-			const unsigned int x, const unsigned int y, SignRgbPixel background,
-			SignRgbPixel foreground) const;
+private:
+    CellPtrVector children;
+    CellCoordVector childrenCoords;
 
-	std::ostream& serialize(std::ostream &strm) const;
+public:
+
+    SignCellNode(unsigned int height, unsigned int width);
+    SignCellNode(unsigned int height, unsigned int width,
+            const std::vector<
+                    std::tuple<SignCellTree*, unsigned int, unsigned int>>
+                    children);
+    SignCellNode(unsigned int height, unsigned int width,
+            std::initializer_list<
+                    std::tuple<SignCellTree*, unsigned int, unsigned int>>
+                    children);
+    virtual ~SignCellNode();
+
+    SignTreeType getType() const;
+    void accept(SignTreeVisitor &visitor);
+
+    bool addCell(SignCellTree *child, unsigned int x, unsigned int y);
+    bool removeCell(const SignCellTree *child);
+
+    CellPtrVector getChildren();
+    CellCoordVector getChildrenCoords();
+
+    std::ostream& serialize(std::ostream &strm) const;
 };
 
 std::ostream& operator<<(std::ostream &strm, const SignCellNode &s);

@@ -24,27 +24,28 @@
 #include "SignCellTree.h"
 #include "SignImage.h"
 
-class SignCellLeaf : public SignCellTree {
+class SignCellLeaf: public SignCellTree {
 protected:
-	bool checkResize() const override;
+    bool checkResize() const override;
 
 private:
-	icu::UnicodeString text; // Unicode-encoded text
+    bool hasCustomBackground;
+    SignRgbPixel customBackground;     // Background color
+    bool hasCustomForeground;
+    SignRgbPixel customForeground;     // Foreground color
+
+    icu::UnicodeString text; // Unicode-encoded text
 
 public:
-	SignCellLeaf(unsigned int height, unsigned int width);
-	virtual ~SignCellLeaf();
+    SignCellLeaf(unsigned int height, unsigned int width);
+    virtual ~SignCellLeaf();
 
-	SignTreeType getType() const;
-	void accept(SignTreeVisitor& visitor);
+    SignTreeType getType() const;
+    void accept(SignTreeVisitor &visitor);
 
-	void setText(const char* text);
+    void setText(const char *text);
 
-	void render(SignImage* target, const unsigned int frame,
-			const unsigned int x, const unsigned int y, SignRgbPixel background,
-			SignRgbPixel foreground) const;
-
-	std::ostream& serialize(std::ostream &strm) const;
+    std::ostream& serialize(std::ostream &strm) const;
 
 };
 

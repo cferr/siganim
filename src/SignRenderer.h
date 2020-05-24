@@ -22,20 +22,53 @@
 #include "SignImage.h"
 #include "SignTreeVisitor.h"
 
+class SignRenderer: public SignTreeVisitor {
+private:
+    // Tree structure to be created by a visitor of Sign
+    class SignImageTree {
+    public:
+        struct SignImageTreeChild {
+            SignImageTree* child;
+            unsigned int x;
+            unsigned int y;
+        };
+    private:
+        union {
+            struct {
+                unsigned int width;
+                unsigned int height;
+                std::vector<SignImageTreeChild>* children;
+            };
+            SignImage* image;
+        };
+        enum Type {
+            NODE, LEAF
+        };
+        enum Type type;
+    public:
+        SignImageTree(unsigned int width, unsigned int height,
+                std::vector<struct SignImageTreeChild>* children);
+        SignImageTree(SignImage* image);
+        ~SignImageTree();
 
-class SignRenderer : public SignTreeVisitor {
+        SignImage* compose();
+    };
+
+    SignImageTree* resultTree;
+    Bitmap* resultBitmap;
+
 public:
-	SignRenderer();
+    SignRenderer();
 
-	Bitmap* render(Sign* s, unsigned int frame);
+    Bitmap* render(Sign *s, unsigned int frame);
 
-	// Visitor
-	void visit(Sign* s);
-	void visit(SignDisplay* s);
-	void visit(SignCellNode* s);
-	void visit(SignCellLeaf* s);
+    // Visitor
+    virtual void visit(Sign &s);
+    virtual void visit(SignDisplay &s);
+    virtual void visit(SignCellNode &s);
+    virtual void visit(SignCellLeaf &s);
 
-	virtual ~SignRenderer();
+    virtual ~SignRenderer();
 };
 
 #endif /* SRC_SIGNRENDERER_H_ */

@@ -18,15 +18,15 @@
 #include "SiganimMainWindow.h"
 
 SiganimMainWindow::SiganimMainWindow() {
-	this->setWindowTitle(QString("SigAnim Sign Animator"));
-	this->signWidget = new SignWidget(this);
-	this->menuBar = new QMenuBar(this);
+    this->setWindowTitle(QString("SigAnim Sign Animator"));
+    this->signWidget = new SignWidget(this);
+    this->menuBar = new QMenuBar(this);
 
-	// Generate menus
-	menuBar->addAction(new QAction(QString("File"), menuBar));
+    // Generate menus
+    menuBar->addAction(new QAction(QString("File"), menuBar));
 
-	// Set image widget as central widget
-	this->setCentralWidget(this->signWidget);
+    // Set image widget as central widget
+    this->setCentralWidget(this->signWidget);
 
 }
 

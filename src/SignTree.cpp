@@ -21,5 +21,5 @@ SignTree::~SignTree() {
 }
 
 const SignTree* SignTree::getParent() {
-	return this->parent;
+    return this->parent;
 }

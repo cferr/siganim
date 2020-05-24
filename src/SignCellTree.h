@@ -23,37 +23,27 @@
 #include "SignImage.h"
 #include "SignTree.h"
 
-class SignCellTree : public SignTree {
+class SignCellTree: public SignTree {
 protected:
-//	const SignCellTree* parent;
 
-	unsigned int height;
-	unsigned int width;
+    unsigned int height;
+    unsigned int width;
 
-	bool hasCustomBackground;
-	SignRgbPixel customBackground;     // Background color
-	bool hasCustomForeground;
-	SignRgbPixel customForeground;     // Foreground color
-
-	virtual bool checkResize() const = 0;
+    virtual bool checkResize() const = 0;
 
 public:
-	SignCellTree(unsigned int height, unsigned int width);
-	virtual ~SignCellTree();
+    SignCellTree(unsigned int height, unsigned int width);
+    virtual ~SignCellTree();
 
-	unsigned int getHeight() const;
-	unsigned int getWidth() const;
-	bool setHeight(const unsigned int height);
-	bool setWidth(const unsigned int width);
-	bool resize(const unsigned int height, const unsigned int width);
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
+    bool setHeight(const unsigned int height);
+    bool setWidth(const unsigned int width);
+    bool resize(const unsigned int height, const unsigned int width);
 
-	bool setParent(const SignTree* parent);
+    bool setParent(const SignTree *parent);
 
-	virtual void render(SignImage* target, const unsigned int frame,
-			const unsigned int x, const unsigned int y, SignRgbPixel background,
-			SignRgbPixel foreground) const = 0;
-
-	virtual std::ostream& serialize(std::ostream &strm) const = 0;
+    virtual std::ostream& serialize(std::ostream &strm) const = 0;
 
 };
 

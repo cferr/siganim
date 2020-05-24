@@ -18,14 +18,14 @@
 #include "SignImage.h"
 
 SignDisplay::SignDisplay(unsigned int height, unsigned int width,
-			enum SignPixelType type) : SignDisplay(height, width, type, NULL)
-{
+        enum SignPixelType type) :
+        SignDisplay(height, width, type, NULL) {
 
 }
 
 SignDisplay::SignDisplay(unsigned int height, unsigned int width,
-		enum SignPixelType type, SignCellTree* rootCell)
-		: height(height), width(width), type(type), rootCell(rootCell) {
+        enum SignPixelType type, SignCellTree *rootCell) :
+        height(height), width(width), displayType(type), rootCell(rootCell) {
 
 }
 
@@ -34,68 +34,73 @@ SignDisplay::~SignDisplay() {
 }
 
 SignTreeType SignDisplay::getType() const {
-	return SignTreeType::SIGN_DISPLAY;
+    return SignTreeType::SIGN_DISPLAY;
 }
 
-void SignDisplay::accept(SignTreeVisitor& visitor) {
-	visitor.visit(*this);
+void SignDisplay::accept(SignTreeVisitor &visitor) {
+    visitor.visit(*this);
 }
 
-bool SignDisplay::setParent(const SignTree* parent) {
-	if(parent != NULL) {
-		if(parent->getType() == SignTreeType::SIGN) {
-			this->parent = parent;
-			return true;
-		}
-		return false;
-	} else {
-		this->parent = parent;
-		return true;
-	}
+bool SignDisplay::setParent(const SignTree *parent) {
+    if (parent != NULL) {
+        if (parent->getType() == SignTreeType::SIGN) {
+            this->parent = parent;
+            return true;
+        }
+        return false;
+    } else {
+        this->parent = parent;
+        return true;
+    }
 
 }
 
-bool SignDisplay::setRootCell(SignCellTree* rootCell) {
-	this->rootCell = rootCell;
-	return true;
+bool SignDisplay::setRootCell(SignCellTree *rootCell) {
+    this->rootCell = rootCell;
+    return true;
 }
 
 SignCellTree* SignDisplay::getRootCell() {
-	return this->rootCell;
+    return this->rootCell;
 }
 
-void SignDisplay::render(Bitmap* dest, unsigned int frame) {
-	// TODO move this to visitor SignRenderer
-	SignRgbPixel foreground;
-	SignRgbPixel background;
+enum SignPixelType SignDisplay::getDisplayType() {
+    return this->displayType;
+}
 
-	switch(this->type) {
-	case SignPixelType::DISPLAY_FLIPDISC:
-		foreground = SignImage::defaultFlipDiscFG;
-		background = SignImage::defaultFlipDiscBG;
-		break;
-	case SignPixelType::DISPLAY_MONOCHROME_LED:
-		foreground = SignImage::defaultMonoLEDFG;
-		background = SignImage::defaultMonoLEDBG;
-		break;
-	case SignPixelType::DISPLAY_RGB_LED:
-		foreground = SignImage::defaultRGBLEDFG;
-		background = SignImage::defaultRGBLEDBG;
-		break;
-	}
+bool SignDisplay::setDisplayType(enum SignPixelType displayType) {
+    this->displayType = displayType;
+    return true;
+}
 
-	SignImage* interior = new SignImage(this->height, this->width);
-	rootCell->render(interior, frame, 0, 0, background, foreground);
+unsigned int SignDisplay::getHeight() {
+    return this->height;
+}
 
-	// TODO do something with dest
+unsigned int SignDisplay::getWidth() {
+    return this->width;
+}
+
+bool SignDisplay::setHeight(const unsigned int height) {
+    return this->resize(height, this->width);
+}
+
+bool SignDisplay::setWidth(const unsigned int height) {
+    return this->resize(this->height, width);
+}
+
+bool SignDisplay::resize(const unsigned int height, const unsigned int width) {
+    this->height = height;
+    this->width = width;
+    // TODO check that children fit
+    return true;
 }
 
 std::ostream& SignDisplay::serialize(std::ostream &strm) const {
-	return strm << "Disp { " << this->height << "x"
-			<< this->width << " (" << this->type << ") : "
-			<< *(this->rootCell) << " }";
+    return strm << "Disp { " << this->height << "x" << this->width << " ("
+            << this->displayType << ") : " << *(this->rootCell) << " }";
 }
 
-std::ostream& operator<<(std::ostream& strm, const SignDisplay &s) {
-	return s.serialize(strm);
+std::ostream& operator<<(std::ostream &strm, const SignDisplay &s) {
+    return s.serialize(strm);
 }

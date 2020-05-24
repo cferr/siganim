@@ -20,26 +20,23 @@
 #include "SignTreeVisitor.h"
 
 enum SignTreeType {
-	SIGN,
-	SIGN_DISPLAY,
-	SIGN_CELL_NODE,
-	SIGN_CELL_LEAF
+    SIGN, SIGN_DISPLAY, SIGN_CELL_NODE, SIGN_CELL_LEAF
 };
 
 typedef enum SignTreeType SignTreeType;
 
 class SignTree {
 protected:
-	const SignTree* parent;
+    const SignTree *parent;
 
 public:
-	virtual ~SignTree();
+    virtual ~SignTree();
 
-	virtual bool setParent(const SignTree* parent) = 0;
-	const SignTree* getParent();
+    virtual bool setParent(const SignTree *parent) = 0;
+    const SignTree* getParent();
 
-	virtual SignTreeType getType() const = 0;
-	virtual void accept(SignTreeVisitor& visitor) = 0;
+    virtual SignTreeType getType() const = 0;
+    virtual void accept(SignTreeVisitor &visitor) = 0;
 
 };
 

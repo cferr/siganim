@@ -15,12 +15,55 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Bitmap.h"
+#include <cstdlib>
 
-Bitmap::Bitmap() {
-
+Bitmap::Bitmap(unsigned int width, unsigned int height) : width(width),
+    height(height) {
+    this->pixels = (struct pixel*)calloc(height * width, sizeof(pixel));
 }
 
 Bitmap::~Bitmap() {
 
+}
+
+unsigned int Bitmap::getHeight() const {
+    return this->height;
+}
+
+unsigned int Bitmap::getWidth() const {
+    return this->width;
+}
+
+void Bitmap::addSignImage(SignImage* image, unsigned int x, unsigned int y) {
+    const SignRgbPixel* addPixels = image->getPixels();
+    unsigned int imgHeight = image->getHeight();
+    unsigned int imgWidth = image->getWidth();
+
+    for(unsigned int i = 0; i < imgHeight; ++i) {
+        for(unsigned int j = 0; j < imgWidth; ++j) {
+            SignRgbPixel p = addPixels[i*imgWidth+j];
+            this->pixels[(i+y)*this->width+j+x] = {
+                    p.r, p.g, p.b
+            };
+        }
+    }
+}
+
+unsigned char* Bitmap::toRGB32() {
+    uint32_t* result = (uint32_t*)malloc(this->height * this->width
+            * sizeof(uint32_t));
+    unsigned int height = this->height;
+    unsigned int width = this->width;
+    if(result != NULL) {
+        for(unsigned int i = 0; i < this->height; ++i) {
+            for(unsigned int j = 0; j < this->width; ++j) {
+                struct pixel p = this->pixels[i*width+j];
+                result[i*width+j] = ((0xFF) << 24) + ((uint32_t)p.r << 16)
+                        + ((uint32_t)p.g << 8) + ((uint32_t)p.b);
+            }
+        }
+    }
+
+    return (unsigned char*)result;
 }
 

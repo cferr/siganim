@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#define GUI
+
 #ifdef GUI
 #include <QApplication>
 #endif
@@ -21,38 +23,40 @@
 #include "Sign.h"
 #include "SignCellNode.h"
 #include "SignCellLeaf.h"
+#include "SignRenderer.h"
 
 #ifdef GUI
-#include "SiganimMainWindow.h"
+#include "ui/SiganimMainWindow.h"
 #endif
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
+#ifdef GUI
+    QApplication a(argc, argv);
+#endif
+    int ret = 0;
 
-	int ret = 0;
+    // Are we able to create a sign easily? Yes.
+    Sign *testSign = new Sign(80, 120,
+            { new SignDisplay(80, 120, SignPixelType::DISPLAY_FLIPDISC,
+                    new SignCellNode(80, 120,
+                            { std::make_tuple(new SignCellLeaf(80, 20), 0, 0),
+                                    std::make_tuple(new SignCellLeaf(80, 100),
+                                            20, 0) })) });
+
+    // This will display the tree structure we just created.
+    std::cout << *testSign << std::endl;
+
+    SignRenderer r;
+    Bitmap *result = r.render(testSign, 0);
+
+    // delete testSign;
+
 
 #ifdef GUI
-	QApplication a(argc, argv);
-
-	SiganimMainWindow m;
-	m.show();
-
-	ret = a.exec();
-
+    SiganimMainWindow m;
+    m.show();
+    ret = a.exec();
 #endif
 
-	// Are we able to create a sign easily? Yes.
-	Sign* testSign = new Sign(80, 120, {
-			new SignDisplay(80, 120, SignPixelType::DISPLAY_FLIPDISC,
-					new SignCellNode(80, 120, {
-							std::make_tuple(new SignCellLeaf(80, 20), 0, 0),
-							std::make_tuple(new SignCellLeaf(80, 100), 20, 0)
-					})
-			)
-	});
-
-	// This will display the tree structure we just created.
-	std::cout << *testSign << std::endl;
-	delete testSign;
-
-	return ret;
+    return ret;
 }

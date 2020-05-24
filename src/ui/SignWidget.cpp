@@ -15,34 +15,55 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SignWidget.h"
+#include "../Sign.h"
+#include "../SignCellLeaf.h"
+#include "../SignRenderer.h"
 
 #include <QRect>
 #include <QPaintEvent>
 
-SignWidget::SignWidget(QWidget* parent) : QWidget(parent) {
-	this->image = new QImage(200, 200, QImage::Format_RGB32);
-	this->image->fill(qRgb(255, 255, 255));
+SignWidget::SignWidget(QWidget *parent) :
+        QWidget(parent), sign(NULL) {
 
-	QPainter painter(this->image);
-	painter.fillRect(QRect(0, 0, 100, 50), QColor::fromRgb(51, 102, 204));
+    // Mock sign just to test.
+    Sign *testSign = new Sign(80, 120,
+            { new SignDisplay(80, 120, SignPixelType::DISPLAY_FLIPDISC,
+                    new SignCellNode(80, 120,
+                            { std::make_tuple(new SignCellLeaf(80, 20), 0, 0),
+                                    std::make_tuple(new SignCellLeaf(60, 100),
+                                            20, 0) })) });
 
-	this->update();
 
-	this->sign = new Sign(200, 200); // Mock sign.
+    SignRenderer r;
+    Bitmap *result = r.render(testSign, 0);
+
+    unsigned char* img = result->toRGB32();
+
+
+    // this->image = new QImage(200, 200, QImage::Format_RGB32);
+    // this->image->fill(qRgb(255, 255, 255));
+    // Yay, now we're generating it!
+    this->image = new QImage(img, result->getWidth(),
+            result->getHeight(), QImage::Format_RGB32);
+
+    // No need to fill anymore.
+    // QPainter painter(this->image);
+    // painter.fillRect(QRect(0, 0, 100, 50), QColor::fromRgb(51, 102, 204));
+
+    this->update();
 }
 
 SignWidget::~SignWidget() {
 
 }
 
-void SignWidget::paintEvent(QPaintEvent *event)
-{
+void SignWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     QRect dirtyRect = event->rect();
     painter.drawImage(dirtyRect, *this->image, dirtyRect);
 }
 
-void SignWidget::signChangedEvent(Sign* s) {
-	// Repaint ourselves according to that sign.
+void SignWidget::signChangedEvent(Sign *s) {
+    // Repaint ourselves according to that sign.
 
 }

@@ -16,11 +16,8 @@
 
 #include "SignCellTree.h"
 
-SignCellTree::SignCellTree(unsigned int height,
-		unsigned int width)
-	: height(height), width(width),
-	  hasCustomBackground(false), customBackground({0, 0, 0}),
-	  hasCustomForeground(false), customForeground({0, 0, 0}){
+SignCellTree::SignCellTree(unsigned int height, unsigned int width) :
+        height(height), width(width) {
 
 }
 
@@ -29,61 +26,60 @@ SignCellTree::~SignCellTree() {
 }
 
 unsigned int SignCellTree::getHeight() const {
-	return this->height;
+    return this->height;
 }
 
 unsigned int SignCellTree::getWidth() const {
-	return this->width;
+    return this->width;
 }
 
 bool SignCellTree::setHeight(const unsigned int height) {
-	return this->resize(height, this->getWidth());
+    return this->resize(height, this->getWidth());
 }
 
 bool SignCellTree::setWidth(const unsigned int width) {
-	return this->resize(this->getHeight(), width);
+    return this->resize(this->getHeight(), width);
 }
 
 bool SignCellTree::resize(const unsigned int height, const unsigned int width) {
-	unsigned int previousHeight = this->height;
-	unsigned int previousWidth = this->width;
+    unsigned int previousHeight = this->height;
+    unsigned int previousWidth = this->width;
 
-	this->height = height;
-	this->width = width;
+    this->height = height;
+    this->width = width;
 
-	// Check if we fit in parent...
-	if((this->parent != NULL)) {
-		SignTreeType t = this->parent->getType();
-		if(t == SignTreeType::SIGN_CELL_NODE)
-		{
-			SignCellTree* p = (SignCellTree*)parent;
-			if(!(p->checkResize())) {
-				this->height = previousHeight;
-				this->width = previousWidth;
-				return false;
-			}
-		}
-	}
-	return true;
+    // Check if we fit in parent...
+    if ((this->parent != NULL)) {
+        SignTreeType t = this->parent->getType();
+        if (t == SignTreeType::SIGN_CELL_NODE) {
+            SignCellTree *p = (SignCellTree*) parent;
+            if (!(p->checkResize())) {
+                this->height = previousHeight;
+                this->width = previousWidth;
+                return false;
+            }
+        }
+    }
+    return true;
 
 }
 
-bool SignCellTree::setParent(const SignTree* parent) {
-	if(parent != NULL) {
-		SignTreeType t = parent->getType();
-		if(t == SignTreeType::SIGN_CELL_NODE
-				|| t == SignTreeType::SIGN_DISPLAY) {
-			this->parent = parent;
-			return true;
-		} else return false;
-	} else {
-		this->parent = parent; // NULL in this case
-		return true;
-	}
+bool SignCellTree::setParent(const SignTree *parent) {
+    if (parent != NULL) {
+        SignTreeType t = parent->getType();
+        if (t == SignTreeType::SIGN_CELL_NODE
+                || t == SignTreeType::SIGN_DISPLAY) {
+            this->parent = parent;
+            return true;
+        } else
+            return false;
+    } else {
+        this->parent = parent; // NULL in this case
+        return true;
+    }
 }
 
 std::ostream& operator<<(std::ostream &strm, const SignCellTree &s) {
-	return s.serialize(strm);
+    return s.serialize(strm);
 }
-
 

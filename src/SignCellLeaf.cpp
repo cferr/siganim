@@ -16,9 +16,10 @@
 
 #include "SignCellLeaf.h"
 
-SignCellLeaf::SignCellLeaf(unsigned int height,
-		unsigned int width)
-	: SignCellTree(height, width) {
+SignCellLeaf::SignCellLeaf(unsigned int height, unsigned int width) :
+    SignCellTree(height, width), hasCustomBackground(false), customBackground(
+            { 0, 0, 0 }), hasCustomForeground(false),
+            customForeground( { 0, 0, 0 }) {
 
 }
 
@@ -27,28 +28,21 @@ SignCellLeaf::~SignCellLeaf() {
 }
 
 SignTreeType SignCellLeaf::getType() const {
-	return SignTreeType::SIGN_CELL_LEAF;
+    return SignTreeType::SIGN_CELL_LEAF;
 }
 
-void SignCellLeaf::accept(SignTreeVisitor& visitor) {
-	visitor.visit(*this);
+void SignCellLeaf::accept(SignTreeVisitor &visitor) {
+    visitor.visit(*this);
 }
 
 bool SignCellLeaf::checkResize() const {
-	return true;
-}
-
-void SignCellLeaf::render(SignImage* target, const unsigned int frame,
-		const unsigned int x, const unsigned int y, SignRgbPixel background,
-		SignRgbPixel foreground) const {
-	// TODO move this to visitor SignRenderer
+    return true;
 }
 
 std::ostream& SignCellLeaf::serialize(std::ostream &strm) const {
-	return strm << "{ " << this->height << "x" <<
-			this->width << " }";
+    return strm << "{ " << this->height << "x" << this->width << " }";
 }
 
 std::ostream& operator<<(std::ostream &strm, const SignCellLeaf &s) {
-	return s.serialize(strm);
+    return s.serialize(strm);
 }

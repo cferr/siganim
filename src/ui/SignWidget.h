@@ -23,21 +23,21 @@
 #include "../Sign.h"
 #include <QObject>
 
-class SignWidget : public QWidget {
+class SignWidget: public QWidget {
 
-	Q_OBJECT
+Q_OBJECT
 
 private:
-	QImage *image;
-	Sign *sign;
+    QImage *image;
+    Sign *sign;
 
 protected:
-	void paintEvent(QPaintEvent *event) override;
-	void signChangedEvent(Sign *s);
+    void paintEvent(QPaintEvent *event) override;
+    void signChangedEvent(Sign *s);
 
 public:
-	SignWidget(QWidget* parent);
-	virtual ~SignWidget();
+    SignWidget(QWidget *parent);
+    virtual ~SignWidget();
 };
 
 #endif /* SRC_SIGNWIDGET_H_ */

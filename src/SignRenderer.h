@@ -65,8 +65,8 @@ public:
     // Visitor
     virtual void visit(Sign &s);
     virtual void visit(SignDisplay &s);
-    virtual void visit(SignCellNode &s);
-    virtual void visit(SignCellLeaf &s);
+    virtual void visit(SignCellSplit &s);
+    virtual void visit(SignCellText &s);
 
     virtual ~SignRenderer();
 };

@@ -15,15 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #define GUI
+#define TEST
 
 #ifdef GUI
 #include <QApplication>
 #endif
 #include <iostream>
 #include "Sign.h"
-#include "SignCellNode.h"
-#include "SignCellLeaf.h"
+#include "SignCellSplit.h"
+#include "SignCellText.h"
 #include "SignRenderer.h"
+
+#ifdef TEST
+#include "test.h"
+#endif
 
 #ifdef GUI
 #include "ui/SiganimMainWindow.h"
@@ -35,30 +40,15 @@ int main(int argc, char *argv[]) {
 #endif
     int ret = 0;
 
-    // Are we able to create a sign easily? Yes.
-    Sign *testSign = new Sign(120, 80,
-            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
-                    new SignCellNode(120, 80,
-                            { std::make_tuple(new SignCellLeaf(20, 80), 0, 0),
-                              std::make_tuple(new SignCellLeaf(100, 60), 20, 0)
-                            }
-                    ))
-            }
-    );
-
-    // This will display the tree structure we just created.
-    std::cout << *testSign << std::endl;
-
-    SignRenderer r;
-    Bitmap *result = r.render(testSign, 0);
-
-    // delete testSign;
-
+#ifdef TEST
+    if(!siganimTests())
+        ret = 1;
+#endif
 
 #ifdef GUI
     SiganimMainWindow m;
     m.show();
-    ret = a.exec();
+    ret |= a.exec();
 #endif
 
     return ret;

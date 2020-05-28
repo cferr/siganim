@@ -24,47 +24,50 @@ SignDisplay::SignDisplay(unsigned int width, unsigned int height,
 }
 
 SignDisplay::SignDisplay(unsigned int width, unsigned int height,
-        enum SignPixelType type, SignCellTree *rootCell) :
-        width(width), height(height), displayType(type), rootCell(rootCell) {
-
+        enum SignPixelType type, SignCell *rootCell) :
+        width(width), height(height), displayType(type), rootCell(rootCell),
+        parentSign(NULL) {
+    if(rootCell != NULL)
+        rootCell->setParent(this);
 }
 
 SignDisplay::~SignDisplay() {
 
 }
 
-SignTreeType SignDisplay::getType() const {
-    return SignTreeType::SIGN_DISPLAY;
-}
-
 void SignDisplay::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
-bool SignDisplay::setParent(const SignTree *parent) {
-    if (parent != NULL) {
-        if (parent->getType() == SignTreeType::SIGN) {
-            this->parent = parent;
-            return true;
-        }
-        return false;
-    } else {
-        this->parent = parent;
-        return true;
-    }
-
+SignCell::Type SignDisplay::getType() const {
+    return Type::DISPLAY;
 }
 
-bool SignDisplay::setRootCell(SignCellTree *rootCell) {
-    this->rootCell = rootCell;
+bool SignDisplay::setParent(const SignCell *parent) {
+    return false;
+}
+
+bool SignDisplay::setParentSign(const Sign *parent) {
+    this->parentSign = parent;
     return true;
 }
 
-SignCellTree* SignDisplay::getRootCell() {
+const Sign* SignDisplay::getParentSign() const {
+    return this->parentSign;
+}
+
+bool SignDisplay::setRootCell(SignCell *rootCell) {
+    this->rootCell = rootCell;
+    if(rootCell != NULL)
+        rootCell->setParent(this);
+    return true;
+}
+
+SignCell* SignDisplay::getRootCell() {
     return this->rootCell;
 }
 
-enum SignPixelType SignDisplay::getDisplayType() {
+enum SignPixelType SignDisplay::getDisplayType() const {
     return this->displayType;
 }
 
@@ -73,11 +76,19 @@ bool SignDisplay::setDisplayType(enum SignPixelType displayType) {
     return true;
 }
 
-unsigned int SignDisplay::getHeight() {
+unsigned int SignDisplay::getChildHeight(const SignCell* child) const {
     return this->height;
 }
 
-unsigned int SignDisplay::getWidth() {
+unsigned int SignDisplay::getChildWidth(const SignCell* child) const {
+    return this->width;
+}
+
+unsigned int SignDisplay::getHeight() const {
+    return this->height;
+}
+
+unsigned int SignDisplay::getWidth() const {
     return this->width;
 }
 

@@ -20,10 +20,9 @@
 #include <vector>
 #include "SignDisplay.h"
 #include "SignPixel.h"
-#include "SignTree.h"
 #include "Bitmap.h"
 
-class Sign: public SignTree {
+class Sign {
 private:
     std::vector<SignDisplay*> displays;
 
@@ -44,8 +43,6 @@ public:
     unsigned int getHeight();
     unsigned int getWidth();
 
-    SignTreeType getType() const;
-    bool setParent(const SignTree *parent);
     void accept(SignTreeVisitor &visitor);
 
     bool addDisplay(SignDisplay *display);

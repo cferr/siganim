@@ -14,41 +14,48 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNCELLLEAF_H_
-#define SRC_SIGNCELLLEAF_H_
+#ifndef SRC_SIGNCELLTEXT_H_
+#define SRC_SIGNCELLTEXT_H_
 
 #include <iostream>
 #include <unicode/utypes.h>
 #include <unicode/unistr.h>
 
-#include "SignCellTree.h"
+#include "SignCell.h"
 #include "SignImage.h"
+#include "SignTreeVisitor.h"
 
-class SignCellLeaf: public SignCellTree {
-protected:
-    bool checkResize() const override;
-
+class SignCellText: public SignCell {
 private:
     bool hasCustomBackground;
     SignRgbPixel customBackground;     // Background color
     bool hasCustomForeground;
     SignRgbPixel customForeground;     // Foreground color
 
-    icu::UnicodeString text; // Unicode-encoded text
+    icu::UnicodeString* text; // Unicode-encoded text
 
 public:
-    SignCellLeaf(unsigned int width, unsigned int height);
-    virtual ~SignCellLeaf();
+    SignCellText(const icu::UnicodeString& text = "");
+    virtual ~SignCellText();
 
-    SignTreeType getType() const;
-    void accept(SignTreeVisitor &visitor);
+    Type getType() const;
+    virtual void accept(SignTreeVisitor &visitor);
 
-    void setText(const char *text);
+    virtual unsigned int getHeight() const;
+    virtual unsigned int getWidth() const;
+    virtual unsigned int getChildHeight(const SignCell* child) const override;
+    virtual unsigned int getChildWidth(const SignCell* child) const override;
 
-    std::ostream& serialize(std::ostream &strm) const;
+
+    void setText(const icu::UnicodeString& text);
+    icu::UnicodeString* getText() const;
+
+    bool setParent(const SignCell *parent);
+
+    virtual std::ostream& serialize(std::ostream &strm) const;
 
 };
 
-std::ostream& operator<<(std::ostream &strm, const SignCellLeaf &s);
+std::ostream& operator<<(std::ostream &strm, const SignCellText &s);
 
-#endif /* SRC_SIGNCELLLEAF_H_ */
+#endif /* SRC_SIGNCELLTEXT_H_ */

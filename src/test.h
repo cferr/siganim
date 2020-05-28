@@ -14,30 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNTREE_H_
-#define SRC_SIGNTREE_H_
+#ifndef SRC_TEST_H_
+#define SRC_TEST_H_
 
-#include "SignTreeVisitor.h"
+bool siganimTests();
+bool UTF8Test();
 
-enum SignTreeType {
-    SIGN, SIGN_DISPLAY, SIGN_CELL_NODE, SIGN_CELL_LEAF
-};
 
-typedef enum SignTreeType SignTreeType;
-
-class SignTree {
-protected:
-    const SignTree *parent;
-
-public:
-    virtual ~SignTree();
-
-    virtual bool setParent(const SignTree *parent) = 0;
-    const SignTree* getParent();
-
-    virtual SignTreeType getType() const = 0;
-    virtual void accept(SignTreeVisitor &visitor) = 0;
-
-};
-
-#endif /* SRC_SIGNTREE_H_ */
+#endif /* SRC_TEST_H_ */

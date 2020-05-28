@@ -19,8 +19,9 @@
 #include "SignRenderer.h"
 #include "Sign.h"
 #include "SignImage.h"
-#include "SignCellNode.h"
-#include "SignCellLeaf.h"
+#include <unicode/schriter.h>
+#include "SignCellSplit.h"
+#include "SignCellText.h"
 
 SignRenderer::SignRenderer() : resultTree(NULL),
     resultBitmap(NULL) {
@@ -78,35 +79,39 @@ void SignRenderer::visit(SignDisplay &s) {
 
 }
 
-void SignRenderer::visit(SignCellNode &s) {
+void SignRenderer::visit(SignCellSplit &s) {
 
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
      = new std::vector<struct SignImageTree::SignImageTreeChild>();
 
-    // Render & merge all children.
-    SignCellNode::CellPtrVector children = s.getChildren();
-    SignCellNode::CellCoordVector childrenCoords = s.getChildrenCoords();
-    SignCellNode::CellPtrVectorConstIt childIt = children.begin();
-    SignCellNode::CellCoordVectorConstIt childCoordIt =
-            childrenCoords.begin();
-
-    for (; (childIt < children.end()) && (childCoordIt < childrenCoords.end());
-            childIt++, childCoordIt++) {
-        // Render child
-        (*childIt)->accept(*this);
-        childrenImg->push_back({
-            this->resultTree,
-            (*childCoordIt).x,
-            (*childCoordIt).y
-        });
+    s.getTopOrLeftChild()->accept(*this);
+    childrenImg->push_back({this->resultTree, 0, 0});
+    s.getBottomOrRightChild()->accept(*this);
+    switch(s.getSplitDirection()) {
+    case SignCellSplit::SPLIT_HORIZONTAL:
+        childrenImg->push_back({this->resultTree, 0, s.getSplitPos()});
+        break;
+    case SignCellSplit::SPLIT_VERTICAL:
+        childrenImg->push_back({this->resultTree, s.getSplitPos(), 0});
+        break;
     }
-
     SignImageTree* result = new SignImageTree(s.getWidth(), s.getHeight(),
             childrenImg);
     this->resultTree = result;
 }
 
-void SignRenderer::visit(SignCellLeaf &s) {
+void SignRenderer::visit(SignCellText &s) {
+    icu::UnicodeString* text = s.getText();
+    for(int32_t i = 0; i < text->length(); i++) {
+        UChar32 c = text->char32At(i);
+        std::cout << "Char: " << c << std::endl;
+
+        // Look up font (add support),
+        // Look up character in font,
+        // Render (mask ?).
+    }
+
+    // Temporary: fill with checkerboard
     SignImage *leafRender = new SignImage(s.getWidth(), s.getHeight());
     for(unsigned int x = 0; x < s.getWidth(); x++) {
         for(unsigned int y = x % 2; y < s.getHeight(); y += 2) {

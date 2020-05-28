@@ -52,19 +52,6 @@ unsigned int Sign::getWidth() {
     return this->width;
 }
 
-SignTreeType Sign::getType() const {
-    return SignTreeType::SIGN;
-}
-
-bool Sign::setParent(const SignTree *parent) {
-    if (parent != NULL) {
-        return false;
-    } else {
-        this->parent = parent;
-        return true;
-    }
-}
-
 void Sign::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }

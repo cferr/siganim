@@ -19,11 +19,12 @@
 
 #include <vector>
 #include "Bitmap.h"
-#include "SignCellNode.h"
+#include "SignCellSplit.h"
 #include "SignPixel.h"
-#include "SignTree.h"
+#include "SignCell.h"
+#include "SignTreeVisitor.h"
 
-class SignDisplay: public SignTree {
+class SignDisplay : public SignCell {
 private:
     // TODO add some geometry info (margins, display size in cm/in, dpi...)
     unsigned int width;
@@ -31,30 +32,37 @@ private:
 
     enum SignPixelType displayType;  // LEDs (monochromatic, RGB) or flip discs.
 
-    SignCellTree *rootCell;
+    SignCell *rootCell;
+
+    const Sign *parentSign;
 
 public:
     SignDisplay(unsigned int width, unsigned int height,
             enum SignPixelType type);
     SignDisplay(unsigned int width, unsigned int height,
-            enum SignPixelType type, SignCellTree *rootCell);
+            enum SignPixelType type, SignCell *rootCell);
     virtual ~SignDisplay();
 
-    SignTreeType getType() const;
-    bool setParent(const SignTree *parent);
-    void accept(SignTreeVisitor &visitor);
+    virtual bool setParent(const SignCell* parent);
+    virtual Type getType() const;
 
-    bool setRootCell(SignCellTree *rootCell);
-    SignCellTree* getRootCell();
+    virtual void accept(SignTreeVisitor &visitor);
+    bool setParentSign(const Sign* parent);
+    const Sign* getParentSign() const;
 
-    enum SignPixelType getDisplayType();
+    bool setRootCell(SignCell *rootCell);
+    SignCell* getRootCell();
+
+    enum SignPixelType getDisplayType() const;
     bool setDisplayType(enum SignPixelType displayType);
 
-    unsigned int getHeight();
-    unsigned int getWidth();
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
     bool setHeight(const unsigned int height);
     bool setWidth(const unsigned int width);
     bool resize(const unsigned int width, const unsigned int height);
+    virtual unsigned int getChildHeight(const SignCell* child) const override;
+    virtual unsigned int getChildWidth(const SignCell* child) const override;
 
     std::ostream& serialize(std::ostream &strm) const;
 };

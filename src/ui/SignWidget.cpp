@@ -16,11 +16,11 @@
 
 #include "SignWidget.h"
 #include "../Sign.h"
-#include "../SignCellLeaf.h"
 #include "../SignRenderer.h"
 
 #include <QRect>
 #include <QPaintEvent>
+#include "../SignCellText.h"
 
 SignWidget::SignWidget(QWidget *parent) :
         QWidget(parent), sign(NULL) {
@@ -28,13 +28,14 @@ SignWidget::SignWidget(QWidget *parent) :
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 80,
             { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
-                    new SignCellNode(120, 80,
-                            { std::make_tuple(new SignCellLeaf(20, 80), 0, 0),
-                              std::make_tuple(new SignCellLeaf(100, 60), 20, 0)
-                            }
+                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 39,
+                            new SignCellText("40"),
+                            new SignCellText("METRO TIMONE")
                     ))
             }
     );
+
+    std::cout << *testSign << std::endl;
 
 
     SignRenderer r;

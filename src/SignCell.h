@@ -14,39 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNCELLTREE_H_
-#define SRC_SIGNCELLTREE_H_
+#ifndef SRC_SIGNCELL_H_
+#define SRC_SIGNCELL_H_
 
-#include <cstdint>
-#include <vector>
 #include <iostream>
-#include "SignImage.h"
-#include "SignTree.h"
+#include "SignTreeVisitor.h"
 
-class SignCellTree: public SignTree {
+class SignCell {
 protected:
-
-    unsigned int width;
-    unsigned int height;
-
-    virtual bool checkResize() const = 0;
+    const SignCell* parent;
 
 public:
-    SignCellTree(unsigned int width, unsigned int height);
-    virtual ~SignCellTree();
+    enum Type {
+        DISPLAY, CELL_SPLIT, TEXT
+    };
 
-    unsigned int getHeight() const;
-    unsigned int getWidth() const;
-    bool setHeight(const unsigned int height);
-    bool setWidth(const unsigned int width);
-    bool resize(const unsigned int width, const unsigned int height);
+    typedef enum Type Type;
+    virtual Type getType() const = 0;
 
-    bool setParent(const SignTree *parent);
+    virtual ~SignCell();
+
+    virtual unsigned int getHeight() const = 0;
+    virtual unsigned int getWidth() const = 0;
+    virtual unsigned int getChildHeight(const SignCell* child) const = 0;
+    virtual unsigned int getChildWidth(const SignCell* child) const = 0;
+
+    virtual bool setParent(const SignCell* parent) = 0;
+    const SignCell* getParent() const;
+
+    virtual void accept(SignTreeVisitor& visitor) = 0;
 
     virtual std::ostream& serialize(std::ostream &strm) const = 0;
 
 };
 
-std::ostream& operator<<(std::ostream &strm, const SignCellTree &s);
+std::ostream& operator<<(std::ostream &strm, const SignCell &s);
 
-#endif /* SRC_SIGNCELLTREE_H_ */
+#endif /* SRC_SIGNCELL_H_ */

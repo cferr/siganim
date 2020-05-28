@@ -14,5 +14,46 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// Unit test definitions
-// TODO add unit tests
+#include <iostream>
+
+#include "Sign.h"
+#include "SignCellText.h"
+#include "SignRenderer.h"
+
+bool UTF8Test() {
+    std::cout << "// UTF-8 Test" << std::endl;
+    // Sign with a UTF-8 symbol inside.
+
+    // Are we able to create a sign easily? Yes.
+    Sign *UTF8Test = new Sign(120, 80,
+            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
+                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
+                            new SignCellText("☢"),
+                            new SignCellText("")
+                    ))
+            }
+    );
+
+    // This will display the tree structure we just created.
+    std::cout << *UTF8Test << std::endl;
+
+    SignRenderer r;
+    Bitmap *result = r.render(UTF8Test, 0);
+
+    delete result;
+    delete UTF8Test;
+
+    return true;
+
+}
+
+// Test bench
+bool siganimTests() {
+    bool ret = true;
+    std::cout << "// Begin Siganim tests" << std::endl;
+    ret &= UTF8Test();
+
+    std::cout << "// End Siganim tests" << std::endl;
+    return ret;
+}
+

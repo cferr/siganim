@@ -27,7 +27,7 @@ SignWidget::SignWidget(QWidget *parent) :
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 80,
-            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
+            { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 39,
                             new SignCellText("40"),
                             new SignCellText("METRO TIMONE")
@@ -63,7 +63,7 @@ SignWidget::~SignWidget() {
 void SignWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     QRect dirtyRect = event->rect();
-    painter.drawImage(dirtyRect, *this->image, dirtyRect);
+    painter.drawImage(this->image->rect(), *this->image, this->image->rect());
 }
 
 void SignWidget::signChangedEvent(Sign *s) {

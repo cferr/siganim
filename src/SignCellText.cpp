@@ -19,9 +19,8 @@
 #include <unicode/ustream.h>
 
 SignCellText::SignCellText(const icu::UnicodeString& text) :
-    hasCustomBackground(false), customBackground(
-            { 0, 0, 0 }), hasCustomForeground(false),
-            customForeground( { 0, 0, 0 }) {
+    background(SignColor::defaultColor(SignColor::BACKGROUND)),
+    foreground(SignColor::defaultColor(SignColor::FOREGROUND)) {
     this->text = new icu::UnicodeString(text);
 }
 

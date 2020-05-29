@@ -27,10 +27,8 @@
 
 class SignCellText: public SignCell {
 private:
-    bool hasCustomBackground;
-    SignRgbPixel customBackground;     // Background color
-    bool hasCustomForeground;
-    SignRgbPixel customForeground;     // Foreground color
+    SignColor background;     // Background color
+    SignColor foreground;     // Foreground color
 
     icu::UnicodeString* text; // Unicode-encoded text
 

@@ -18,13 +18,13 @@
 #include "SignImage.h"
 
 SignDisplay::SignDisplay(unsigned int width, unsigned int height,
-        enum SignPixelType type) :
+        enum DisplayType type) :
         SignDisplay(width, height, type, NULL) {
 
 }
 
 SignDisplay::SignDisplay(unsigned int width, unsigned int height,
-        enum SignPixelType type, SignCell *rootCell) :
+        enum DisplayType type, SignCell *rootCell) :
         width(width), height(height), displayType(type), rootCell(rootCell),
         parentSign(NULL) {
     if(rootCell != NULL)
@@ -67,11 +67,11 @@ SignCell* SignDisplay::getRootCell() {
     return this->rootCell;
 }
 
-enum SignPixelType SignDisplay::getDisplayType() const {
+enum DisplayType SignDisplay::getDisplayType() const {
     return this->displayType;
 }
 
-bool SignDisplay::setDisplayType(enum SignPixelType displayType) {
+bool SignDisplay::setDisplayType(enum DisplayType displayType) {
     this->displayType = displayType;
     return true;
 }
@@ -103,7 +103,6 @@ bool SignDisplay::setWidth(const unsigned int height) {
 bool SignDisplay::resize(const unsigned int width, const unsigned int height) {
     this->height = height;
     this->width = width;
-    // TODO check that children fit
     return true;
 }
 

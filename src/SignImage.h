@@ -18,23 +18,16 @@
 #define SRC_SIGNIMAGE_H_
 
 #include <vector>
-#include "SignPixel.h"
+#include "Bitmap.h"
+#include "SignColor.h"
 
 class SignImage {
 private:
     unsigned int width;
     unsigned int height;
-    SignRgbPixel foreground;
-    SignRgbPixel background;
-    SignRgbPixel *pixels;
+    SignColor *pixels;
 
 public:
-    static SignRgbPixel defaultFlipDiscBG;
-    static SignRgbPixel defaultFlipDiscFG;
-    static SignRgbPixel defaultMonoLEDBG;
-    static SignRgbPixel defaultMonoLEDFG;
-    static SignRgbPixel defaultRGBLEDBG;
-    static SignRgbPixel defaultRGBLEDFG;
 
     SignImage(unsigned int width, unsigned int height);
     virtual ~SignImage();
@@ -43,12 +36,14 @@ public:
     unsigned int getHeight() const;
 
     bool setPixel(const unsigned int x, const unsigned int y,
-            const SignRgbPixel value);
-    SignRgbPixel getPixel(const unsigned int x, const unsigned int y) const;
-    const SignRgbPixel* getPixels() const;
+            const SignColor& value);
+    SignColor& getPixel(const unsigned int x, const unsigned int y) const;
+    const SignColor* getPixels() const;
 
     void merge(const SignImage* top, const unsigned int x,
             const unsigned int y);
+
+    Bitmap* toImage() const;
 
 };
 

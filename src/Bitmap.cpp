@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "Bitmap.h"
 #include <cstdlib>
+#include <cstdint>
+#include "Bitmap.h"
 
 Bitmap::Bitmap(unsigned int width, unsigned int height) : width(width),
     height(height) {
@@ -34,19 +35,9 @@ unsigned int Bitmap::getWidth() const {
     return this->width;
 }
 
-void Bitmap::addSignImage(SignImage* image, unsigned int x, unsigned int y) {
-    const SignRgbPixel* addPixels = image->getPixels();
-    unsigned int imgHeight = image->getHeight();
-    unsigned int imgWidth = image->getWidth();
 
-    for(unsigned int i = 0; i < imgHeight; ++i) {
-        for(unsigned int j = 0; j < imgWidth; ++j) {
-            SignRgbPixel p = addPixels[i*imgWidth+j];
-            this->pixels[(i+y)*this->width+j+x] = {
-                    p.r, p.g, p.b
-            };
-        }
-    }
+struct Bitmap::pixel* Bitmap::getPixels() {
+    return this->pixels;
 }
 
 unsigned char* Bitmap::toRGB32() {

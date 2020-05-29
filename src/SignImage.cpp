@@ -14,23 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignImage.h"
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
 #include <iostream>
-
-SignRgbPixel SignImage::defaultFlipDiscBG = { 0, 0, 0 };
-SignRgbPixel SignImage::defaultFlipDiscFG = { 0, 0, 0 };
-SignRgbPixel SignImage::defaultMonoLEDBG = { 0, 0, 0 };
-SignRgbPixel SignImage::defaultMonoLEDFG = { 0, 0, 0 };
-SignRgbPixel SignImage::defaultRGBLEDBG = { 0, 0, 0 };
-SignRgbPixel SignImage::defaultRGBLEDFG = { 0, 0, 0 };
+#include "SignImage.h"
 
 SignImage::SignImage(unsigned int width, unsigned int height) :
         width(width), height(height) {
-    this->pixels = (SignRgbPixel*)calloc(height * width,
-                sizeof(SignRgbPixel));
+    this->pixels = (SignColor*)calloc(height * width,
+                sizeof(SignColor));
 }
 
 SignImage::~SignImage() {
@@ -38,7 +31,7 @@ SignImage::~SignImage() {
 }
 
 bool SignImage::setPixel(const unsigned int x, const unsigned int y,
-        const SignRgbPixel value) {
+        const SignColor& value) {
     if(x < this->width && y < this->height) {
         this->pixels[y * this->width + x] = value;
         return true;
@@ -46,14 +39,14 @@ bool SignImage::setPixel(const unsigned int x, const unsigned int y,
     else return false;
 }
 
-SignRgbPixel SignImage::getPixel(const unsigned int x, const unsigned int y)
+SignColor& SignImage::getPixel(const unsigned int x, const unsigned int y)
     const {
     if(x < this->width && y < this->height) {
         return this->pixels[y * this->width + x];
-    } else return { 0, 0, 0 };
+    } else return this->pixels[0]; // error case
 }
 
-const SignRgbPixel* SignImage::getPixels() const {
+const SignColor* SignImage::getPixels() const {
     return this->pixels; // Const-ifies pixels in doing this
 }
 
@@ -70,13 +63,15 @@ void SignImage::merge(const SignImage* top, const unsigned int x,
     assert(x + top->width <= this->width);
     assert(y + top->height <= this->height);
 
-    const SignRgbPixel* pixelsToMerge = top->getPixels();
+    const SignColor* pixelsToMerge = top->getPixels();
 
     for (unsigned int i = 0; i < top->height; ++i) {
         memcpy(this->pixels + ((i + y) * this->width) + x, pixelsToMerge
                 + (i * top->getWidth()),
-                top->getWidth() * sizeof(SignRgbPixel));
+                top->getWidth() * sizeof(SignColor));
     }
 
 }
+
+
 

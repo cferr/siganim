@@ -43,40 +43,19 @@ Bitmap* SignRenderer::render(Sign *s, unsigned int frame) {
 
 void SignRenderer::visit(Sign &s) {
     std::vector<SignDisplay*> displays = s.getDisplays();
-    this->resultBitmap = new Bitmap(s.getWidth(), s.getHeight());
+    this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
         (*i)->accept(*this);
         // set bitmap
         SignImage* displayImage = this->resultTree->compose();
-        resultBitmap->addSignImage(displayImage, 0, 0); // TODO place displays!
+        this->signImageToBitmap(this->resultBitmap, displayImage,
+                0, 0); // TODO add display position coords
     }
 }
 
 void SignRenderer::visit(SignDisplay &s) {
-    // Keep this for later : default color for a given display
-    // These colors should be used for cells, unless the cell uses
-    // custom values.
-//    SignRgbPixel foreground;
-//    SignRgbPixel background;
-//
-//    switch (s.getDisplayType()) {
-//    case SignPixelType::DISPLAY_FLIPDISC:
-//        foreground = SignImage::defaultFlipDiscFG;
-//        background = SignImage::defaultFlipDiscBG;
-//        break;
-//    case SignPixelType::DISPLAY_MONOCHROME_LED:
-//        foreground = SignImage::defaultMonoLEDFG;
-//        background = SignImage::defaultMonoLEDBG;
-//        break;
-//    case SignPixelType::DISPLAY_RGB_LED:
-//        foreground = SignImage::defaultRGBLEDFG;
-//        background = SignImage::defaultRGBLEDBG;
-//        break;
-//    }
-
     (s.getRootCell())->accept(*this);
-
 }
 
 void SignRenderer::visit(SignCellSplit &s) {
@@ -115,7 +94,8 @@ void SignRenderer::visit(SignCellText &s) {
     SignImage *leafRender = new SignImage(s.getWidth(), s.getHeight());
     for(unsigned int x = 0; x < s.getWidth(); x++) {
         for(unsigned int y = x % 2; y < s.getHeight(); y += 2) {
-            leafRender->setPixel(x, y, { 255, 255, 255 });
+            leafRender->setPixel(x, y,
+                    SignColor::defaultColor(SignColor::FOREGROUND));
         }
     }
     this->resultTree = new SignImageTree(leafRender);
@@ -163,3 +143,31 @@ SignImage* SignRenderer::SignImageTree::compose() {
         return this->image;
     }
 }
+
+void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
+        unsigned int x, unsigned int y) {
+    const SignColor* simgPixels = source->getPixels();
+    struct Bitmap::pixel* imgPixels = dest->getPixels();
+
+    const unsigned int simgHeight = source->getHeight();
+    const unsigned int simgWidth = source->getWidth();
+
+    const unsigned int dimgHeight = dest->getHeight();
+    const unsigned int dimgWidth = dest->getWidth();
+
+    for(unsigned int i = 0; i < simgHeight; ++i) {
+        for(unsigned int j = 0; j < simgWidth; ++j) {
+            struct SignColor::RGB p = simgPixels[i*simgWidth+j].getValue(
+                    DisplayType::DISPLAY_FLIPDISC);
+            for(unsigned int ii = 0; ii < 5; ++ii) {
+                for(unsigned int jj = 0; jj < 5; ++jj) {
+                    imgPixels[(5*(i+y)+ii)*dimgWidth+5*(j+x)+jj] = {
+                            p.r, p.g, p.b
+                    };
+                }
+            }
+        }
+    }
+}
+
+

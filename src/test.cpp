@@ -26,7 +26,7 @@ bool UTF8Test() {
 
     // Are we able to create a sign easily? Yes.
     Sign *UTF8Test = new Sign(120, 80,
-            { new SignDisplay(120, 80, SignPixelType::DISPLAY_FLIPDISC,
+            { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
                             new SignCellText("☢"),
                             new SignCellText("")

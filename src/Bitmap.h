@@ -17,15 +17,14 @@
 #ifndef SRC_BITMAP_H_
 #define SRC_BITMAP_H_
 
-#include "SignImage.h"
-
 class Bitmap {
-private:
+public:
     struct pixel {
         unsigned char r;
         unsigned char g;
         unsigned char b;
     };
+private:
     struct pixel* pixels;
 
     unsigned int width;
@@ -37,8 +36,7 @@ public:
     unsigned int getHeight() const;
     unsigned int getWidth() const;
 
-    void addSignImage(SignImage* image, unsigned int x, unsigned int y);
-
+    struct pixel* getPixels();
     unsigned char* toRGB32();
 
     virtual ~Bitmap();

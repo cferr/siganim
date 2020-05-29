@@ -57,6 +57,9 @@ private:
     SignImageTree* resultTree;
     Bitmap* resultBitmap;
 
+    void signImageToBitmap(Bitmap* dest, SignImage* source, unsigned int x,
+            unsigned int y);
+
 public:
     SignRenderer();
 

@@ -19,8 +19,8 @@
 
 #include <vector>
 #include "SignDisplay.h"
-#include "SignPixel.h"
 #include "Bitmap.h"
+#include "SignColor.h"
 
 class Sign {
 private:

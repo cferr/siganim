@@ -18,11 +18,10 @@
 #define SRC_SIGNDISPLAY_H_
 
 #include <vector>
-#include "Bitmap.h"
 #include "SignCellSplit.h"
-#include "SignPixel.h"
 #include "SignCell.h"
 #include "SignTreeVisitor.h"
+#include "SignDisplayType.h"
 
 class SignDisplay : public SignCell {
 private:
@@ -30,7 +29,7 @@ private:
     unsigned int width;
     unsigned int height;
 
-    enum SignPixelType displayType;  // LEDs (monochromatic, RGB) or flip discs.
+    enum DisplayType displayType;  // LEDs (monochromatic, RGB) or flip discs.
 
     SignCell *rootCell;
 
@@ -38,9 +37,9 @@ private:
 
 public:
     SignDisplay(unsigned int width, unsigned int height,
-            enum SignPixelType type);
+            enum DisplayType type);
     SignDisplay(unsigned int width, unsigned int height,
-            enum SignPixelType type, SignCell *rootCell);
+            enum DisplayType type, SignCell *rootCell);
     virtual ~SignDisplay();
 
     virtual bool setParent(const SignCell* parent);
@@ -53,8 +52,8 @@ public:
     bool setRootCell(SignCell *rootCell);
     SignCell* getRootCell();
 
-    enum SignPixelType getDisplayType() const;
-    bool setDisplayType(enum SignPixelType displayType);
+    enum DisplayType getDisplayType() const;
+    bool setDisplayType(enum DisplayType displayType);
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;

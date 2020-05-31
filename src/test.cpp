@@ -19,6 +19,7 @@
 #include "sign/Sign.h"
 #include "sign/SignCellText.h"
 #include "render/SignRenderer.h"
+#include "font/parsers/GirouetteFontsParser.h"
 
 bool UTF8Test() {
     std::cout << "// UTF-8 Test" << std::endl;
@@ -28,8 +29,8 @@ bool UTF8Test() {
     Sign *UTF8Test = new Sign(120, 80,
             { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
-                            new SignCellText("☢"),
-                            new SignCellText("")
+                            new SignCellText(NULL, "☢"),
+                            new SignCellText(NULL, "")
                     ))
             }
     );
@@ -47,11 +48,27 @@ bool UTF8Test() {
 
 }
 
+bool fontFileTest() {
+    std::vector<Font*> f = GirouetteFontsParser::parseGirouetteXML(
+            "./font.xml");
+
+    std::cout << "File contains " << f.size() << " fonts" << std::endl;
+    for(auto i = f.begin(); i < f.end(); ++i)
+    {
+        std::cout << "Font: " << (*i)->getName() << " has " <<
+                (*i)->getNbCharacters() << " chars" << std::endl;
+
+    }
+
+    return true;
+}
+
 // Test bench
 bool siganimTests() {
     bool ret = true;
     std::cout << "// Begin Siganim tests" << std::endl;
     ret &= UTF8Test();
+    ret &= fontFileTest();
 
     std::cout << "// End Siganim tests" << std::endl;
     return ret;

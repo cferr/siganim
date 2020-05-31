@@ -25,6 +25,7 @@
 #include "sign/SignCellSplit.h"
 #include "sign/SignCellText.h"
 #include "render/SignRenderer.h"
+#include "font/parsers/GirouetteFontsParser.h"
 
 #ifdef TEST
 #include "test.h"
@@ -45,8 +46,26 @@ int main(int argc, char *argv[]) {
         ret = 1;
 #endif
 
+
 #ifdef GUI
-    SiganimMainWindow m;
+
+    // Test import font.
+    std::vector<Font*> f = GirouetteFontsParser::parseGirouetteXML(
+                "./font.xml");
+
+    Font* font = *(f.begin());
+
+    // Mock sign just to test.
+    Sign *testSign = new Sign(120, 24,
+            { new SignDisplay(120, 24, DisplayType::DISPLAY_MONOCHROME_LED,
+                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 30,
+                            new SignCellText(font, "40"),
+                            new SignCellText(font, "METRO TIMONE")
+                    ))
+            }
+    );
+
+    SiganimMainWindow m(testSign);
     m.show();
     ret |= a.exec();
 #endif

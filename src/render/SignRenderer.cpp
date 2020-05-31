@@ -22,6 +22,7 @@
 #include "../sign/SignImage.h"
 #include "../sign/SignCellSplit.h"
 #include "../sign/SignCellText.h"
+#include "../font/Character.h"
 
 SignRenderer::SignRenderer() : resultTree(NULL),
     resultBitmap(NULL) {
@@ -81,25 +82,38 @@ void SignRenderer::visit(SignCellSplit &s) {
 }
 
 void SignRenderer::visit(SignCellText &s) {
+    SignImage *textRender = new SignImage(s.getWidth(), s.getHeight());
+
     icu::UnicodeString* text = s.getText();
-    for(int32_t i = 0; i < text->length(); i++) {
-        UChar32 c = text->char32At(i);
-        std::cout << "Char: " << c << std::endl;
-
-        // Look up font (add support),
-        // Look up character in font,
-        // Render (mask ?).
-    }
-
-    // Temporary: fill with checkerboard
-    SignImage *leafRender = new SignImage(s.getWidth(), s.getHeight());
-    for(unsigned int x = 0; x < s.getWidth(); x++) {
-        for(unsigned int y = x % 2; y < s.getHeight(); y += 2) {
-            leafRender->setPixel(x, y,
-                    SignColor::defaultColor(SignColor::FOREGROUND));
+    const Font* cellFont = s.getFont();
+    if(cellFont != NULL) {
+        unsigned int xx = 0;
+        for(int32_t i = 0; i < text->length(); i++) {
+            UChar32 unic = text->char32At(i);
+            // Look up character in font,
+            Character* c = cellFont->get(unic);
+            if(c != NULL) {
+                // Render (mask ?).
+                const enum Character::Bit* bmap = c->getMap();
+                unsigned int charWidth = c->getWidth();
+                unsigned int charHeight = c->getHeight();
+                for(unsigned int x = 0; x < charWidth; ++x) {
+                    for(unsigned int y = 0; y < charHeight; ++y) {
+                        textRender->setPixel(xx + x, y,
+                            (bmap[y * charWidth + x] == Character::Bit::ON)?
+                            s.getForegroundColor():s.getBackgroundColor()
+                        );
+                    }
+                }
+                xx += charWidth;
+            } else {
+                std::cout << "Character " << unic << " not in font \""
+                        << cellFont->getName() << "\"" << std::endl;
+            }
         }
     }
-    this->resultTree = new SignImageTree(leafRender);
+
+    this->resultTree = new SignImageTree(textRender);
 }
 
 // Tree functions
@@ -153,7 +167,7 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
     const unsigned int simgHeight = source->getHeight();
     const unsigned int simgWidth = source->getWidth();
 
-    const unsigned int dimgHeight = dest->getHeight();
+    // const unsigned int dimgHeight = dest->getHeight();
     const unsigned int dimgWidth = dest->getWidth();
 
     for(unsigned int i = 0; i < simgHeight; ++i) {

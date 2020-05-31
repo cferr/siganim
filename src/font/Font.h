@@ -14,30 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNWIDGET_H_
-#define SRC_SIGNWIDGET_H_
+#ifndef SRC_FONT_FONT_H_
+#define SRC_FONT_FONT_H_
 
-#include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include "../sign/Sign.h"
-#include <QObject>
+#include <map>
+#include <unicode/schriter.h>
+#include "Character.h"
 
-class SignWidget: public QWidget {
-
-Q_OBJECT
-
+class Font {
 private:
-    QImage *image;
-    Sign *sign;
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void signChangedEvent(Sign *s);
+    std::map<UChar32, Character*> chars;
+    std::string name;
 
 public:
-    SignWidget(Sign* sign, QWidget *parent = nullptr);
-    virtual ~SignWidget();
+    Font(const std::string& name);
+    Font(const std::string& name, std::initializer_list<Character*> chars);
+    virtual ~Font();
+
+    std::string getName() const;
+
+    Character* get(const UChar32 index) const;
+    void addCharacter(Character* character);
+    bool removeCharacter(UChar32 index);
+    bool removeCharacter(Character* character);
+    unsigned int getNbCharacters();
 };
 
-#endif /* SRC_SIGNWIDGET_H_ */
+#endif /* SRC_FONT_H_ */

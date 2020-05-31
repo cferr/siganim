@@ -14,46 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QRect>
+#include <QPaintEvent>
 #include "SignWidget.h"
 #include "../sign/Sign.h"
 #include "../render/SignRenderer.h"
-
-#include <QRect>
-#include <QPaintEvent>
 #include "../sign/SignCellText.h"
+#include "../font/parsers/GirouetteFontsParser.h"
 
-SignWidget::SignWidget(QWidget *parent) :
-        QWidget(parent), sign(NULL) {
+SignWidget::SignWidget(Sign* sign, QWidget *parent) :
+        QWidget(parent), sign(sign) {
 
-    // Mock sign just to test.
-    Sign *testSign = new Sign(120, 80,
-            { new SignDisplay(120, 80, DisplayType::DISPLAY_MONOCHROME_LED,
-                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 39,
-                            new SignCellText("40"),
-                            new SignCellText("METRO TIMONE")
-                    ))
-            }
-    );
+    if(sign != NULL) {
+        SignRenderer r;
+        Bitmap *result = r.render(sign, 0);
+        unsigned char* img = result->toRGB32();
+        this->image = new QImage(img, result->getWidth(),
+                result->getHeight(), QImage::Format_RGB32);
 
-    std::cout << *testSign << std::endl;
-
-
-    SignRenderer r;
-    Bitmap *result = r.render(testSign, 0);
-
-    unsigned char* img = result->toRGB32();
-
-    // this->image = new QImage(200, 200, QImage::Format_RGB32);
-    // this->image->fill(qRgb(255, 255, 255));
-    // Yay, now we're generating it!
-    this->image = new QImage(img, result->getWidth(),
-            result->getHeight(), QImage::Format_RGB32);
-
-    // No need to fill anymore.
-    // QPainter painter(this->image);
-    // painter.fillRect(QRect(0, 0, 100, 50), QColor::fromRgb(51, 102, 204));
-
-    this->update();
+        this->update();
+    }
 }
 
 SignWidget::~SignWidget() {
@@ -62,7 +42,6 @@ SignWidget::~SignWidget() {
 
 void SignWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-//    QRect dirtyRect = event->rect();
     painter.drawImage(this->image->rect(), *this->image, this->image->rect());
 }
 

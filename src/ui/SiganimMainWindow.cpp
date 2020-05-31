@@ -17,17 +17,31 @@
 #include <QAction>
 #include "SiganimMainWindow.h"
 
-SiganimMainWindow::SiganimMainWindow() {
-    this->setWindowTitle(QString("SigAnim Sign Animator"));
-    this->signWidget = new SignWidget(this);
-    this->menuBar = new QMenuBar(this);
+SiganimMainWindow::SiganimMainWindow() :
+    SiganimMainWindow(NULL) {
 
+}
+
+SiganimMainWindow::SiganimMainWindow(Sign* sign) {
+    this->setWindowTitle(QString("SigAnim Sign Animator"));
+
+    QWidget *ui_area = new QWidget;
+    this->setCentralWidget(ui_area);
+
+    QMenuBar* menuBar = this->menuBar();
     // Generate menus
     menuBar->addAction(new QAction(QString("File"), menuBar));
 
-    // Set image widget as central widget
-    this->setCentralWidget(this->signWidget);
+    this->verticalLayout = new QVBoxLayout();
 
+    this->signWidget = new SignWidget(sign);
+    this->text = new QLineEdit();
+
+    this->verticalLayout->addWidget(this->text);
+    this->verticalLayout->addWidget(this->signWidget);
+
+    // Set image widget as central widget
+    ui_area->setLayout(this->verticalLayout);
 }
 
 SiganimMainWindow::~SiganimMainWindow() {

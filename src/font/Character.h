@@ -14,30 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNWIDGET_H_
-#define SRC_SIGNWIDGET_H_
+#ifndef SRC_FONT_CHARACTER_H_
+#define SRC_FONT_CHARACTER_H_
 
-#include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include "../sign/Sign.h"
-#include <QObject>
+#include <unicode/schriter.h>
 
-class SignWidget: public QWidget {
-
-Q_OBJECT
+class Character {
+public:
+    enum Bit { OFF, ON };
 
 private:
-    QImage *image;
-    Sign *sign;
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void signChangedEvent(Sign *s);
+    UChar32 UTF8Code;
+    unsigned int width;
+    unsigned int height;
+    enum Bit* map;
 
 public:
-    SignWidget(Sign* sign, QWidget *parent = nullptr);
-    virtual ~SignWidget();
+    Character(UChar32 UTF8Code, unsigned int width, unsigned int height);
+    Character(UChar32 UTF8Code, unsigned int width, unsigned int height,
+            const enum Bit* map);
+    virtual ~Character();
+
+    const enum Bit* getMap();
+
+    // TODO character borders
+    void setBit(unsigned int x, unsigned int y, enum Bit value);
+
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
+
+    UChar32 getUTF8Code();
 };
 
-#endif /* SRC_SIGNWIDGET_H_ */
+#endif /* SRC_FONT_CHARACTER_H_ */

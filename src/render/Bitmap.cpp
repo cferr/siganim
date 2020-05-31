@@ -43,7 +43,7 @@ struct Bitmap::pixel* Bitmap::getPixels() {
 unsigned char* Bitmap::toRGB32() {
     uint32_t* result = (uint32_t*)malloc(this->height * this->width
             * sizeof(uint32_t));
-    unsigned int height = this->height;
+    // unsigned int height = this->height;
     unsigned int width = this->width;
     if(result != NULL) {
         for(unsigned int i = 0; i < this->height; ++i) {

@@ -18,9 +18,10 @@
 
 #include <unicode/ustream.h>
 
-SignCellText::SignCellText(const icu::UnicodeString& text) :
+SignCellText::SignCellText(const Font* font, const icu::UnicodeString& text) :
     background(SignColor::defaultColor(SignColor::BACKGROUND)),
-    foreground(SignColor::defaultColor(SignColor::FOREGROUND)) {
+    foreground(SignColor::defaultColor(SignColor::FOREGROUND)),
+    font(font) {
     this->text = new icu::UnicodeString(text);
 }
 
@@ -65,9 +66,21 @@ icu::UnicodeString* SignCellText::getText() const {
     return this->text->clone();
 }
 
+const Font* SignCellText::getFont() const {
+    return this->font;
+}
+
 bool SignCellText::setParent(const SignCell *parent) {
     this->parent = parent;
     return true;
+}
+
+const SignColor SignCellText::getForegroundColor() const {
+    return this->foreground;
+}
+
+const SignColor SignCellText::getBackgroundColor() const {
+    return this->background;
 }
 
 std::ostream& SignCellText::serialize(std::ostream &strm) const {

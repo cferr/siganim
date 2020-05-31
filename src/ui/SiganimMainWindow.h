@@ -19,16 +19,22 @@
 
 #include <QMainWindow>
 #include <QMenuBar>
+#include <QLineEdit>
+#include <QVBoxLayout>
 #include "SignWidget.h"
 
 class SiganimMainWindow: public QMainWindow {
 private:
+
+    QVBoxLayout *verticalLayout;
+    QLineEdit *text;
     SignWidget *signWidget;
-    QMenuBar *menuBar;
 
 public:
 
     SiganimMainWindow();
+    // Temporary.
+    SiganimMainWindow(Sign* sign);
     virtual ~SiganimMainWindow();
 
 };

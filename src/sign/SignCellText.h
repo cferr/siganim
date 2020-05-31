@@ -25,6 +25,8 @@
 #include "SignImage.h"
 #include "SignTreeVisitor.h"
 
+#include "../font/Font.h"
+
 class SignCellText: public SignCell {
 private:
     SignColor background;     // Background color
@@ -32,8 +34,10 @@ private:
 
     icu::UnicodeString* text; // Unicode-encoded text
 
+    const Font* font;               // One font only per text cell
+
 public:
-    SignCellText(const icu::UnicodeString& text = "");
+    SignCellText(const Font* font, const icu::UnicodeString& text = "");
     virtual ~SignCellText();
 
     Type getType() const;
@@ -47,6 +51,11 @@ public:
 
     void setText(const icu::UnicodeString& text);
     icu::UnicodeString* getText() const;
+
+    const Font* getFont() const;
+
+    const SignColor getForegroundColor() const;
+    const SignColor getBackgroundColor() const;
 
     bool setParent(const SignCell *parent);
 

@@ -14,30 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNWIDGET_H_
-#define SRC_SIGNWIDGET_H_
+#ifndef FONT_PARSERS_GIROUETTEFONTSPARSER_H_
+#define FONT_PARSERS_GIROUETTEFONTSPARSER_H_
 
-#include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include "../sign/Sign.h"
-#include <QObject>
+#include <vector>
+#include "../Font.h"
 
-class SignWidget: public QWidget {
-
-Q_OBJECT
-
-private:
-    QImage *image;
-    Sign *sign;
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void signChangedEvent(Sign *s);
-
+class GirouetteFontsParser {
 public:
-    SignWidget(Sign* sign, QWidget *parent = nullptr);
-    virtual ~SignWidget();
+    virtual ~GirouetteFontsParser();
+
+    static std::vector<Font*> parseGirouetteXML(const char* fileName);
 };
 
-#endif /* SRC_SIGNWIDGET_H_ */
+#endif /* FONT_PARSERS_GIROUETTEFONTSPARSER_H_ */

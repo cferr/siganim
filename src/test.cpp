@@ -16,9 +16,9 @@
 
 #include <iostream>
 
-#include "Sign.h"
-#include "SignCellText.h"
-#include "SignRenderer.h"
+#include "sign/Sign.h"
+#include "sign/SignCellText.h"
+#include "render/SignRenderer.h"
 
 bool UTF8Test() {
     std::cout << "// UTF-8 Test" << std::endl;

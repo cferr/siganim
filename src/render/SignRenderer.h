@@ -18,9 +18,9 @@
 #define SRC_SIGNRENDERER_H_
 
 #include "Bitmap.h"
-#include "Sign.h"
-#include "SignImage.h"
-#include "SignTreeVisitor.h"
+#include "../sign/Sign.h"
+#include "../sign/SignImage.h"
+#include "../sign/SignTreeVisitor.h"
 
 class SignRenderer: public SignTreeVisitor {
 private:
@@ -57,8 +57,8 @@ private:
     SignImageTree* resultTree;
     Bitmap* resultBitmap;
 
-    void signImageToBitmap(Bitmap* dest, SignImage* source, unsigned int x,
-            unsigned int y);
+    void signImageToBitmap(Bitmap* dest, SignImage* source,
+            DisplayType sourceType, unsigned int x, unsigned int y);
 
 public:
     SignRenderer();

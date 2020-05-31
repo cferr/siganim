@@ -21,10 +21,10 @@
 #include <QApplication>
 #endif
 #include <iostream>
-#include "Sign.h"
-#include "SignCellSplit.h"
-#include "SignCellText.h"
-#include "SignRenderer.h"
+#include "sign/Sign.h"
+#include "sign/SignCellSplit.h"
+#include "sign/SignCellText.h"
+#include "render/SignRenderer.h"
 
 #ifdef TEST
 #include "test.h"

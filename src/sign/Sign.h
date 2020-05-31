@@ -19,7 +19,7 @@
 
 #include <vector>
 #include "SignDisplay.h"
-#include "Bitmap.h"
+#include "../render/Bitmap.h"
 #include "SignColor.h"
 
 class Sign {

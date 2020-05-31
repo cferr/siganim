@@ -5,13 +5,13 @@ SignColor SignColor::defaultFlipDiscBG =
 SignColor SignColor::defaultFlipDiscFG =
         SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 255, 0 });
 SignColor SignColor::defaultMonoLEDBG =
-        SignColor(Type::BACKGROUND, Status::DEFAULT, { 0, 0, 0 });
+        SignColor(Type::BACKGROUND, Status::DEFAULT, { 100, 100, 100 });
 SignColor SignColor::defaultMonoLEDFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT, { 0, 0, 0 });
+        SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 127, 0 });
 SignColor SignColor::defaultRGBLEDBG =
         SignColor(Type::BACKGROUND, Status::DEFAULT, { 0, 0, 0 });
 SignColor SignColor::defaultRGBLEDFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT, { 0, 0, 0 });
+        SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 255, 255 });
 
 SignColor SignColor::defaultFG =
         SignColor(Type::FOREGROUND, Status::DEFAULT);

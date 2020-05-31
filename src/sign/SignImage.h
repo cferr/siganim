@@ -18,7 +18,7 @@
 #define SRC_SIGNIMAGE_H_
 
 #include <vector>
-#include "Bitmap.h"
+#include "../render/Bitmap.h"
 #include "SignColor.h"
 
 class SignImage {

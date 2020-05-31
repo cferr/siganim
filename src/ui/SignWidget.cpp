@@ -15,19 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SignWidget.h"
-#include "../Sign.h"
-#include "../SignRenderer.h"
+#include "../sign/Sign.h"
+#include "../render/SignRenderer.h"
 
 #include <QRect>
 #include <QPaintEvent>
-#include "../SignCellText.h"
+#include "../sign/SignCellText.h"
 
 SignWidget::SignWidget(QWidget *parent) :
         QWidget(parent), sign(NULL) {
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 80,
-            { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
+            { new SignDisplay(120, 80, DisplayType::DISPLAY_MONOCHROME_LED,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 39,
                             new SignCellText("40"),
                             new SignCellText("METRO TIMONE")
@@ -62,7 +62,7 @@ SignWidget::~SignWidget() {
 
 void SignWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    QRect dirtyRect = event->rect();
+//    QRect dirtyRect = event->rect();
     painter.drawImage(this->image->rect(), *this->image, this->image->rect());
 }
 

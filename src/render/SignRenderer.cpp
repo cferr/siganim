@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <iostream>
+#include <unicode/schriter.h>
 
 #include "SignRenderer.h"
-#include "Sign.h"
-#include "SignImage.h"
-#include <unicode/schriter.h>
-#include "SignCellSplit.h"
-#include "SignCellText.h"
+#include "../sign/Sign.h"
+#include "../sign/SignImage.h"
+#include "../sign/SignCellSplit.h"
+#include "../sign/SignCellText.h"
 
 SignRenderer::SignRenderer() : resultTree(NULL),
     resultBitmap(NULL) {
@@ -50,7 +50,8 @@ void SignRenderer::visit(Sign &s) {
         // set bitmap
         SignImage* displayImage = this->resultTree->compose();
         this->signImageToBitmap(this->resultBitmap, displayImage,
-                0, 0); // TODO add display position coords
+                (*i)->getDisplayType(), 0, 0);
+        // TODO add display position coords
     }
 }
 
@@ -145,7 +146,7 @@ SignImage* SignRenderer::SignImageTree::compose() {
 }
 
 void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
-        unsigned int x, unsigned int y) {
+        DisplayType sourceType, unsigned int x, unsigned int y) {
     const SignColor* simgPixels = source->getPixels();
     struct Bitmap::pixel* imgPixels = dest->getPixels();
 
@@ -158,7 +159,7 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
     for(unsigned int i = 0; i < simgHeight; ++i) {
         for(unsigned int j = 0; j < simgWidth; ++j) {
             struct SignColor::RGB p = simgPixels[i*simgWidth+j].getValue(
-                    DisplayType::DISPLAY_FLIPDISC);
+                    sourceType);
             for(unsigned int ii = 0; ii < 5; ++ii) {
                 for(unsigned int jj = 0; jj < 5; ++jj) {
                     imgPixels[(5*(i+y)+ii)*dimgWidth+5*(j+x)+jj] = {

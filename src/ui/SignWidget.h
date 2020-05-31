@@ -20,7 +20,7 @@
 #include <QWidget>
 #include <QImage>
 #include <QPainter>
-#include "../Sign.h"
+#include "../sign/Sign.h"
 #include <QObject>
 
 class SignWidget: public QWidget {

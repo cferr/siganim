@@ -74,12 +74,13 @@ public:
     virtual unsigned int getChildHeight(const SignCell* child) const override;
     virtual unsigned int getChildWidth(const SignCell* child) const override;
 
-
     void setText(const icu::UnicodeString& text);
     icu::UnicodeString* getText() const;
 
     const Font* getFont() const;
 
+    void setBackgroundColor(const SignColor& background);
+    void setForegroundColor(const SignColor& foreground);
     const SignColor getForegroundColor() const;
     const SignColor getBackgroundColor() const;
 

@@ -17,6 +17,7 @@
 #include "../../gif-h/gif.h"
 #include "GIFSink.h"
 #include "SignRenderer.h"
+#include "DurationComputer.h"
 
 GIFSink::GIFSink(const Sign* sign) : sign(sign) {
 }
@@ -32,7 +33,8 @@ void GIFSink::render(const char* fileName) {
     unsigned int width = bmap->getWidth();
     unsigned int height = bmap->getHeight();
 
-    unsigned int frames = r.computeTotalFrames(this->sign);
+    DurationComputer c;
+    unsigned int frames = c.computeTotalFrames(this->sign);
 
     int delay = 1;
     GifWriter g;

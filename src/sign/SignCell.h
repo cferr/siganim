@@ -92,7 +92,7 @@ protected:
 
 public:
     enum Type {
-        DISPLAY, CELL_SPLIT, TEXT, MARQUEE_ANIMATION
+        DISPLAY, CELL_SPLIT, TEXT, MARQUEE_ANIMATION, BLINK_ANIMATION
     };
 
     typedef enum Type Type;

@@ -27,6 +27,13 @@ SignColor::SignColor(enum Type type, enum Status status, struct RGB value) :
     type(type), status(status), value(value) {
 }
 
+SignColor::SignColor(const SignColor &that) {
+    this->type = that.type;
+    this->status = that.status;
+    this->value = that.value;
+}
+
+
 SignColor SignColor::defaultColor(enum Type type) {
     switch(type) {
     case FOREGROUND:

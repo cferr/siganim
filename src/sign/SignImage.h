@@ -25,25 +25,38 @@ class SignImage {
 private:
     unsigned int width;
     unsigned int height;
+    unsigned int boxWidth;
+    unsigned int boxHeight;
     SignColor *pixels;
+    const SignColor background;
 
 public:
 
-    SignImage(unsigned int width, unsigned int height);
+    SignImage(unsigned int width, unsigned int height,
+            unsigned int boxWidth, unsigned int boxHeight);
+    SignImage(unsigned int width, unsigned int height,
+            unsigned int boxWidth, unsigned int boxHeight,
+            const SignColor& fill);
+
     virtual ~SignImage();
 
     unsigned int getWidth() const;
     unsigned int getHeight() const;
+
+    unsigned int getBoxWidth() const;
+    unsigned int getBoxHeight() const;
 
     bool setPixel(const unsigned int x, const unsigned int y,
             const SignColor& value);
     SignColor& getPixel(const unsigned int x, const unsigned int y) const;
     const SignColor* getPixels() const;
 
+    const SignColor getBackgroundColor() const;
+
     void merge(const SignImage* top, const int x,
             const int y);
 
-    Bitmap* toImage() const;
+    SignImage* cropToBox() const;
 
 };
 

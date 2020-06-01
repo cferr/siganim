@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <iostream>
-#include <numeric>
 #include <unicode/schriter.h>
 
 #include "SignRenderer.h"
@@ -24,6 +23,7 @@
 #include "../sign/SignCellSplit.h"
 #include "../sign/SignCellText.h"
 #include "../sign/MarqueeAnimation.h"
+#include "../sign/BlinkAnimation.h"
 #include "../font/Character.h"
 
 SignRenderer::SignRenderer() {
@@ -83,8 +83,6 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
-    SignImage *textRender = new SignImage(s.getWidth(), s.getHeight());
-
     uint32_t cellHeight = s.getHeight();
     uint32_t cellWidth = s.getWidth();
 
@@ -112,8 +110,13 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
                 ++nbNonVoidChars;
             } catch(Font::CharNotFoundException& e) { }
         }
+        // How wide do we need to be?
+        uint32_t actualWidth = std::max(cellWidth, totalWidth);
+        SignImage *textRender = new SignImage(actualWidth, s.getHeight(),
+                s.getWidth(), s.getHeight(), s.getBackgroundColor());
+
         // Compute biggest char's vertical position
-        uint32_t yy;
+        int32_t yy;
         switch(s.getVAlign()) {
         case SignCellText::VALIGN_TOP_TOP:
         case SignCellText::VALIGN_TOP_CENTER:
@@ -124,40 +127,34 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
         case SignCellText::VALIGN_CENTER_TOP:
         case SignCellText::VALIGN_CENTER_CENTER:
         case SignCellText::VALIGN_CENTER_BOTTOM:
-            yy = (cellHeight - maxHeight) / 2;
+            yy = ((int32_t)cellHeight - (int32_t)maxHeight) / 2;
             break;
 
         case SignCellText::VALIGN_BOTTOM_TOP:
         case SignCellText::VALIGN_BOTTOM_CENTER:
         case SignCellText::VALIGN_BOTTOM_BOTTOM:
-            yy = cellHeight - maxHeight;
+            yy = (int32_t)cellHeight - (int32_t)maxHeight;
             break;
         }
 
-        uint32_t xx;
+        int32_t xx;
         switch(s.getHAlign()) {
         case SignCellText::HALIGN_LEFT:
         case SignCellText::HALIGN_JUSTIFY:
             xx = 0;
             break;
         case SignCellText::HALIGN_CENTER:
-            if(cellWidth >= totalWidth)
-                xx = (cellWidth - totalWidth) / 2;
-            else
-                xx = 0;
+            xx = ((int32_t)actualWidth - (int32_t)totalWidth) / 2;
             break;
         case SignCellText::HALIGN_RIGHT:
-            if(cellWidth >= totalWidth)
-                xx = cellWidth - totalWidth;
-            else
-                xx = 0;
+            xx = (int32_t)actualWidth - (int32_t)totalWidth;
             break;
         }
 
         uint32_t justifiedSpaceBetweenChars = 0;
         if(nbNonVoidChars > 1)
             justifiedSpaceBetweenChars =
-                    (cellWidth - totalWidth) / (nbNonVoidChars - 1);
+                    (actualWidth - totalWidth) / (nbNonVoidChars - 1);
 
         for(int32_t i = 0; i < text->length(); ++i) {
             UChar32 unic = text->char32At(i);
@@ -169,7 +166,7 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
                 unsigned int charWidth = c->getWidth();
                 unsigned int charHeight = c->getHeight();
 
-                uint32_t yyy;
+                int32_t yyy;
                 switch(s.getVAlign()) {
                 case SignCellText::VALIGN_TOP_TOP:
                 case SignCellText::VALIGN_CENTER_TOP:
@@ -180,13 +177,13 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
                 case SignCellText::VALIGN_TOP_CENTER:
                 case SignCellText::VALIGN_CENTER_CENTER:
                 case SignCellText::VALIGN_BOTTOM_CENTER:
-                    yyy = (maxHeight - charHeight) / 2;
+                    yyy = ((int32_t)maxHeight - (int32_t)charHeight) / 2;
                     break;
 
                 case SignCellText::VALIGN_TOP_BOTTOM:
                 case SignCellText::VALIGN_CENTER_BOTTOM:
                 case SignCellText::VALIGN_BOTTOM_BOTTOM:
-                    yyy = maxHeight - charHeight;
+                    yyy = (int32_t)maxHeight - (int32_t)charHeight;
                     break;
                 }
 
@@ -214,27 +211,36 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
 
             }
         }
+        this->resultTree = new SignImageTree(textRender);
+    } else {
+        // Return an empty image of the right height and width
+        this->resultTree = new SignImageTree(
+                new SignImage(s.getWidth(), s.getHeight(),
+                        s.getWidth(), s.getHeight()));
     }
-
-    this->resultTree = new SignImageTree(textRender);
 }
 
 void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
-    SignImage *animRender = new SignImage(s.getWidth(), s.getHeight());
+
     // Render the child
     s.getSubject()->accept(*this);
     SignImage* subjectImage = this->resultTree->compose();
+
+    // Preserve background color (will be default in case the subject image
+    // is already a composite).
+    SignImage *animRender = new SignImage(s.getWidth(), s.getHeight(),
+        s.getWidth(), s.getHeight(), subjectImage->getBackgroundColor());
 
     enum MarqueeAnimation::Direction direction = s.getDirection();
 
     unsigned int duration = s.getDurationFrames();
     unsigned int frame = (this->frame % duration);
-    unsigned int totalSpace = s.getWidth() + s.getSpace();
-    unsigned int textWidth = s.getWidth();
+    unsigned int totalSpace = subjectImage->getWidth() + s.getSpace();
+    unsigned int subjectWidth = subjectImage->getWidth();
 
     int dirM = (direction == MarqueeAnimation::LEFT)?-1:1;
 
-    int leftPosition = (-1) * dirM * (int)textWidth + dirM * (
+    int leftPosition = (-1) * dirM * (int)subjectWidth + dirM * (
         ((int)totalSpace * (int)frame) / ((int)duration));
 
     // Merge right part of the image
@@ -244,7 +250,21 @@ void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
     // Merge right part of the image
     animRender->merge(subjectImage, leftPosition + totalSpace, 0);
 
+    delete this->resultTree;
     this->resultTree = new SignImageTree(animRender);
+}
+
+void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
+    s.getSubject()->accept(*this);
+    unsigned int framesOn = s.getFramesOn();
+    unsigned int framesOff = s.getFramesOff();
+
+    if(this->frame % (framesOn + framesOff) > framesOn) {
+        SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
+                s.getWidth(), s.getHeight());
+        delete this->resultTree;
+        this->resultTree = new SignImageTree(empty);
+    }
 }
 
 // Tree functions
@@ -277,11 +297,12 @@ SignRenderer::SignImageTree::~SignImageTree() {
 
 SignImage* SignRenderer::SignImageTree::compose() {
     if(this->type == Type::NODE) {
-        SignImage* retImg = new SignImage(this->width, this->height);
+        SignImage* retImg = new SignImage(this->width, this->height,
+                this->width, this->height);
         for(auto i = this->children->begin();
                 i < this->children->end(); ++i) {
             struct SignImageTree::SignImageTreeChild childNode = *i;
-            SignImage* childImg = childNode.child->compose();
+            SignImage* childImg = childNode.child->compose()->cropToBox();
             retImg->merge(childImg, childNode.x, childNode.y);
         }
         return retImg;
@@ -292,12 +313,14 @@ SignImage* SignRenderer::SignImageTree::compose() {
 
 void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
         DisplayType sourceType, unsigned int x, unsigned int y) {
-    // TODO check for boundaries
-    const SignColor* simgPixels = source->getPixels();
+    // Crop the result into its own box, in case it hasn't been done before.
+    SignImage* sourceCropped = source->cropToBox();
+
+    const SignColor* simgPixels = sourceCropped->getPixels();
     struct Bitmap::pixel* imgPixels = dest->getPixels();
 
-    const unsigned int simgHeight = source->getHeight();
-    const unsigned int simgWidth = source->getWidth();
+    const unsigned int simgHeight = sourceCropped->getHeight();
+    const unsigned int simgWidth = sourceCropped->getWidth();
 
     const unsigned int dimgWidth = dest->getWidth();
 
@@ -314,48 +337,4 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
             }
         }
     }
-}
-
-// Duration computer
-
-void SignRenderer::DurationComputerVisitor::visit(const Sign &s) {
-    unsigned int signTotalFrames = 1;
-    std::vector<SignDisplay*> displays = s.getDisplays();
-    for(auto i = displays.begin(); i < displays.end(); ++i) {
-        (*i)->accept(*this);
-        unsigned int displayTotal = this->totalFrames;
-        // Eclipse doesn't handle this LCM which is from C++17.
-        signTotalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
-            (signTotalFrames, displayTotal);
-    }
-    this->totalFrames = signTotalFrames;
-}
-
-void SignRenderer::DurationComputerVisitor::visit(const SignDisplay &s) {
-    s.getRootCell()->accept(*this);
-}
-
-void SignRenderer::DurationComputerVisitor::visit(const SignCellSplit &s) {
-    s.getTopOrLeftChild()->accept(*this);
-    unsigned int topLeftFrames = this->totalFrames;
-    s.getBottomOrRightChild()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
-        (this->totalFrames, topLeftFrames);
-}
-
-void SignRenderer::DurationComputerVisitor::visit(const SignCellText &s) {
-    this->totalFrames = 1;
-}
-
-void SignRenderer::DurationComputerVisitor::visit(const MarqueeAnimation &s) {
-    s.getSubject()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
-        (this->totalFrames, s.getDurationFrames());
-}
-
-unsigned int SignRenderer::computeTotalFrames(const Sign *s) {
-    DurationComputerVisitor visitor;
-    s->accept(visitor);
-
-    return visitor.getTotalFrames();
 }

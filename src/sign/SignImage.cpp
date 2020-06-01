@@ -21,10 +21,26 @@
 #include <exception>
 #include "SignImage.h"
 
-SignImage::SignImage(unsigned int width, unsigned int height) :
-        width(width), height(height) {
-    this->pixels = (SignColor*)calloc(height * width,
+
+SignImage::SignImage(unsigned int width, unsigned int height,
+        unsigned int boxWidth, unsigned int boxHeight, const SignColor &fill):
+        width(width), height(height), boxWidth(boxWidth), boxHeight(boxHeight),
+        background(fill) {
+    this->pixels = (SignColor*)malloc(height * width *
                 sizeof(SignColor));
+
+    SignColor bg(fill);
+    for(uint32_t pos = 0; pos < height * width; ++pos) {
+        this->pixels[pos] = bg;
+    }
+}
+
+SignImage::SignImage(unsigned int width, unsigned int height,
+        unsigned int boxWidth, unsigned int boxHeight) :
+        SignImage(width, height, boxWidth, boxHeight,
+        SignColor::defaultColor(SignColor::BACKGROUND))
+{
+
 }
 
 SignImage::~SignImage() {
@@ -61,7 +77,7 @@ unsigned int SignImage::getHeight() const {
 
 void SignImage::merge(const SignImage* top, const int x,
         const int y) {
-
+    // Copy all pixels of top that fit into the current image
     const SignColor* pixelsToMerge = top->getPixels();
     const unsigned int topWidth = top->getWidth();
 
@@ -77,5 +93,21 @@ void SignImage::merge(const SignImage* top, const int x,
 
 }
 
+unsigned int SignImage::getBoxWidth() const {
+    return this->boxWidth;
+}
 
+unsigned int SignImage::getBoxHeight() const {
+    return this->boxHeight;
+}
 
+SignImage* SignImage::cropToBox() const {
+    SignImage* ret = new SignImage(this->boxWidth, this->boxHeight,
+            this->boxWidth, this->boxHeight);
+    ret->merge(this, 0, 0);
+    return ret;
+}
+
+const SignColor SignImage::getBackgroundColor() const {
+    return this->background;
+}

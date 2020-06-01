@@ -82,30 +82,9 @@ private:
         void visit(const SignCellSplit &s);
         void visit(const SignCellText &s);
         void visit(const MarqueeAnimation &s);
+        void visit(const BlinkAnimation &s);
     };
 
-    class DurationComputerVisitor : public ConstSignTreeVisitor {
-    private:
-        unsigned int totalFrames;
-
-    public:
-        DurationComputerVisitor() : totalFrames(1) {
-
-        }
-        virtual ~DurationComputerVisitor() {
-        }
-
-        virtual void visit(const Sign &s);
-        virtual void visit(const SignDisplay &s);
-        virtual void visit(const SignCellSplit &s);
-        virtual void visit(const SignCellText &s);
-        virtual void visit(const MarqueeAnimation &s);
-
-        unsigned int getTotalFrames() {
-            return totalFrames;
-        }
-
-    };
 
     void signImageToBitmap(Bitmap* dest, SignImage* source,
             DisplayType sourceType, unsigned int x, unsigned int y);
@@ -113,7 +92,6 @@ private:
 public:
     SignRenderer();
     Bitmap* render(const Sign *s, unsigned int frame);
-    unsigned int computeTotalFrames(const Sign *s);
 
     virtual ~SignRenderer();
 };

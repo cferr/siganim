@@ -112,3 +112,13 @@ std::ostream& SignCellText::serialize(std::ostream &strm) const {
 std::ostream& operator<<(std::ostream &strm, const SignCellText &s) {
     return s.serialize(strm);
 }
+
+void SignCellText::setBackgroundColor(const SignColor &background) {
+    SignColor c(background);
+    this->background = c;
+}
+
+void SignCellText::setForegroundColor(const SignColor &foreground) {
+    SignColor c(foreground);
+    this->foreground = c;
+}

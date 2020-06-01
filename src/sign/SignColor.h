@@ -52,6 +52,7 @@ private:
     static SignColor defaultFG;
 
 public:
+    SignColor(const SignColor& that);
     virtual ~SignColor();
 
     static SignColor defaultColor(enum Type type);

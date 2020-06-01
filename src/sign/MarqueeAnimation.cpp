@@ -65,3 +65,7 @@ bool MarqueeAnimation::getSlant() const {
 unsigned int MarqueeAnimation::getSpace() const {
     return this->space;
 }
+
+void MarqueeAnimation::setDurationFrames(unsigned int durationFrames) {
+    this->durationFrames = durationFrames;
+}

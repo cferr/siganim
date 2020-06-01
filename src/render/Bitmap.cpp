@@ -58,3 +58,19 @@ unsigned char* Bitmap::toRGB32() {
     return (unsigned char*)result;
 }
 
+std::vector<uint8_t> Bitmap::toRGBA8Vector() {
+    std::vector<uint8_t> result;
+
+    unsigned int width = this->width;
+    for(unsigned int i = 0; i < this->height; ++i) {
+        for(unsigned int j = 0; j < this->width; ++j) {
+            struct pixel p = this->pixels[i*width+j];
+            result.push_back((uint8_t)p.r);
+            result.push_back((uint8_t)p.g);
+            result.push_back((uint8_t)p.b);
+            result.push_back((uint8_t)0);
+        }
+    }
+
+    return result;
+}

@@ -17,19 +17,36 @@
 #ifndef SRC_SIGNTREEVISITOR_H_
 #define SRC_SIGNTREEVISITOR_H_
 
+#include <type_traits>
+
 class Sign;
 class SignDisplay;
 class SignCellText;
 class SignCellSplit;
 
-class SignTreeVisitor {
-public:
-    virtual ~SignTreeVisitor();
+template<bool isConst>
+    class AbstractSignTreeVisitor {
+private:
+    typedef typename std::conditional<isConst, const Sign, Sign>::type SignT;
+    typedef typename std::conditional<isConst, const SignDisplay,
+            SignDisplay>::type SignDisplayT;
+    typedef typename std::conditional<isConst, const SignCellText,
+                SignCellText>::type SignCellTextT;
+    typedef typename std::conditional<isConst, const SignCellSplit,
+                SignCellSplit>::type SignCellSplitT;
 
-    virtual void visit(Sign &s) = 0;
-    virtual void visit(SignDisplay &s) = 0;
-    virtual void visit(SignCellText &s) = 0;
-    virtual void visit(SignCellSplit &s) = 0;
+public:
+    virtual ~AbstractSignTreeVisitor() {
+
+    };
+
+    virtual void visit(SignT &s) = 0;
+    virtual void visit(SignDisplayT &s) = 0;
+    virtual void visit(SignCellTextT &s) = 0;
+    virtual void visit(SignCellSplitT &s) = 0;
 };
+
+typedef AbstractSignTreeVisitor<false> SignTreeVisitor;
+typedef AbstractSignTreeVisitor<true> ConstSignTreeVisitor;
 
 #endif /* SRC_SIGNTREEVISITOR_H_ */

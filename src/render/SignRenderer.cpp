@@ -33,7 +33,7 @@ SignRenderer::~SignRenderer() {
 
 }
 
-Bitmap* SignRenderer::render(Sign *s, unsigned int frame) {
+Bitmap* SignRenderer::render(const Sign *s, unsigned int frame) {
     // Prepare s, if need be.
 
     // Render by visiting
@@ -42,7 +42,7 @@ Bitmap* SignRenderer::render(Sign *s, unsigned int frame) {
     return this->resultBitmap;
 }
 
-void SignRenderer::visit(Sign &s) {
+void SignRenderer::visit(const Sign &s) {
     std::vector<SignDisplay*> displays = s.getDisplays();
     this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
@@ -56,11 +56,11 @@ void SignRenderer::visit(Sign &s) {
     }
 }
 
-void SignRenderer::visit(SignDisplay &s) {
+void SignRenderer::visit(const SignDisplay &s) {
     (s.getRootCell())->accept(*this);
 }
 
-void SignRenderer::visit(SignCellSplit &s) {
+void SignRenderer::visit(const SignCellSplit &s) {
 
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
      = new std::vector<struct SignImageTree::SignImageTreeChild>();
@@ -81,7 +81,7 @@ void SignRenderer::visit(SignCellSplit &s) {
     this->resultTree = result;
 }
 
-void SignRenderer::visit(SignCellText &s) {
+void SignRenderer::visit(const SignCellText &s) {
     SignImage *textRender = new SignImage(s.getWidth(), s.getHeight());
 
     icu::UnicodeString* text = s.getText();

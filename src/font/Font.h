@@ -35,7 +35,7 @@ public:
         CharNotFoundException(const Font* f, UChar32 ucode) :
             f(f), ucode(ucode) {
             this->message = "Character " + std::to_string(ucode) +
-                    " not found in font " + f->getName();
+                    " not found in font " + f->getFamily();
         }
 
         const char* what() const throw () {
@@ -56,7 +56,8 @@ public:
             std::initializer_list<Character*> chars);
     virtual ~Font();
 
-    std::string getName() const;
+    std::string getFamily() const;
+    std::string getStyle() const;
 
     Character* get(const UChar32 index) const;
     void addCharacter(Character* character);

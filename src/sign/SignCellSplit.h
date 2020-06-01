@@ -46,6 +46,7 @@ public:
 
     virtual Type getType() const;
     virtual void accept(SignTreeVisitor &visitor);
+    virtual void accept(ConstSignTreeVisitor &visitor) const;
 
     virtual unsigned int getHeight() const;
     virtual unsigned int getWidth() const;

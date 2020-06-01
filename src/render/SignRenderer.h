@@ -22,7 +22,7 @@
 #include "../sign/SignImage.h"
 #include "../sign/SignTreeVisitor.h"
 
-class SignRenderer: public SignTreeVisitor {
+class SignRenderer: public ConstSignTreeVisitor {
 private:
     // Tree structure to be created by a visitor of Sign
     class SignImageTree {
@@ -63,13 +63,13 @@ private:
 public:
     SignRenderer();
 
-    Bitmap* render(Sign *s, unsigned int frame);
+    Bitmap* render(const Sign *s, unsigned int frame);
 
     // Visitor
-    virtual void visit(Sign &s);
-    virtual void visit(SignDisplay &s);
-    virtual void visit(SignCellSplit &s);
-    virtual void visit(SignCellText &s);
+    virtual void visit(const Sign &s);
+    virtual void visit(const SignDisplay &s);
+    virtual void visit(const SignCellSplit &s);
+    virtual void visit(const SignCellText &s);
 
     virtual ~SignRenderer();
 };

@@ -14,9 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignTreeVisitor.h"
+#ifndef SRC_RENDER_GIFSINK_H_
+#define SRC_RENDER_GIFSINK_H_
+#include "../sign/Sign.h"
 
-//template<bool isConst> AbstractSignTreeVisitor<isConst>::
-//    ~AbstractSignTreeVisitor() {
-//
-//}
+class GIFSink {
+private:
+    const Sign* sign;
+
+public:
+    GIFSink(const Sign* sign);
+    virtual ~GIFSink();
+
+    void render(const char* fileName);
+
+};
+
+#endif /* SRC_RENDER_GIFSINK_H_ */

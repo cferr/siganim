@@ -57,6 +57,10 @@ void SignCellText::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
+void SignCellText::accept(ConstSignTreeVisitor &visitor) const {
+    visitor.visit(*this);
+}
+
 void SignCellText::setText(const icu::UnicodeString& text) {
     delete this->text;
     this->text = new icu::UnicodeString(text);

@@ -17,6 +17,9 @@
 #ifndef SRC_BITMAP_H_
 #define SRC_BITMAP_H_
 
+#include <vector>
+#include <cstdint>
+
 class Bitmap {
 public:
     struct pixel {
@@ -38,6 +41,7 @@ public:
 
     struct pixel* getPixels();
     unsigned char* toRGB32();
+    std::vector<uint8_t> toRGBA8Vector();
 
     virtual ~Bitmap();
 };

@@ -55,7 +55,7 @@ bool fontFileTest() {
     std::cout << "File contains " << f.size() << " fonts" << std::endl;
     for(auto i = f.begin(); i < f.end(); ++i)
     {
-        std::cout << "Font: " << (*i)->getName() << " has " <<
+        std::cout << "Font: " << (*i)->getFamily() << " has " <<
                 (*i)->getNbCharacters() << " chars" << std::endl;
 
     }

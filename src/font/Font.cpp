@@ -32,8 +32,12 @@ Font::~Font() {
 
 }
 
-std::string Font::getName() const {
+std::string Font::getFamily() const {
     return this->family;
+}
+
+std::string Font::getStyle() const {
+    return this->style;
 }
 
 Character* Font::get(const UChar32 index) const {

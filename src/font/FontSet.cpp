@@ -52,9 +52,12 @@ std::vector<Font*> FontSet::multiLookup(std::string family,
         std::string style) {
     std::vector<Font*> ret;
 
+    bool lookupFamily = !(family.empty());
+    bool lookupStyle = !(style.empty());
     for(std::vector<Font*>::iterator i = this->fonts.begin();
             i < this->fonts.end(); ++i) {
-        if((*i)->getName() == family) {
+        if( (lookupFamily && (*i)->getFamily() == family)
+                || (lookupStyle && (*i)->getStyle() == family)){
             ret.push_back(*i);
         }
     }
@@ -65,7 +68,10 @@ std::vector<Font*> FontSet::multiLookup(std::string family,
 Font* FontSet::lookup(std::string family, std::string style) {
     for(std::vector<Font*>::iterator i = this->fonts.begin();
                 i < this->fonts.end(); ++i) {
-        if((*i)->getName() == family) {
+        bool lookupFamily = !(family.empty());
+        bool lookupStyle = !(style.empty());
+        if( (lookupFamily && (*i)->getFamily() == family)
+            || (lookupStyle && (*i)->getStyle() == family)) {
             return *i;
         }
     }

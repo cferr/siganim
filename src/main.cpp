@@ -25,8 +25,10 @@
 #include "sign/SignCellSplit.h"
 #include "sign/SignCellText.h"
 #include "render/SignRenderer.h"
+#include "render/GIFSink.h"
 #include "font/parsers/GirouetteFontsParser.h"
 #include "font/FontSet.h"
+
 
 #ifdef TEST
 #include "test.h"
@@ -67,6 +69,9 @@ int main(int argc, char *argv[]) {
                     ))
             }
     );
+
+    GIFSink sink(testSign);
+    sink.render("40.gif");
 
     SiganimMainWindow m(testSign, modifiableText);
     m.show();

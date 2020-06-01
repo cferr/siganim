@@ -40,14 +40,15 @@ public:
             std::initializer_list<SignDisplay*> displays);
     virtual ~Sign();
 
-    unsigned int getHeight();
-    unsigned int getWidth();
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
 
     void accept(SignTreeVisitor &visitor);
+    void accept(ConstSignTreeVisitor &visitor) const;
 
     bool addDisplay(SignDisplay *display);
     bool removeDisplay(SignDisplay *display);
-    std::vector<SignDisplay*> getDisplays();
+    std::vector<SignDisplay*> getDisplays() const;
 
     std::ostream& serialize(std::ostream &strm) const;
 };

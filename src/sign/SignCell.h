@@ -117,6 +117,7 @@ public:
     const SignCell* getParent() const;
 
     virtual void accept(SignTreeVisitor& visitor) = 0;
+    virtual void accept(ConstSignTreeVisitor& visitor) const = 0;
 
     virtual std::ostream& serialize(std::ostream &strm) const = 0;
 

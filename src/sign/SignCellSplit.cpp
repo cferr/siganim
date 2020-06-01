@@ -79,6 +79,10 @@ void SignCellSplit::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
+void SignCellSplit::accept(ConstSignTreeVisitor &visitor) const {
+    visitor.visit(*this);
+}
+
 enum SignCellSplit::SplitDirection SignCellSplit::getSplitDirection() const {
     return this->splitDirection;
 }

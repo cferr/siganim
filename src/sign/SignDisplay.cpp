@@ -39,6 +39,10 @@ void SignDisplay::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
+void SignDisplay::accept(ConstSignTreeVisitor &visitor) const {
+    visitor.visit(*this);
+}
+
 SignCell::Type SignDisplay::getType() const {
     return Type::DISPLAY;
 }
@@ -72,7 +76,7 @@ bool SignDisplay::setRootCell(SignCell *rootCell) {
     return true;
 }
 
-SignCell* SignDisplay::getRootCell() {
+SignCell* SignDisplay::getRootCell() const {
     return this->rootCell;
 }
 

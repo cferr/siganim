@@ -14,9 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignTreeVisitor.h"
+#include "../../gif-h/gif.h"
+#include "GIFSink.h"
+#include "SignRenderer.h"
 
-//template<bool isConst> AbstractSignTreeVisitor<isConst>::
-//    ~AbstractSignTreeVisitor() {
-//
-//}
+GIFSink::GIFSink(const Sign* sign) : sign(sign) {
+}
+
+GIFSink::~GIFSink() {
+
+}
+
+void GIFSink::render(const char* fileName) {
+    SignRenderer r;
+    Bitmap* bmap = r.render(this->sign, 0); // TODO add frame support
+
+    unsigned int width = bmap->getWidth();
+    unsigned int height = bmap->getHeight();
+
+
+    int delay = 100;
+    GifWriter g;
+    GifBegin(&g, fileName, width, height, delay);
+    GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
+    GifEnd(&g);
+}

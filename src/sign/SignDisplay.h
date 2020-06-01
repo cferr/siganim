@@ -46,11 +46,13 @@ public:
     virtual Type getType() const;
 
     virtual void accept(SignTreeVisitor &visitor);
+    virtual void accept(ConstSignTreeVisitor &visitor) const;
+
     bool setParentSign(const Sign* parent);
     const Sign* getParentSign() const;
 
     bool setRootCell(SignCell *rootCell);
-    SignCell* getRootCell();
+    SignCell* getRootCell() const;
 
     enum DisplayType getDisplayType() const;
     bool setDisplayType(enum DisplayType displayType);

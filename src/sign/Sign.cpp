@@ -44,15 +44,19 @@ Sign::~Sign() {
     // Destroy every child cell
 }
 
-unsigned int Sign::getHeight() {
+unsigned int Sign::getHeight() const {
     return this->height;
 }
 
-unsigned int Sign::getWidth() {
+unsigned int Sign::getWidth() const {
     return this->width;
 }
 
 void Sign::accept(SignTreeVisitor &visitor) {
+    visitor.visit(*this);
+}
+
+void Sign::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
@@ -73,7 +77,7 @@ bool Sign::removeDisplay(SignDisplay *display) {
     return ret;
 }
 
-std::vector<SignDisplay*> Sign::getDisplays() {
+std::vector<SignDisplay*> Sign::getDisplays() const {
     return this->displays;
 }
 

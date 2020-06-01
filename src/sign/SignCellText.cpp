@@ -30,11 +30,11 @@ SignCellText::~SignCellText() {
 }
 
 unsigned int SignCellText::getChildHeight(const SignCell* child) const {
-    return 0;
+    throw NoSuchChildException(this, child);
 }
 
 unsigned int SignCellText::getChildWidth(const SignCell* child) const {
-    return 0;
+    throw NoSuchChildException(this, child);
 }
 
 unsigned int SignCellText::getHeight() const {

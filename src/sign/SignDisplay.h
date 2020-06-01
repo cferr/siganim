@@ -57,9 +57,9 @@ public:
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;
-    bool setHeight(const unsigned int height);
-    bool setWidth(const unsigned int width);
-    bool resize(const unsigned int width, const unsigned int height);
+    void setHeight(const unsigned int height);
+    void setWidth(const unsigned int width);
+    void resize(const unsigned int width, const unsigned int height);
     virtual unsigned int getChildHeight(const SignCell* child) const override;
     virtual unsigned int getChildWidth(const SignCell* child) const override;
 

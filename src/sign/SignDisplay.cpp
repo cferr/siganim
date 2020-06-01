@@ -44,7 +44,7 @@ SignCell::Type SignDisplay::getType() const {
 }
 
 bool SignDisplay::setParent(const SignCell *parent) {
-    return false;
+    throw SetParentFailedException(this, parent);
 }
 
 bool SignDisplay::setParentSign(const Sign *parent) {
@@ -57,9 +57,18 @@ const Sign* SignDisplay::getParentSign() const {
 }
 
 bool SignDisplay::setRootCell(SignCell *rootCell) {
+    SignCell* oldRoot = this->rootCell;
     this->rootCell = rootCell;
-    if(rootCell != NULL)
-        rootCell->setParent(this);
+    if(rootCell != nullptr)
+        try {
+            rootCell->setParent(this);
+            if(oldRoot != nullptr) {
+                oldRoot->setParent(nullptr); // Cannot fail.
+            }
+        } catch(SignCell::SetParentFailedException& e) {
+            this->rootCell = oldRoot;
+            return false;
+        }
     return true;
 }
 
@@ -92,18 +101,17 @@ unsigned int SignDisplay::getWidth() const {
     return this->width;
 }
 
-bool SignDisplay::setHeight(const unsigned int height) {
+void SignDisplay::setHeight(const unsigned int height) {
     return this->resize(height, this->width);
 }
 
-bool SignDisplay::setWidth(const unsigned int height) {
+void SignDisplay::setWidth(const unsigned int height) {
     return this->resize(this->height, width);
 }
 
-bool SignDisplay::resize(const unsigned int width, const unsigned int height) {
+void SignDisplay::resize(const unsigned int width, const unsigned int height) {
     this->height = height;
     this->width = width;
-    return true;
 }
 
 std::ostream& SignDisplay::serialize(std::ostream &strm) const {

@@ -18,10 +18,33 @@
 #define SRC_FONT_FONT_H_
 
 #include <map>
+#include <exception>
+#include <iostream>
 #include <unicode/schriter.h>
 #include "Character.h"
 
 class Font {
+public:
+    class CharNotFoundException : public std::exception
+    {
+    private:
+        const Font* f;
+        UChar32 ucode;
+        std::string message;
+    public:
+        CharNotFoundException(const Font* f, UChar32 ucode) :
+            f(f), ucode(ucode) {
+            this->message = "Character " + std::to_string(ucode) +
+                    " not found in font " + f->getName();
+        }
+
+        const char* what() const throw () {
+            return this->message.c_str();
+        }
+        const Font* getFont() const { return f; };
+        const UChar32 getUTF8Code() const { return ucode; };
+    };
+
 private:
     std::map<UChar32, Character*> chars;
     std::string name;

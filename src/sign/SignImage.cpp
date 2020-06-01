@@ -18,6 +18,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <exception>
 #include "SignImage.h"
 
 SignImage::SignImage(unsigned int width, unsigned int height) :
@@ -43,7 +44,7 @@ SignColor& SignImage::getPixel(const unsigned int x, const unsigned int y)
     const {
     if(x < this->width && y < this->height) {
         return this->pixels[y * this->width + x];
-    } else return this->pixels[0]; // error case
+    } else throw std::out_of_range("Pixel out of range");
 }
 
 const SignColor* SignImage::getPixels() const {
@@ -64,11 +65,13 @@ void SignImage::merge(const SignImage* top, const unsigned int x,
     assert(y + top->height <= this->height);
 
     const SignColor* pixelsToMerge = top->getPixels();
+    const unsigned int topWidth = top->getWidth();
 
     for (unsigned int i = 0; i < top->height; ++i) {
-        memcpy(this->pixels + ((i + y) * this->width) + x, pixelsToMerge
-                + (i * top->getWidth()),
-                top->getWidth() * sizeof(SignColor));
+        for (unsigned int j = 0; j < top->width; ++j) {
+            this->pixels[((i + y) * this->width) + j + x] =
+                    pixelsToMerge[i * topWidth + j];
+        }
     }
 
 }

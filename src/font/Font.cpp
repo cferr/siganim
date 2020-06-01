@@ -38,7 +38,7 @@ Character* Font::get(const UChar32 index) const {
     auto iterator = this->chars.find(index);
     if(iterator != this->chars.end()) {
         return (*iterator).second;
-    } else return NULL;
+    } else throw CharNotFoundException(this, index);
 }
 
 void Font::addCharacter(Character* character) {

@@ -91,8 +91,8 @@ void SignRenderer::visit(SignCellText &s) {
         for(int32_t i = 0; i < text->length(); i++) {
             UChar32 unic = text->char32At(i);
             // Look up character in font,
-            Character* c = cellFont->get(unic);
-            if(c != NULL) {
+            try {
+                Character* c = cellFont->get(unic);
                 // Render (mask ?).
                 const enum Character::Bit* bmap = c->getMap();
                 unsigned int charWidth = c->getWidth();
@@ -106,9 +106,8 @@ void SignRenderer::visit(SignCellText &s) {
                     }
                 }
                 xx += charWidth;
-            } else {
-                std::cout << "Character " << unic << " not in font \""
-                        << cellFont->getName() << "\"" << std::endl;
+            } catch(Font::CharNotFoundException& e) {
+
             }
         }
     }
@@ -161,13 +160,13 @@ SignImage* SignRenderer::SignImageTree::compose() {
 
 void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
         DisplayType sourceType, unsigned int x, unsigned int y) {
+    // TODO check for boundaries
     const SignColor* simgPixels = source->getPixels();
     struct Bitmap::pixel* imgPixels = dest->getPixels();
 
     const unsigned int simgHeight = source->getHeight();
     const unsigned int simgWidth = source->getWidth();
 
-    // const unsigned int dimgHeight = dest->getHeight();
     const unsigned int dimgWidth = dest->getWidth();
 
     for(unsigned int i = 0; i < simgHeight; ++i) {

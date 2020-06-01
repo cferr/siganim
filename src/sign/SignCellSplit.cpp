@@ -25,12 +25,16 @@ SignCellSplit::SignCellSplit(enum SplitDirection splitDirection,
         topOrLeftChild(topOrLeftChild),
         bottomOrRightChild(bottomOrRightChild) {
 
-    if(topOrLeftChild != NULL)
-        topOrLeftChild->setParent(this);
+    try {
+        if(topOrLeftChild != nullptr)
+            topOrLeftChild->setParent(this);
 
-    if(bottomOrRightChild != NULL)
-        bottomOrRightChild->setParent(this);
+        if(bottomOrRightChild != nullptr)
+            bottomOrRightChild->setParent(this);
 
+    } catch(SetParentFailedException& e) {
+        throw; // Pass on to parent.
+    }
 }
 
 SignCellSplit::~SignCellSplit() {
@@ -44,8 +48,12 @@ unsigned int SignCellSplit::getChildHeight(const SignCell* child) const {
             return this->splitPos;
         else if(child == this->bottomOrRightChild)
             return thisHeight - this->splitPos;
-        else return 0; // This is not our child
-    } else return thisHeight;
+        else throw NoSuchChildException(this, child);
+    } else {
+        if(child == this->topOrLeftChild || child == this->bottomOrRightChild)
+            return thisHeight;
+        else throw NoSuchChildException(this, child);
+    }
 }
 
 unsigned int SignCellSplit::getChildWidth(const SignCell* child) const {
@@ -55,8 +63,12 @@ unsigned int SignCellSplit::getChildWidth(const SignCell* child) const {
             return this->splitPos;
         else if(child == this->bottomOrRightChild)
             return thisWidth - this->splitPos;
-        else return 0; // This is not our child
-    } else return thisWidth;
+        else throw NoSuchChildException(this, child);
+    } else {
+        if(child == this->topOrLeftChild || child == this->bottomOrRightChild)
+            return thisWidth;
+        else throw NoSuchChildException(this, child);
+    }
 }
 
 SignCell::Type SignCellSplit::getType() const {
@@ -87,9 +99,18 @@ unsigned int SignCellSplit::getSplitPos() const {
 }
 
 bool SignCellSplit::setTopOrLeftChild(SignCell* child) {
+    SignCell* oldChild = this->topOrLeftChild;
     this->topOrLeftChild = child;
-    if(topOrLeftChild != NULL)
-        topOrLeftChild->setParent(this);
+    if(topOrLeftChild != nullptr)
+        try {
+            topOrLeftChild->setParent(this);
+            if(oldChild != nullptr) {
+                oldChild->setParent(nullptr);
+            }
+        } catch(SetParentFailedException& e) {
+            this->topOrLeftChild = oldChild;
+            return false;
+        }
     return true;
 }
 
@@ -98,9 +119,18 @@ SignCell* SignCellSplit::getTopOrLeftChild() const {
 }
 
 bool SignCellSplit::setBottomOrRightChild(SignCell* child) {
+    SignCell* oldChild = this->bottomOrRightChild;
     this->bottomOrRightChild = child;
-    if(bottomOrRightChild != NULL)
-        bottomOrRightChild->setParent(this);
+    if(bottomOrRightChild != nullptr)
+        try {
+            bottomOrRightChild->setParent(this);
+            if(oldChild != nullptr) {
+                oldChild->setParent(nullptr);
+            }
+        } catch(SetParentFailedException& e) {
+            this->bottomOrRightChild = oldChild;
+            return false;
+        }
     return true;
 }
 
@@ -114,15 +144,21 @@ bool SignCellSplit::setParent(const SignCell *parent) {
 }
 
 unsigned int SignCellSplit::getHeight() const {
-    if(this->parent != NULL) {
-        return this->parent->getChildHeight(this);
-    } else return 0; // Orphan node
+    try {
+        if(this->parent != nullptr) {
+            return this->parent->getChildHeight(this);
+        } else throw OrphanNodeException(this); // Orphan node
+    } catch(OrphanNodeException& e) {
+        throw;
+    } catch(NoSuchChildException& e) {
+        throw OrphanNodeException(this);
+    }
 }
 
 unsigned int SignCellSplit::getWidth() const {
-    if(this->parent != NULL) {
+    if(this->parent != nullptr) {
         return this->parent->getChildWidth(this);
-    } else return 0; // Orphan node
+    } else throw OrphanNodeException(this); // Orphan node
 }
 
 std::ostream& SignCellSplit::serialize(std::ostream &strm) const {

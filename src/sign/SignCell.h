@@ -18,9 +18,75 @@
 #define SRC_SIGNCELL_H_
 
 #include <iostream>
+#include <exception>
 #include "SignTreeVisitor.h"
 
 class SignCell {
+public:
+    class SetParentFailedException : public std::exception
+        {
+    private:
+        const SignCell* sender;
+        const SignCell* parent;
+        std::string message;
+    public:
+        SetParentFailedException(const SignCell* sender,
+                const SignCell* parent) : sender(sender), parent(parent) {
+            std::string parentTypeStr = (parent == nullptr)?std::string("Null"):
+                    std::string(SignCell::CellTypeStr(parent->getType()));
+
+            std::string senderTypeStr = (sender == nullptr)?std::string("Null"):
+                        std::string(SignCell::CellTypeStr(sender->getType()));
+
+            this->message = "Node of type " + parentTypeStr +
+                    " cannot be parent to a node of type " + senderTypeStr;
+        }
+
+        const char* what() const throw () {
+            return this->message.c_str();
+        }
+        const SignCell* getSender() const { return sender; };
+        const SignCell* getParent() const { return parent; };
+    };
+
+    class NoSuchChildException : public std::exception
+        {
+    private:
+        const SignCell* sender;
+        const SignCell* child;
+        std::string message;
+    public:
+        NoSuchChildException(const SignCell* sender,
+                const SignCell* child) : sender(sender), child(child) {
+            this->message = "Cell at " + std::to_string((unsigned long)sender) +
+                    " has no such child " +
+                    std::to_string((unsigned long)child);
+        }
+
+        const char* what() const throw () {
+            return this->message.c_str();
+        }
+        const SignCell* getSender() const { return sender; };
+        const SignCell* getChild() const { return child; };
+    };
+
+    class OrphanNodeException : public std::exception
+    {
+    private:
+        const SignCell* sender;
+        std::string message;
+    public:
+        OrphanNodeException(const SignCell* sender) : sender(sender) {
+            this->message = "Cell at " + std::to_string((unsigned long)sender) +
+                    " is orphan ";
+        }
+
+        const char* what() const throw () {
+            return this->message.c_str();
+        }
+        const SignCell* getSender() const { return sender; };
+    };
+
 protected:
     const SignCell* parent;
 
@@ -28,6 +94,14 @@ public:
     enum Type {
         DISPLAY, CELL_SPLIT, TEXT
     };
+    static const char* CellTypeStr(Type t) {
+        switch(t) {
+        case DISPLAY: return "Display"; break;
+        case CELL_SPLIT: return "Split"; break;
+        case TEXT: return "Text"; break;
+        }
+        return "Unknown";
+    }
 
     typedef enum Type Type;
     virtual Type getType() const = 0;

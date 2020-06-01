@@ -18,11 +18,12 @@
 #include "SiganimMainWindow.h"
 
 SiganimMainWindow::SiganimMainWindow() :
-    SiganimMainWindow(NULL) {
+    SiganimMainWindow(nullptr, nullptr) {
 
 }
 
-SiganimMainWindow::SiganimMainWindow(Sign* sign) {
+SiganimMainWindow::SiganimMainWindow(Sign* sign, SignCellText* textCell) :
+    textCell(textCell) {
     this->setWindowTitle(QString("SigAnim Sign Animator"));
 
     QWidget *ui_area = new QWidget;
@@ -35,9 +36,16 @@ SiganimMainWindow::SiganimMainWindow(Sign* sign) {
     this->verticalLayout = new QVBoxLayout();
 
     this->signWidget = new SignWidget(sign);
-    this->text = new QLineEdit();
 
-    this->verticalLayout->addWidget(this->text);
+    if(textCell != nullptr) {
+        this->text = new QLineEdit();
+        this->verticalLayout->addWidget(this->text);
+        this->text->connect(this->text,
+                &QLineEdit::textChanged,
+                this,
+                &SiganimMainWindow::updateSignText);
+    }
+
     this->verticalLayout->addWidget(this->signWidget);
 
     // Set image widget as central widget
@@ -46,5 +54,10 @@ SiganimMainWindow::SiganimMainWindow(Sign* sign) {
 
 SiganimMainWindow::~SiganimMainWindow() {
 
+}
+
+void SiganimMainWindow::updateSignText(const QString& text) {
+    this->textCell->setText(icu::UnicodeString(text.toUtf8().data()));
+    this->signWidget->signChangedEvent();
 }
 

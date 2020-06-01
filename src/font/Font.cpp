@@ -16,12 +16,14 @@
 
 #include "Font.h"
 
-Font::Font(const std::string& name) : name(name) {
+Font::Font(const std::string& family, const std::string& style) :
+    family(family), style(style) {
 
 }
 
-Font::Font(const std::string& name, std::initializer_list<Character*> chars) :
-    Font(name) {
+Font::Font(const std::string& family, const std::string& style,
+        std::initializer_list<Character*> chars) :
+    Font(family, style) {
     for(auto i = chars.begin(); i < chars.end(); ++i)
         this->chars.insert(std::make_pair((*i)->getUTF8Code(), *i));
 }
@@ -31,7 +33,7 @@ Font::~Font() {
 }
 
 std::string Font::getName() const {
-    return this->name;
+    return this->family;
 }
 
 Character* Font::get(const UChar32 index) const {

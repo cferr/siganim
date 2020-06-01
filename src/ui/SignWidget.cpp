@@ -17,23 +17,12 @@
 #include <QRect>
 #include <QPaintEvent>
 #include "SignWidget.h"
-#include "../sign/Sign.h"
 #include "../render/SignRenderer.h"
-#include "../sign/SignCellText.h"
-#include "../font/parsers/GirouetteFontsParser.h"
 
 SignWidget::SignWidget(Sign* sign, QWidget *parent) :
-        QWidget(parent), sign(sign) {
+        QWidget(parent), sign(sign), image(NULL) {
 
-    if(sign != NULL) {
-        SignRenderer r;
-        Bitmap *result = r.render(sign, 0);
-        unsigned char* img = result->toRGB32();
-        this->image = new QImage(img, result->getWidth(),
-                result->getHeight(), QImage::Format_RGB32);
-
-        this->update();
-    }
+    this->signChangedEvent();
 }
 
 SignWidget::~SignWidget() {
@@ -45,7 +34,15 @@ void SignWidget::paintEvent(QPaintEvent *event) {
     painter.drawImage(this->image->rect(), *this->image, this->image->rect());
 }
 
-void SignWidget::signChangedEvent(Sign *s) {
+void SignWidget::signChangedEvent() {
     // Repaint ourselves according to that sign.
+    if(sign != NULL) {
+        SignRenderer r;
+        Bitmap *result = r.render(sign, 0);
+        unsigned char* img = result->toRGB32();
+        this->image = new QImage(img, result->getWidth(),
+                result->getHeight(), QImage::Format_RGB32);
 
+        this->update();
+    }
 }

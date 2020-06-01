@@ -22,20 +22,29 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include "SignWidget.h"
+#include "../sign/SignCellText.h"
 
 class SiganimMainWindow: public QMainWindow {
+    Q_OBJECT
 private:
 
     QVBoxLayout *verticalLayout;
     QLineEdit *text;
     SignWidget *signWidget;
 
+    // Temporary.
+    SignCellText* textCell;
+
 public:
 
     SiganimMainWindow();
     // Temporary.
-    SiganimMainWindow(Sign* sign);
+    SiganimMainWindow(Sign* sign, SignCellText* textCell);
     virtual ~SiganimMainWindow();
+
+    // Temporary.
+public slots:
+    void updateSignText(const QString& text);
 
 };
 

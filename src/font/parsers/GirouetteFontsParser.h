@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FONT_PARSERS_GIROUETTEFONTSPARSER_H_
-#define FONT_PARSERS_GIROUETTEFONTSPARSER_H_
+#ifndef SRC_FONT_PARSERS_GIROUETTEFONTSPARSER_H_
+#define SRC_FONT_PARSERS_GIROUETTEFONTSPARSER_H_
 
 #include <vector>
 #include "../Font.h"
@@ -27,4 +27,4 @@ public:
     static std::vector<Font*> parseGirouetteXML(const char* fileName);
 };
 
-#endif /* FONT_PARSERS_GIROUETTEFONTSPARSER_H_ */
+#endif /* SRC_FONT_PARSERS_GIROUETTEFONTSPARSER_H_ */

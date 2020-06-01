@@ -33,11 +33,12 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void signChangedEvent(Sign *s);
 
 public:
     SignWidget(Sign* sign, QWidget *parent = nullptr);
     virtual ~SignWidget();
+
+    void signChangedEvent();
 };
 
 #endif /* SRC_SIGNWIDGET_H_ */

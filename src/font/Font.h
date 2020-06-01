@@ -47,11 +47,13 @@ public:
 
 private:
     std::map<UChar32, Character*> chars;
-    std::string name;
+    std::string family;
+    std::string style;
 
 public:
-    Font(const std::string& name);
-    Font(const std::string& name, std::initializer_list<Character*> chars);
+    Font(const std::string& family, const std::string& style = "Regular");
+    Font(const std::string& family, const std::string& style,
+            std::initializer_list<Character*> chars);
     virtual ~Font();
 
     std::string getName() const;

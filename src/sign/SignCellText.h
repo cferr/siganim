@@ -28,16 +28,34 @@
 #include "../font/Font.h"
 
 class SignCellText: public SignCell {
+public:
+    enum HorizontalAlignment {
+        HALIGN_LEFT, HALIGN_CENTER, HALIGN_RIGHT, HALIGN_JUSTIFY
+    };
+
+    enum VerticalAlignment {
+        // biggest letter on top
+        VALIGN_TOP_TOP, VALIGN_TOP_CENTER, VALIGN_TOP_BOTTOM,
+        // biggest letter centered
+        VALIGN_CENTER_TOP, VALIGN_CENTER_CENTER, VALIGN_CENTER_BOTTOM,
+        // biggest letter bottom
+        VALIGN_BOTTOM_TOP, VALIGN_BOTTOM_CENTER, VALIGN_BOTTOM_BOTTOM
+    };
+
 private:
     SignColor background;     // Background color
     SignColor foreground;     // Foreground color
 
     icu::UnicodeString* text; // Unicode-encoded text
+    const Font* font;         // One font only per text cell
 
-    const Font* font;               // One font only per text cell
+    enum HorizontalAlignment hAlign;
+    enum VerticalAlignment vAlign;
 
 public:
-    SignCellText(const Font* font, const icu::UnicodeString& text = "");
+    SignCellText(const Font* font, const enum HorizontalAlignment hAlign,
+            const enum VerticalAlignment vAlign,
+            const icu::UnicodeString& text = "");
     virtual ~SignCellText();
 
     virtual Type getType() const {
@@ -64,6 +82,11 @@ public:
 
     const SignColor getForegroundColor() const;
     const SignColor getBackgroundColor() const;
+
+    enum HorizontalAlignment getHAlign() const;
+    enum VerticalAlignment getVAlign() const;
+    void setHAlign(enum HorizontalAlignment hAlign);
+    void setVAlign(enum VerticalAlignment vAlign);
 
     bool setParent(const SignCell *parent);
 

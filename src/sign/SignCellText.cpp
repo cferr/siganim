@@ -18,10 +18,15 @@
 
 #include <unicode/ustream.h>
 
-SignCellText::SignCellText(const Font* font, const icu::UnicodeString& text) :
+SignCellText::SignCellText(const Font* font,
+        const enum HorizontalAlignment hAlign,
+        const enum VerticalAlignment vAlign,
+        const icu::UnicodeString& text) :
     background(SignColor::defaultColor(SignColor::BACKGROUND)),
     foreground(SignColor::defaultColor(SignColor::FOREGROUND)),
-    font(font) {
+    font(font),
+    hAlign(hAlign),
+    vAlign(vAlign) {
     this->text = new icu::UnicodeString(text);
 }
 
@@ -81,6 +86,22 @@ const SignColor SignCellText::getForegroundColor() const {
 
 const SignColor SignCellText::getBackgroundColor() const {
     return this->background;
+}
+
+enum SignCellText::HorizontalAlignment SignCellText::getHAlign() const {
+    return this->hAlign;
+}
+
+enum SignCellText::VerticalAlignment SignCellText::getVAlign() const {
+    return this->vAlign;
+}
+
+void SignCellText::setHAlign(enum HorizontalAlignment hAlign) {
+    this->hAlign = hAlign;
+}
+
+void SignCellText::setVAlign(enum VerticalAlignment vAlign) {
+    this->vAlign = vAlign;
 }
 
 std::ostream& SignCellText::serialize(std::ostream &strm) const {

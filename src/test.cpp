@@ -29,8 +29,10 @@ bool UTF8Test() {
     Sign *UTF8Test = new Sign(120, 80,
             { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
-                            new SignCellText(NULL, "☢"),
-                            new SignCellText(NULL, "")
+                            new SignCellText(NULL, SignCellText::HALIGN_CENTER,
+                                    SignCellText::VALIGN_CENTER_BOTTOM, "☢"),
+                            new SignCellText(NULL, SignCellText::HALIGN_CENTER,
+                                    SignCellText::VALIGN_CENTER_BOTTOM, "")
                     ))
             }
     );

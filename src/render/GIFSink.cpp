@@ -34,7 +34,7 @@ void GIFSink::render(const char* fileName) {
 
     unsigned int frames = r.computeTotalFrames(this->sign);
 
-    int delay = 10;
+    int delay = 1;
     GifWriter g;
     GifBegin(&g, fileName, width, height, delay);
     GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);

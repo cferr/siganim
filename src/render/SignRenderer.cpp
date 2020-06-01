@@ -85,11 +85,81 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
 void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
     SignImage *textRender = new SignImage(s.getWidth(), s.getHeight());
 
+    uint32_t cellHeight = s.getHeight();
+    uint32_t cellWidth = s.getWidth();
+
     icu::UnicodeString* text = s.getText();
     const Font* cellFont = s.getFont();
-    if(cellFont != NULL) {
-        unsigned int xx = 0;
-        for(int32_t i = 0; i < text->length(); i++) {
+    if(cellFont != nullptr) {
+        // Compute min, max height of all characters.
+        uint32_t minHeight = UINT_LEAST32_MAX;
+        uint32_t maxHeight = 0;
+        uint32_t minWidth = UINT_LEAST32_MAX;
+        uint32_t maxWidth = 0;
+        uint32_t totalWidth = 0;
+        uint32_t nbNonVoidChars = 0;
+        for(int32_t i = 0; i < text->length(); ++i) {
+            UChar32 unic = text->char32At(i);
+            try {
+                Character* c = cellFont->get(unic);
+                uint32_t cHeight = c->getHeight();
+                uint32_t cWidth = c->getWidth();
+                minHeight = std::min(minHeight, cHeight);
+                maxHeight = std::max(maxHeight, cHeight);
+                minWidth = std::min(minWidth, cWidth);
+                maxWidth = std::max(maxWidth, cWidth);
+                totalWidth += cWidth;
+                ++nbNonVoidChars;
+            } catch(Font::CharNotFoundException& e) { }
+        }
+        // Compute biggest char's vertical position
+        uint32_t yy;
+        switch(s.getVAlign()) {
+        case SignCellText::VALIGN_TOP_TOP:
+        case SignCellText::VALIGN_TOP_CENTER:
+        case SignCellText::VALIGN_TOP_BOTTOM:
+            yy = 0;
+            break;
+
+        case SignCellText::VALIGN_CENTER_TOP:
+        case SignCellText::VALIGN_CENTER_CENTER:
+        case SignCellText::VALIGN_CENTER_BOTTOM:
+            yy = (cellHeight - maxHeight) / 2;
+            break;
+
+        case SignCellText::VALIGN_BOTTOM_TOP:
+        case SignCellText::VALIGN_BOTTOM_CENTER:
+        case SignCellText::VALIGN_BOTTOM_BOTTOM:
+            yy = cellHeight - maxHeight;
+            break;
+        }
+
+        uint32_t xx;
+        switch(s.getHAlign()) {
+        case SignCellText::HALIGN_LEFT:
+        case SignCellText::HALIGN_JUSTIFY:
+            xx = 0;
+            break;
+        case SignCellText::HALIGN_CENTER:
+            if(cellWidth >= totalWidth)
+                xx = (cellWidth - totalWidth) / 2;
+            else
+                xx = 0;
+            break;
+        case SignCellText::HALIGN_RIGHT:
+            if(cellWidth >= totalWidth)
+                xx = cellWidth - totalWidth;
+            else
+                xx = 0;
+            break;
+        }
+
+        uint32_t justifiedSpaceBetweenChars = 0;
+        if(nbNonVoidChars > 1)
+            justifiedSpaceBetweenChars =
+                    (cellWidth - totalWidth) / (nbNonVoidChars - 1);
+
+        for(int32_t i = 0; i < text->length(); ++i) {
             UChar32 unic = text->char32At(i);
             // Look up character in font,
             try {
@@ -98,15 +168,48 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
                 const enum Character::Bit* bmap = c->getMap();
                 unsigned int charWidth = c->getWidth();
                 unsigned int charHeight = c->getHeight();
+
+                uint32_t yyy;
+                switch(s.getVAlign()) {
+                case SignCellText::VALIGN_TOP_TOP:
+                case SignCellText::VALIGN_CENTER_TOP:
+                case SignCellText::VALIGN_BOTTOM_TOP:
+                    yyy = 0;
+                    break;
+
+                case SignCellText::VALIGN_TOP_CENTER:
+                case SignCellText::VALIGN_CENTER_CENTER:
+                case SignCellText::VALIGN_BOTTOM_CENTER:
+                    yyy = (maxHeight - charHeight) / 2;
+                    break;
+
+                case SignCellText::VALIGN_TOP_BOTTOM:
+                case SignCellText::VALIGN_CENTER_BOTTOM:
+                case SignCellText::VALIGN_BOTTOM_BOTTOM:
+                    yyy = maxHeight - charHeight;
+                    break;
+                }
+
                 for(unsigned int x = 0; x < charWidth; ++x) {
                     for(unsigned int y = 0; y < charHeight; ++y) {
-                        textRender->setPixel(xx + x, y,
+                        textRender->setPixel(xx + x, y + yy + yyy,
                             (bmap[y * charWidth + x] == Character::Bit::ON)?
                             s.getForegroundColor():s.getBackgroundColor()
                         );
                     }
                 }
-                xx += charWidth;
+
+                switch(s.getHAlign()) {
+                case SignCellText::HALIGN_LEFT:
+                case SignCellText::HALIGN_CENTER:
+                case SignCellText::HALIGN_RIGHT:
+                    xx += charWidth;
+                    break;
+                case SignCellText::HALIGN_JUSTIFY:
+                    xx += charWidth + justifiedSpaceBetweenChars;
+                    break;
+                }
+
             } catch(Font::CharNotFoundException& e) {
 
             }
@@ -122,15 +225,17 @@ void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
     s.getSubject()->accept(*this);
     SignImage* subjectImage = this->resultTree->compose();
 
-    // TODO assuming Right to Left for the moment.
+    enum MarqueeAnimation::Direction direction = s.getDirection();
 
-    unsigned int frame = this->frame;
     unsigned int duration = s.getDurationFrames();
+    unsigned int frame = (this->frame % duration);
     unsigned int totalSpace = s.getWidth() + s.getSpace();
     unsigned int textWidth = s.getWidth();
 
-    int leftPosition = (int)textWidth - (
-        (((int)textWidth + (int)totalSpace) * (int)frame) / ((int)duration));
+    int dirM = (direction == MarqueeAnimation::LEFT)?-1:1;
+
+    int leftPosition = (-1) * dirM * (int)textWidth + dirM * (
+        ((int)totalSpace * (int)frame) / ((int)duration));
 
     // Merge right part of the image
     animRender->merge(subjectImage, leftPosition - totalSpace, 0);

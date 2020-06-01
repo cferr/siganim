@@ -58,16 +58,27 @@ int main(int argc, char *argv[]) {
     fset.addFonts(girouetteFonts);
     Font* font1912 = fset.lookup("Test font 19x12", "");
     Font* font1207 = fset.lookup("Test font 12x7", "");
-    SignCellText* modifiableText = new SignCellText(font1207, "TEST");
+    SignCellText* modifiableText = new SignCellText(font1207,
+            SignCellText::HALIGN_CENTER,
+            SignCellText::VALIGN_CENTER_BOTTOM,
+            "JE NE SUIS PAS EN SERVICE");
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 24,
             { new SignDisplay(120, 24, DisplayType::DISPLAY_MONOCHROME_LED,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 30,
-                            new SignCellText(font1912, "40"),
-                            new MarqueeAnimation(modifiableText, 180,
-                                    MarqueeAnimation::LEFT, true, 60)
-                    ))
+                            new MarqueeAnimation(
+                                    new SignCellText(font1912,
+                                        SignCellText::HALIGN_CENTER,
+                                        SignCellText::VALIGN_CENTER_BOTTOM,
+                                        "150"),
+                                    12, MarqueeAnimation::LEFT, true, 2
+                            ),
+                            new MarqueeAnimation(modifiableText, 60,
+                                    MarqueeAnimation::RIGHT, true, 15
+                            )
+                    )
+                )
             }
     );
 

@@ -43,7 +43,13 @@ public:
     virtual ~SignDisplay();
 
     virtual bool setParent(const SignCell* parent);
-    virtual Type getType() const;
+    virtual Type getType() const {
+        return Type::DISPLAY;
+    }
+
+    virtual const char* CellTypeStr() const {
+        return "Display";
+    }
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;

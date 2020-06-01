@@ -33,13 +33,13 @@ public:
         SetParentFailedException(const SignCell* sender,
                 const SignCell* parent) : sender(sender), parent(parent) {
             std::string parentTypeStr = (parent == nullptr)?std::string("Null"):
-                    std::string(SignCell::CellTypeStr(parent->getType()));
+                    std::string(parent->CellTypeStr());
 
             std::string senderTypeStr = (sender == nullptr)?std::string("Null"):
-                        std::string(SignCell::CellTypeStr(sender->getType()));
+                    std::string(parent->CellTypeStr());
 
             this->message = "Node of type " + parentTypeStr +
-                    " cannot be parent to a node of type " + senderTypeStr;
+                    " cannot be parent of a node of type " + senderTypeStr;
         }
 
         const char* what() const throw () {
@@ -92,19 +92,12 @@ protected:
 
 public:
     enum Type {
-        DISPLAY, CELL_SPLIT, TEXT
+        DISPLAY, CELL_SPLIT, TEXT, MARQUEE_ANIMATION
     };
-    static const char* CellTypeStr(Type t) {
-        switch(t) {
-        case DISPLAY: return "Display"; break;
-        case CELL_SPLIT: return "Split"; break;
-        case TEXT: return "Text"; break;
-        }
-        return "Unknown";
-    }
 
     typedef enum Type Type;
     virtual Type getType() const = 0;
+    virtual const char* CellTypeStr() const = 0;
 
     virtual ~SignCell();
 

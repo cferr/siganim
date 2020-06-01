@@ -71,10 +71,6 @@ unsigned int SignCellSplit::getChildWidth(const SignCell* child) const {
     }
 }
 
-SignCell::Type SignCellSplit::getType() const {
-    return Type::CELL_SPLIT;
-}
-
 void SignCellSplit::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }

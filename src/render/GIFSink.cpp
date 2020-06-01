@@ -27,15 +27,22 @@ GIFSink::~GIFSink() {
 
 void GIFSink::render(const char* fileName) {
     SignRenderer r;
-    Bitmap* bmap = r.render(this->sign, 0); // TODO add frame support
 
+    Bitmap* bmap = r.render(this->sign, 0);
     unsigned int width = bmap->getWidth();
     unsigned int height = bmap->getHeight();
 
+    unsigned int frames = r.computeTotalFrames(this->sign);
 
-    int delay = 100;
+    int delay = 10;
     GifWriter g;
     GifBegin(&g, fileName, width, height, delay);
     GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
+
+    for(unsigned int frame = 1; frame < frames; frame++) {
+        bmap = r.render(this->sign, frame);
+        GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
+    }
+
     GifEnd(&g);
 }

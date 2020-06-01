@@ -22,15 +22,15 @@
 #include "../sign/SignImage.h"
 #include "../sign/SignTreeVisitor.h"
 
-class SignRenderer: public ConstSignTreeVisitor {
+class SignRenderer {
 private:
     // Tree structure to be created by a visitor of Sign
     class SignImageTree {
     public:
         struct SignImageTreeChild {
             SignImageTree* child;
-            unsigned int x;
-            unsigned int y;
+            int x;
+            int y;
         };
     private:
         union {
@@ -54,22 +54,66 @@ private:
         SignImage* compose();
     };
 
-    SignImageTree* resultTree;
-    Bitmap* resultBitmap;
+
+
+    // Renderer Visitor
+    class SignRenderVisitor : public ConstSignTreeVisitor {
+    private:
+        SignRenderer& rendererInstance;
+        SignImageTree* resultTree;
+        Bitmap* resultBitmap;
+        unsigned int frame;
+
+    public:
+        SignRenderVisitor(SignRenderer& rendererInstance, unsigned int frame) :
+            rendererInstance(rendererInstance), resultTree(nullptr),
+            resultBitmap(nullptr), frame(frame) {
+        }
+
+        virtual ~SignRenderVisitor() {
+        }
+
+        Bitmap* getBitmap() {
+            return this->resultBitmap;
+        }
+
+        void visit(const Sign &s);
+        void visit(const SignDisplay &s);
+        void visit(const SignCellSplit &s);
+        void visit(const SignCellText &s);
+        void visit(const MarqueeAnimation &s);
+    };
+
+    class DurationComputerVisitor : public ConstSignTreeVisitor {
+    private:
+        unsigned int totalFrames;
+
+    public:
+        DurationComputerVisitor() : totalFrames(1) {
+
+        }
+        virtual ~DurationComputerVisitor() {
+        }
+
+        virtual void visit(const Sign &s);
+        virtual void visit(const SignDisplay &s);
+        virtual void visit(const SignCellSplit &s);
+        virtual void visit(const SignCellText &s);
+        virtual void visit(const MarqueeAnimation &s);
+
+        unsigned int getTotalFrames() {
+            return totalFrames;
+        }
+
+    };
 
     void signImageToBitmap(Bitmap* dest, SignImage* source,
             DisplayType sourceType, unsigned int x, unsigned int y);
 
 public:
     SignRenderer();
-
     Bitmap* render(const Sign *s, unsigned int frame);
-
-    // Visitor
-    virtual void visit(const Sign &s);
-    virtual void visit(const SignDisplay &s);
-    virtual void visit(const SignCellSplit &s);
-    virtual void visit(const SignCellText &s);
+    unsigned int computeTotalFrames(const Sign *s);
 
     virtual ~SignRenderer();
 };

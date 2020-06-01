@@ -44,7 +44,14 @@ public:
             SignCell* topOrLeftChild, SignCell* bottomOrRightChild);
     virtual ~SignCellSplit();
 
-    virtual Type getType() const;
+    virtual Type getType() const {
+        return Type::CELL_SPLIT;
+    }
+
+    virtual const char* CellTypeStr() const {
+        return "Cell Split";
+    }
+
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
 

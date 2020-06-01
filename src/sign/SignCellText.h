@@ -40,7 +40,14 @@ public:
     SignCellText(const Font* font, const icu::UnicodeString& text = "");
     virtual ~SignCellText();
 
-    Type getType() const;
+    virtual Type getType() const {
+        return Type::TEXT;
+    }
+
+    virtual const char* CellTypeStr() const {
+        return "Text";
+    }
+
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
 

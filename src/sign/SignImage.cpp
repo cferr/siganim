@@ -59,18 +59,19 @@ unsigned int SignImage::getHeight() const {
     return this->height;
 }
 
-void SignImage::merge(const SignImage* top, const unsigned int x,
-        const unsigned int y) {
-    assert(x + top->width <= this->width);
-    assert(y + top->height <= this->height);
+void SignImage::merge(const SignImage* top, const int x,
+        const int y) {
 
     const SignColor* pixelsToMerge = top->getPixels();
     const unsigned int topWidth = top->getWidth();
 
     for (unsigned int i = 0; i < top->height; ++i) {
         for (unsigned int j = 0; j < top->width; ++j) {
-            this->pixels[((i + y) * this->width) + j + x] =
-                    pixelsToMerge[i * topWidth + j];
+            if(i + y >= 0 && i + y < this->height &&
+                    j + x >= 0 && j + x < this->width) {
+                this->pixels[((i + y) * this->width) + j + x] =
+                        pixelsToMerge[i * topWidth + j];
+            }
         }
     }
 

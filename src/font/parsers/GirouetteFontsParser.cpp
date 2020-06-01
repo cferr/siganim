@@ -20,6 +20,7 @@
 #include <cstddef>
 #include <iostream>
 #include "GirouetteFontsParser.h"
+#include "ParserExceptions.h"
 
 using namespace tinyxml2;
 
@@ -34,7 +35,7 @@ std::vector<Font*> GirouetteFontsParser::parseGirouetteXML(
     if(xmlDoc.LoadFile(fileName) == XMLError::XML_SUCCESS) {
         XMLElement* root = xmlDoc.FirstChildElement("fontlist");
         if(root == NULL)
-            return fonts; // Empty. This is a hack to avoid a too deep if nest.
+            throw FileLoadException(fileName);
 
         XMLElement* fontElt = root->FirstChildElement("font");
         while(fontElt != NULL) {
@@ -130,7 +131,7 @@ std::vector<Font*> GirouetteFontsParser::parseGirouetteXML(
 
             fontElt = fontElt->NextSiblingElement("font");
         }
-    } else std::cout << "File loading failed" << std::endl;
+    } else throw FileLoadException(fileName);
 
     return fonts;
 }

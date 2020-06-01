@@ -28,8 +28,8 @@ class SignWidget: public QWidget {
 Q_OBJECT
 
 private:
-    QImage *image;
     Sign *sign;
+    QImage *image;
 
 protected:
     void paintEvent(QPaintEvent *event) override;

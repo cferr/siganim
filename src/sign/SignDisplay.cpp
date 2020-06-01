@@ -43,10 +43,6 @@ void SignDisplay::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-SignCell::Type SignDisplay::getType() const {
-    return Type::DISPLAY;
-}
-
 bool SignDisplay::setParent(const SignCell *parent) {
     throw SetParentFailedException(this, parent);
 }

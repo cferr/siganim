@@ -14,9 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignTreeVisitor.h"
+#ifndef SIGN_SIGNANIMATION_H_
+#define SIGN_SIGNANIMATION_H_
 
-//template<bool isConst> AbstractSignTreeVisitor<isConst>::
-//    ~AbstractSignTreeVisitor() {
-//
-//}
+#include "SignCell.h"
+
+class SignAnimation: public SignCell {
+protected:
+    SignCell* subject;
+    unsigned int durationFrames;
+
+public:
+    SignAnimation(SignCell* subject, unsigned int durationFrames);
+    virtual ~SignAnimation() {
+
+    }
+
+    bool setParent(const SignCell* parent);
+    unsigned int getHeight() const;
+    unsigned int getWidth() const;
+    unsigned int getChildHeight(const SignCell* child) const;
+    unsigned int getChildWidth(const SignCell* child) const;
+
+    bool setSubject(SignCell* subject);
+    SignCell* getSubject() const;
+
+    unsigned int getDurationFrames() const;
+
+};
+
+#endif /* SIGN_SIGNANIMATION_H_ */

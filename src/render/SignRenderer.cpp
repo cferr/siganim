@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <iostream>
+#include <numeric>
 #include <unicode/schriter.h>
 
 #include "SignRenderer.h"
@@ -22,10 +23,10 @@
 #include "../sign/SignImage.h"
 #include "../sign/SignCellSplit.h"
 #include "../sign/SignCellText.h"
+#include "../sign/MarqueeAnimation.h"
 #include "../font/Character.h"
 
-SignRenderer::SignRenderer() : resultTree(NULL),
-    resultBitmap(NULL) {
+SignRenderer::SignRenderer() {
 
 }
 
@@ -35,14 +36,14 @@ SignRenderer::~SignRenderer() {
 
 Bitmap* SignRenderer::render(const Sign *s, unsigned int frame) {
     // Prepare s, if need be.
-
+    SignRenderVisitor visitor(*this, frame);
     // Render by visiting
-    s->accept(*this);
+    s->accept(visitor);
 
-    return this->resultBitmap;
+    return visitor.getBitmap();
 }
 
-void SignRenderer::visit(const Sign &s) {
+void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     std::vector<SignDisplay*> displays = s.getDisplays();
     this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
@@ -50,17 +51,17 @@ void SignRenderer::visit(const Sign &s) {
         (*i)->accept(*this);
         // set bitmap
         SignImage* displayImage = this->resultTree->compose();
-        this->signImageToBitmap(this->resultBitmap, displayImage,
-                (*i)->getDisplayType(), 0, 0);
+        this->rendererInstance.signImageToBitmap(this->resultBitmap,
+                displayImage, (*i)->getDisplayType(), 0, 0);
         // TODO add display position coords
     }
 }
 
-void SignRenderer::visit(const SignDisplay &s) {
+void SignRenderer::SignRenderVisitor::visit(const SignDisplay &s) {
     (s.getRootCell())->accept(*this);
 }
 
-void SignRenderer::visit(const SignCellSplit &s) {
+void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
 
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
      = new std::vector<struct SignImageTree::SignImageTreeChild>();
@@ -70,10 +71,10 @@ void SignRenderer::visit(const SignCellSplit &s) {
     s.getBottomOrRightChild()->accept(*this);
     switch(s.getSplitDirection()) {
     case SignCellSplit::SPLIT_HORIZONTAL:
-        childrenImg->push_back({this->resultTree, 0, s.getSplitPos()});
+        childrenImg->push_back({this->resultTree, 0, (int)s.getSplitPos()});
         break;
     case SignCellSplit::SPLIT_VERTICAL:
-        childrenImg->push_back({this->resultTree, s.getSplitPos(), 0});
+        childrenImg->push_back({this->resultTree, (int)s.getSplitPos(), 0});
         break;
     }
     SignImageTree* result = new SignImageTree(s.getWidth(), s.getHeight(),
@@ -81,7 +82,7 @@ void SignRenderer::visit(const SignCellSplit &s) {
     this->resultTree = result;
 }
 
-void SignRenderer::visit(const SignCellText &s) {
+void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
     SignImage *textRender = new SignImage(s.getWidth(), s.getHeight());
 
     icu::UnicodeString* text = s.getText();
@@ -113,6 +114,32 @@ void SignRenderer::visit(const SignCellText &s) {
     }
 
     this->resultTree = new SignImageTree(textRender);
+}
+
+void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
+    SignImage *animRender = new SignImage(s.getWidth(), s.getHeight());
+    // Render the child
+    s.getSubject()->accept(*this);
+    SignImage* subjectImage = this->resultTree->compose();
+
+    // TODO assuming Right to Left for the moment.
+
+    unsigned int frame = this->frame;
+    unsigned int duration = s.getDurationFrames();
+    unsigned int totalSpace = s.getWidth() + s.getSpace();
+    unsigned int textWidth = s.getWidth();
+
+    int leftPosition = (int)textWidth - (
+        (((int)textWidth + (int)totalSpace) * (int)frame) / ((int)duration));
+
+    // Merge right part of the image
+    animRender->merge(subjectImage, leftPosition - totalSpace, 0);
+    // Merge center part of the image
+    animRender->merge(subjectImage, leftPosition, 0);
+    // Merge right part of the image
+    animRender->merge(subjectImage, leftPosition + totalSpace, 0);
+
+    this->resultTree = new SignImageTree(animRender);
 }
 
 // Tree functions
@@ -184,4 +211,46 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
     }
 }
 
+// Duration computer
 
+void SignRenderer::DurationComputerVisitor::visit(const Sign &s) {
+    unsigned int signTotalFrames = 1;
+    std::vector<SignDisplay*> displays = s.getDisplays();
+    for(auto i = displays.begin(); i < displays.end(); ++i) {
+        (*i)->accept(*this);
+        unsigned int displayTotal = this->totalFrames;
+        // Eclipse doesn't handle this LCM which is from C++17.
+        signTotalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+            (signTotalFrames, displayTotal);
+    }
+    this->totalFrames = signTotalFrames;
+}
+
+void SignRenderer::DurationComputerVisitor::visit(const SignDisplay &s) {
+    s.getRootCell()->accept(*this);
+}
+
+void SignRenderer::DurationComputerVisitor::visit(const SignCellSplit &s) {
+    s.getTopOrLeftChild()->accept(*this);
+    unsigned int topLeftFrames = this->totalFrames;
+    s.getBottomOrRightChild()->accept(*this);
+    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+        (this->totalFrames, topLeftFrames);
+}
+
+void SignRenderer::DurationComputerVisitor::visit(const SignCellText &s) {
+    this->totalFrames = 1;
+}
+
+void SignRenderer::DurationComputerVisitor::visit(const MarqueeAnimation &s) {
+    s.getSubject()->accept(*this);
+    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+        (this->totalFrames, s.getDurationFrames());
+}
+
+unsigned int SignRenderer::computeTotalFrames(const Sign *s) {
+    DurationComputerVisitor visitor;
+    s->accept(visitor);
+
+    return visitor.getTotalFrames();
+}

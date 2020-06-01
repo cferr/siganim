@@ -49,10 +49,6 @@ unsigned int SignCellText::getWidth() const {
     } else return 0; // Orphan node
 }
 
-SignCell::Type SignCellText::getType() const {
-    return Type::TEXT;
-}
-
 void SignCellText::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }

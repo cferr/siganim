@@ -40,8 +40,8 @@ public:
     SignColor& getPixel(const unsigned int x, const unsigned int y) const;
     const SignColor* getPixels() const;
 
-    void merge(const SignImage* top, const unsigned int x,
-            const unsigned int y);
+    void merge(const SignImage* top, const int x,
+            const int y);
 
     Bitmap* toImage() const;
 

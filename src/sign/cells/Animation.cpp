@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignAnimation.h"
+#include "Animation.h"
 
-SignAnimation::SignAnimation(SignCell* subject, unsigned int durationFrames) :
+Animation::Animation(SignCell* subject, unsigned int durationFrames) :
     subject(nullptr), durationFrames(durationFrames) {
     this->setSubject(subject);
 }
 
-bool SignAnimation::setSubject(SignCell* subject) {
+bool Animation::setSubject(SignCell* subject) {
     SignCell* oldSubject = this->subject;
     this->subject = subject;
     try {
@@ -36,39 +36,39 @@ bool SignAnimation::setSubject(SignCell* subject) {
     return true;
 }
 
-bool SignAnimation::setParent(const SignCell* parent) {
+bool Animation::setParent(const SignCell* parent) {
     this->parent = parent;
     return true;
 }
 
-SignCell* SignAnimation::getSubject() const {
+SignCell* Animation::getSubject() const {
     return this->subject;
 }
 
-unsigned int SignAnimation::getHeight() const {
+unsigned int Animation::getHeight() const {
     if(this->parent != nullptr) {
         return this->parent->getChildHeight(this);
     } else throw OrphanNodeException(this);
 }
 
-unsigned int SignAnimation::getWidth() const {
+unsigned int Animation::getWidth() const {
     if(this->parent != nullptr) {
         return this->parent->getChildWidth(this);
     } else throw OrphanNodeException(this);
 }
 
-unsigned int SignAnimation::getChildHeight(const SignCell *child) const {
+unsigned int Animation::getChildHeight(const SignCell *child) const {
     if(child == this->subject)
         return this->getHeight();
     else throw NoSuchChildException(this, child);
 }
 
-unsigned int SignAnimation::getChildWidth(const SignCell *child) const {
+unsigned int Animation::getChildWidth(const SignCell *child) const {
     if(child == this->subject)
         return this->getWidth();
     else throw NoSuchChildException(this, child);
 }
 
-unsigned int SignAnimation::getDurationFrames() const {
+unsigned int Animation::getDurationFrames() const {
     return this->durationFrames;
 }

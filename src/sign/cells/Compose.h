@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGN_COMPOSE_H_
-#define SRC_SIGN_COMPOSE_H_
+#ifndef SRC_SIGN_CELLS_COMPOSE_H_
+#define SRC_SIGN_CELLS_COMPOSE_H_
 
 #include <iostream>
-#include "SignCell.h"
-#include "SignTreeVisitor.h"
+#include "../SignCell.h"
+#include "../SignTreeVisitor.h"
 
 class Compose : public SignCell {
 private:
@@ -29,10 +29,6 @@ private:
 public:
     Compose(SignCell* background, SignCell* foreground);
     virtual ~Compose() {
-    }
-
-    virtual Type getType() const {
-        return Type::COMPOSE;
     }
 
     virtual const char* CellTypeStr() const {
@@ -59,4 +55,4 @@ public:
 
 std::ostream& operator<<(std::ostream &strm, const Compose &s);
 
-#endif /* SRC_SIGN_COMPOSE_H_ */
+#endif /* SRC_SIGN_CELLS_COMPOSE_H_ */

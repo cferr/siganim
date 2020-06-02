@@ -26,7 +26,7 @@ Sign::Sign(unsigned int width, unsigned int height) :
 }
 
 Sign::Sign(unsigned int width, unsigned int height,
-        std::vector<SignDisplay*> displays) :
+        std::vector<Display*> displays) :
         Sign(width, height) {
     for (SignDisplayVectIt i = displays.begin(); i < displays.end(); ++i) {
         this->addDisplay(*i);
@@ -34,7 +34,7 @@ Sign::Sign(unsigned int width, unsigned int height,
 }
 
 Sign::Sign(unsigned int width, unsigned int height,
-        std::initializer_list<SignDisplay*> displays) :
+        std::initializer_list<Display*> displays) :
         Sign(width, height) {
     for (auto display : displays)
         this->addDisplay(display);
@@ -60,12 +60,12 @@ void Sign::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-bool Sign::addDisplay(SignDisplay *display) {
+bool Sign::addDisplay(Display *display) {
     displays.push_back(display);
     return true;
 }
 
-bool Sign::removeDisplay(SignDisplay *display) {
+bool Sign::removeDisplay(Display *display) {
     bool ret = false;
     for (SignDisplayVectIt i = this->displays.begin(); i < this->displays.end();
             ++i) {
@@ -77,7 +77,7 @@ bool Sign::removeDisplay(SignDisplay *display) {
     return ret;
 }
 
-std::vector<SignDisplay*> Sign::getDisplays() const {
+std::vector<Display*> Sign::getDisplays() const {
     return this->displays;
 }
 

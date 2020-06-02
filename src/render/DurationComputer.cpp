@@ -18,17 +18,18 @@
 #include <numeric>
 #include "DurationComputer.h"
 #include "../sign/Sign.h"
-#include "../sign/SignCellSplit.h"
-#include "../sign/MarqueeAnimation.h"
-#include "../sign/BlinkAnimation.h"
-#include "../sign/Compose.h"
+#include "../sign/cells/MarqueeAnimation.h"
+#include "../sign/cells/BlinkAnimation.h"
+#include "../sign/cells/Compose.h"
+#include "../sign/cells/Display.h"
+#include "../sign/cells/Split.h"
 
 DurationComputer::DurationComputer() {
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
     unsigned int signTotalFrames = 1;
-    std::vector<SignDisplay*> displays = s.getDisplays();
+    std::vector<Display*> displays = s.getDisplays();
     for(auto i = displays.begin(); i < displays.end(); ++i) {
         (*i)->accept(*this);
         unsigned int displayTotal = this->totalFrames;
@@ -39,7 +40,7 @@ void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
     this->totalFrames = signTotalFrames;
 }
 
-void DurationComputer::DurationComputerVisitor::visit(const SignDisplay &s) {
+void DurationComputer::DurationComputerVisitor::visit(const Display &s) {
     s.getRootCell()->accept(*this);
 }
 
@@ -51,7 +52,7 @@ void DurationComputer::DurationComputerVisitor::visit(const Compose &s) {
         (this->totalFrames, bgFrames);
 }
 
-void DurationComputer::DurationComputerVisitor::visit(const SignCellSplit &s) {
+void DurationComputer::DurationComputerVisitor::visit(const Split &s) {
     s.getTopOrLeftChild()->accept(*this);
     unsigned int topLeftFrames = this->totalFrames;
     s.getBottomOrRightChild()->accept(*this);
@@ -59,7 +60,7 @@ void DurationComputer::DurationComputerVisitor::visit(const SignCellSplit &s) {
         (this->totalFrames, topLeftFrames);
 }
 
-void DurationComputer::DurationComputerVisitor::visit(const SignCellText &s) {
+void DurationComputer::DurationComputerVisitor::visit(const Text &s) {
     this->totalFrames = 1;
 }
 

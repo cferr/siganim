@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNDISPLAY_H_
-#define SRC_SIGNDISPLAY_H_
+#ifndef SRC_SIGN_CELLS_DISPLAY_H_
+#define SRC_SIGN_CELLS_DISPLAY_H_
 
 #include <vector>
-#include "SignCell.h"
+#include "../SignCell.h"
 
-class SignDisplay : public SignCell {
+class Display : public SignCell {
 public:
-    enum DisplayType {
+    enum Type {
         DISPLAY_RGB_LED, DISPLAY_MONOCHROME_LED, DISPLAY_FLIPDISC
     };
 
@@ -31,23 +31,20 @@ private:
     unsigned int width;
     unsigned int height;
 
-    enum DisplayType displayType;  // LEDs (monochromatic, RGB) or flip discs.
+    enum Type displayType;  // LEDs (monochromatic, RGB) or flip discs.
 
     SignCell *rootCell;
 
     const Sign *parentSign;
 
 public:
-    SignDisplay(unsigned int width, unsigned int height,
-            enum DisplayType type);
-    SignDisplay(unsigned int width, unsigned int height,
-            enum DisplayType type, SignCell *rootCell);
-    virtual ~SignDisplay();
+    Display(unsigned int width, unsigned int height,
+            enum Type type);
+    Display(unsigned int width, unsigned int height,
+            enum Type type, SignCell *rootCell);
+    virtual ~Display();
 
     virtual bool setParent(const SignCell* parent);
-    virtual Type getType() const {
-        return Type::DISPLAY;
-    }
 
     virtual const char* CellTypeStr() const {
         return "Display";
@@ -62,8 +59,8 @@ public:
     bool setRootCell(SignCell *rootCell);
     SignCell* getRootCell() const;
 
-    enum DisplayType getDisplayType() const;
-    bool setDisplayType(enum DisplayType displayType);
+    enum Type getDisplayType() const;
+    bool setDisplayType(enum Type displayType);
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;
@@ -76,6 +73,6 @@ public:
     std::ostream& serialize(std::ostream &strm) const;
 };
 
-std::ostream& operator<<(std::ostream &strm, const SignDisplay &s);
+std::ostream& operator<<(std::ostream &strm, const Display &s);
 
-#endif /* SRC_SIGNDISPLAY_H_ */
+#endif /* SRC_SIGN_CELLS_DISPLAY_H_ */

@@ -18,14 +18,14 @@
 #include <unicode/schriter.h>
 
 #include "SignRenderer.h"
+#include "../font/Character.h"
 #include "../sign/Sign.h"
 #include "../sign/SignImage.h"
-#include "../sign/SignCellSplit.h"
-#include "../sign/SignCellText.h"
-#include "../sign/MarqueeAnimation.h"
-#include "../sign/BlinkAnimation.h"
-#include "../sign/Compose.h"
-#include "../font/Character.h"
+#include "../sign/cells/MarqueeAnimation.h"
+#include "../sign/cells/BlinkAnimation.h"
+#include "../sign/cells/Compose.h"
+#include "../sign/cells/Split.h"
+#include "../sign/cells/Text.h"
 
 SignRenderer::SignRenderer() {
 
@@ -45,7 +45,7 @@ Bitmap* SignRenderer::render(const Sign *s, unsigned int frame) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
-    std::vector<SignDisplay*> displays = s.getDisplays();
+    std::vector<Display*> displays = s.getDisplays();
     this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
@@ -58,11 +58,11 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     }
 }
 
-void SignRenderer::SignRenderVisitor::visit(const SignDisplay &s) {
+void SignRenderer::SignRenderVisitor::visit(const Display &s) {
     (s.getRootCell())->accept(*this);
 }
 
-void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
+void SignRenderer::SignRenderVisitor::visit(const Split &s) {
 
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
      = new std::vector<struct SignImageTree::SignImageTreeChild>();
@@ -71,10 +71,10 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
     childrenImg->push_back({this->resultTree, 0, 0});
     s.getBottomOrRightChild()->accept(*this);
     switch(s.getSplitDirection()) {
-    case SignCellSplit::SPLIT_HORIZONTAL:
+    case Split::SPLIT_HORIZONTAL:
         childrenImg->push_back({this->resultTree, 0, (int)s.getSplitPos()});
         break;
-    case SignCellSplit::SPLIT_VERTICAL:
+    case Split::SPLIT_VERTICAL:
         childrenImg->push_back({this->resultTree, (int)s.getSplitPos(), 0});
         break;
     }
@@ -83,7 +83,7 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellSplit &s) {
     this->resultTree = result;
 }
 
-void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
+void SignRenderer::SignRenderVisitor::visit(const Text &s) {
     uint32_t cellHeight = s.getHeight();
     uint32_t cellWidth = s.getWidth();
 
@@ -119,35 +119,35 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
         // Compute biggest char's vertical position
         int32_t yy;
         switch(s.getVAlign()) {
-        case SignCellText::VALIGN_TOP_TOP:
-        case SignCellText::VALIGN_TOP_CENTER:
-        case SignCellText::VALIGN_TOP_BOTTOM:
+        case Text::VALIGN_TOP_TOP:
+        case Text::VALIGN_TOP_CENTER:
+        case Text::VALIGN_TOP_BOTTOM:
             yy = 0;
             break;
 
-        case SignCellText::VALIGN_CENTER_TOP:
-        case SignCellText::VALIGN_CENTER_CENTER:
-        case SignCellText::VALIGN_CENTER_BOTTOM:
+        case Text::VALIGN_CENTER_TOP:
+        case Text::VALIGN_CENTER_CENTER:
+        case Text::VALIGN_CENTER_BOTTOM:
             yy = ((int32_t)cellHeight - (int32_t)maxHeight) / 2;
             break;
 
-        case SignCellText::VALIGN_BOTTOM_TOP:
-        case SignCellText::VALIGN_BOTTOM_CENTER:
-        case SignCellText::VALIGN_BOTTOM_BOTTOM:
+        case Text::VALIGN_BOTTOM_TOP:
+        case Text::VALIGN_BOTTOM_CENTER:
+        case Text::VALIGN_BOTTOM_BOTTOM:
             yy = (int32_t)cellHeight - (int32_t)maxHeight;
             break;
         }
 
         int32_t xx;
         switch(s.getHAlign()) {
-        case SignCellText::HALIGN_LEFT:
-        case SignCellText::HALIGN_JUSTIFY:
+        case Text::HALIGN_LEFT:
+        case Text::HALIGN_JUSTIFY:
             xx = 0;
             break;
-        case SignCellText::HALIGN_CENTER:
+        case Text::HALIGN_CENTER:
             xx = ((int32_t)actualWidth - (int32_t)totalWidth) / 2;
             break;
-        case SignCellText::HALIGN_RIGHT:
+        case Text::HALIGN_RIGHT:
             xx = (int32_t)actualWidth - (int32_t)totalWidth;
             break;
         }
@@ -169,21 +169,21 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
 
                 int32_t yyy;
                 switch(s.getVAlign()) {
-                case SignCellText::VALIGN_TOP_TOP:
-                case SignCellText::VALIGN_CENTER_TOP:
-                case SignCellText::VALIGN_BOTTOM_TOP:
+                case Text::VALIGN_TOP_TOP:
+                case Text::VALIGN_CENTER_TOP:
+                case Text::VALIGN_BOTTOM_TOP:
                     yyy = 0;
                     break;
 
-                case SignCellText::VALIGN_TOP_CENTER:
-                case SignCellText::VALIGN_CENTER_CENTER:
-                case SignCellText::VALIGN_BOTTOM_CENTER:
+                case Text::VALIGN_TOP_CENTER:
+                case Text::VALIGN_CENTER_CENTER:
+                case Text::VALIGN_BOTTOM_CENTER:
                     yyy = ((int32_t)maxHeight - (int32_t)charHeight) / 2;
                     break;
 
-                case SignCellText::VALIGN_TOP_BOTTOM:
-                case SignCellText::VALIGN_CENTER_BOTTOM:
-                case SignCellText::VALIGN_BOTTOM_BOTTOM:
+                case Text::VALIGN_TOP_BOTTOM:
+                case Text::VALIGN_CENTER_BOTTOM:
+                case Text::VALIGN_BOTTOM_BOTTOM:
                     yyy = (int32_t)maxHeight - (int32_t)charHeight;
                     break;
                 }
@@ -198,12 +198,12 @@ void SignRenderer::SignRenderVisitor::visit(const SignCellText &s) {
                 }
 
                 switch(s.getHAlign()) {
-                case SignCellText::HALIGN_LEFT:
-                case SignCellText::HALIGN_CENTER:
-                case SignCellText::HALIGN_RIGHT:
+                case Text::HALIGN_LEFT:
+                case Text::HALIGN_CENTER:
+                case Text::HALIGN_RIGHT:
                     xx += charWidth;
                     break;
-                case SignCellText::HALIGN_JUSTIFY:
+                case Text::HALIGN_JUSTIFY:
                     xx += charWidth + justifiedSpaceBetweenChars;
                     break;
                 }
@@ -327,7 +327,7 @@ SignImage* SignRenderer::SignImageTree::compose() {
 }
 
 void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
-        SignDisplay::DisplayType sourceType, unsigned int x, unsigned int y) {
+        Display::Type sourceType, unsigned int x, unsigned int y) {
     // Crop the result into its own box, in case it hasn't been done before.
     SignImage* sourceCropped = source->cropToBox();
 

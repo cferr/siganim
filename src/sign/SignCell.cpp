@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SignCell.h"
-#include "SignDisplay.h"
 #include <cstddef>
+#include "cells/Display.h"
 
 SignCell::~SignCell() {
 

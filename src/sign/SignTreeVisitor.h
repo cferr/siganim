@@ -20,9 +20,9 @@
 #include <type_traits>
 
 class Sign;
-class SignDisplay;
-class SignCellText;
-class SignCellSplit;
+class Display;
+class Text;
+class Split;
 class MarqueeAnimation;
 class BlinkAnimation;
 class Compose;
@@ -31,12 +31,12 @@ template<bool isConst>
     class AbstractSignTreeVisitor {
 private:
     typedef typename std::conditional<isConst, const Sign, Sign>::type SignT;
-    typedef typename std::conditional<isConst, const SignDisplay,
-            SignDisplay>::type SignDisplayT;
-    typedef typename std::conditional<isConst, const SignCellText,
-                SignCellText>::type SignCellTextT;
-    typedef typename std::conditional<isConst, const SignCellSplit,
-                SignCellSplit>::type SignCellSplitT;
+    typedef typename std::conditional<isConst, const Display,
+            Display>::type SignDisplayT;
+    typedef typename std::conditional<isConst, const Text,
+                Text>::type SignCellTextT;
+    typedef typename std::conditional<isConst, const Split,
+                Split>::type SignCellSplitT;
     typedef typename std::conditional<isConst, const MarqueeAnimation,
                 MarqueeAnimation>::type MarqueeAnimationT;
     typedef typename std::conditional<isConst, const BlinkAnimation,

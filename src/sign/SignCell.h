@@ -91,13 +91,6 @@ protected:
     const SignCell* parent;
 
 public:
-    enum Type {
-        DISPLAY, CELL_SPLIT, TEXT, MARQUEE_ANIMATION, BLINK_ANIMATION,
-        COMPOSE
-    };
-
-    typedef enum Type Type;
-    virtual Type getType() const = 0;
     virtual const char* CellTypeStr() const = 0;
 
     virtual ~SignCell();

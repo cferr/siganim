@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCellSplit.h"
-
 #include <iostream>
+#include "Split.h"
 
-SignCellSplit::SignCellSplit(enum SplitDirection splitDirection,
+Split::Split(enum SplitDirection splitDirection,
         unsigned int splitPos, SignCell* topOrLeftChild,
         SignCell* bottomOrRightChild) :
         splitDirection(splitDirection), splitPos(splitPos),
@@ -37,11 +36,11 @@ SignCellSplit::SignCellSplit(enum SplitDirection splitDirection,
     }
 }
 
-SignCellSplit::~SignCellSplit() {
+Split::~Split() {
 
 }
 
-unsigned int SignCellSplit::getChildHeight(const SignCell* child) const {
+unsigned int Split::getChildHeight(const SignCell* child) const {
     unsigned int thisHeight = this->getHeight();
     if(this->splitDirection == SplitDirection::SPLIT_HORIZONTAL) {
         if(child == this->topOrLeftChild)
@@ -56,7 +55,7 @@ unsigned int SignCellSplit::getChildHeight(const SignCell* child) const {
     }
 }
 
-unsigned int SignCellSplit::getChildWidth(const SignCell* child) const {
+unsigned int Split::getChildWidth(const SignCell* child) const {
     unsigned int thisWidth = this->getWidth();
     if(this->splitDirection == SplitDirection::SPLIT_VERTICAL) {
         if(child == this->topOrLeftChild)
@@ -71,34 +70,34 @@ unsigned int SignCellSplit::getChildWidth(const SignCell* child) const {
     }
 }
 
-void SignCellSplit::accept(SignTreeVisitor &visitor) {
+void Split::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
-void SignCellSplit::accept(ConstSignTreeVisitor &visitor) const {
+void Split::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-enum SignCellSplit::SplitDirection SignCellSplit::getSplitDirection() const {
+enum Split::SplitDirection Split::getSplitDirection() const {
     return this->splitDirection;
 }
 
-bool SignCellSplit::setSplitDirection(
-        enum SignCellSplit::SplitDirection direction) {
+bool Split::setSplitDirection(
+        enum Split::SplitDirection direction) {
     this->splitDirection = direction;
     return true;
 }
 
-bool SignCellSplit::setSplitPos(unsigned int splitPos) {
+bool Split::setSplitPos(unsigned int splitPos) {
     this->splitPos = splitPos;
     return true;
 }
 
-unsigned int SignCellSplit::getSplitPos() const {
+unsigned int Split::getSplitPos() const {
     return this->splitPos;
 }
 
-bool SignCellSplit::setTopOrLeftChild(SignCell* child) {
+bool Split::setTopOrLeftChild(SignCell* child) {
     SignCell* oldChild = this->topOrLeftChild;
     this->topOrLeftChild = child;
     if(topOrLeftChild != nullptr)
@@ -114,11 +113,11 @@ bool SignCellSplit::setTopOrLeftChild(SignCell* child) {
     return true;
 }
 
-SignCell* SignCellSplit::getTopOrLeftChild() const {
+SignCell* Split::getTopOrLeftChild() const {
     return this->topOrLeftChild;
 }
 
-bool SignCellSplit::setBottomOrRightChild(SignCell* child) {
+bool Split::setBottomOrRightChild(SignCell* child) {
     SignCell* oldChild = this->bottomOrRightChild;
     this->bottomOrRightChild = child;
     if(bottomOrRightChild != nullptr)
@@ -134,16 +133,16 @@ bool SignCellSplit::setBottomOrRightChild(SignCell* child) {
     return true;
 }
 
-SignCell* SignCellSplit::getBottomOrRightChild() const {
+SignCell* Split::getBottomOrRightChild() const {
     return this->bottomOrRightChild;
 }
 
-bool SignCellSplit::setParent(const SignCell *parent) {
+bool Split::setParent(const SignCell *parent) {
     this->parent = parent;
     return true;
 }
 
-unsigned int SignCellSplit::getHeight() const {
+unsigned int Split::getHeight() const {
     try {
         if(this->parent != nullptr) {
             return this->parent->getChildHeight(this);
@@ -155,13 +154,13 @@ unsigned int SignCellSplit::getHeight() const {
     }
 }
 
-unsigned int SignCellSplit::getWidth() const {
+unsigned int Split::getWidth() const {
     if(this->parent != nullptr) {
         return this->parent->getChildWidth(this);
     } else throw OrphanNodeException(this); // Orphan node
 }
 
-std::ostream& SignCellSplit::serialize(std::ostream &strm) const {
+std::ostream& Split::serialize(std::ostream &strm) const {
     strm << "{ " << this->getWidth() << "x" << this->getHeight() << " +";
     switch(this->splitDirection) {
     case SplitDirection::SPLIT_HORIZONTAL:
@@ -176,6 +175,6 @@ std::ostream& SignCellSplit::serialize(std::ostream &strm) const {
     return strm;
 }
 
-std::ostream& operator<<(std::ostream &strm, const SignCellSplit &s) {
+std::ostream& operator<<(std::ostream &strm, const Split &s) {
     return s.serialize(strm);
 }

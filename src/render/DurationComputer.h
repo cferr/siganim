@@ -33,9 +33,9 @@ private:
         }
 
         virtual void visit(const Sign &s);
-        virtual void visit(const SignDisplay &s);
-        virtual void visit(const SignCellSplit &s);
-        virtual void visit(const SignCellText &s);
+        virtual void visit(const Display &s);
+        virtual void visit(const Split &s);
+        virtual void visit(const Text &s);
         virtual void visit(const MarqueeAnimation &s);
         virtual void visit(const BlinkAnimation &s);
         virtual void visit(const Compose &s);

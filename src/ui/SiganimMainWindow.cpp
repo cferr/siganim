@@ -22,7 +22,7 @@ SiganimMainWindow::SiganimMainWindow() :
 
 }
 
-SiganimMainWindow::SiganimMainWindow(Sign* sign, SignCellText* textCell) :
+SiganimMainWindow::SiganimMainWindow(Sign* sign, Text* textCell) :
     textCell(textCell) {
     this->setWindowTitle(QString("SigAnim Sign Animator"));
 

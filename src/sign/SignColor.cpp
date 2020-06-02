@@ -63,24 +63,24 @@ bool SignColor::isDefault() const {
 }
 
 struct SignColor::RGB SignColor::getValue(
-        SignDisplay::DisplayType displayType) const {
+        Display::Type displayType) const {
 
     struct RGB ret;
 
     switch(displayType) {
-    case SignDisplay::DISPLAY_FLIPDISC:
+    case Display::DISPLAY_FLIPDISC:
         if(this->type == Type::BACKGROUND)
             ret = SignColor::defaultFlipDiscBG.value;
         else
             ret = SignColor::defaultFlipDiscFG.value;
         break;
-    case SignDisplay::DISPLAY_MONOCHROME_LED:
+    case Display::DISPLAY_MONOCHROME_LED:
         if(this->type == Type::BACKGROUND)
             ret = SignColor::defaultMonoLEDBG.value;
         else
             ret = SignColor::defaultMonoLEDFG.value;
         break;
-    case SignDisplay::DISPLAY_RGB_LED:
+    case Display::DISPLAY_RGB_LED:
         if(this->status == CUSTOM)
             ret = this->value;
         else if(this->type == Type::BACKGROUND)

@@ -17,10 +17,10 @@
 #ifndef SRC_SIGNRENDERER_H_
 #define SRC_SIGNRENDERER_H_
 
+#include "../sign/cells/Display.h"
 #include "Bitmap.h"
 #include "../sign/Sign.h"
 #include "../sign/SignImage.h"
-#include "../sign/SignDisplay.h"
 #include "../sign/SignTreeVisitor.h"
 
 class SignRenderer {
@@ -79,9 +79,9 @@ private:
         }
 
         void visit(const Sign &s);
-        void visit(const SignDisplay &s);
-        void visit(const SignCellSplit &s);
-        void visit(const SignCellText &s);
+        void visit(const Display &s);
+        void visit(const Split &s);
+        void visit(const Text &s);
         void visit(const MarqueeAnimation &s);
         void visit(const BlinkAnimation &s);
         void visit(const Compose &s);
@@ -89,7 +89,7 @@ private:
 
 
     void signImageToBitmap(Bitmap* dest, SignImage* source,
-            SignDisplay::DisplayType sourceType,
+            Display::Type sourceType,
             unsigned int x, unsigned int y);
 
 public:

@@ -19,7 +19,7 @@
 
 BlinkAnimation::BlinkAnimation(SignCell* subject, const unsigned int framesOn,
         const unsigned int framesOff) :
-        SignAnimation(subject, framesOn + framesOff), framesOn(framesOn),
+        Animation(subject, framesOn + framesOff), framesOn(framesOn),
         framesOff(framesOff) {
 
 }

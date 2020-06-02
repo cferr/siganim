@@ -14,44 +14,48 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGN_BLINKANIMATION_H_
-#define SRC_SIGN_BLINKANIMATION_H_
+#ifndef SRC_SIGN_CELLS_MARQUEEANIMATION_H_
+#define SRC_SIGN_CELLS_MARQUEEANIMATION_H_
 
-#include "SignAnimation.h"
+#include "Animation.h"
 
-class BlinkAnimation: public SignAnimation {
+class MarqueeAnimation: public Animation {
+public:
+    enum Direction { LEFT, RIGHT };
+
 private:
-    unsigned int framesOn;
-    unsigned int framesOff;
+    enum Direction direction;
+    bool slant;
+    unsigned int space;
 
 public:
-    BlinkAnimation(SignCell* subject, const unsigned int framesOn,
-            const unsigned int framesOff);
+    MarqueeAnimation(SignCell* subject, unsigned int durationFrames,
+            enum Direction direction, bool slant, unsigned int space);
 
-    virtual ~BlinkAnimation() {
-
-    }
-
-    virtual Type getType() const {
-        return Type::BLINK_ANIMATION;
+    virtual ~MarqueeAnimation() {
     }
 
     virtual const char* CellTypeStr() const {
-        return "Blink Animation";
+        return "Marquee Animation";
     }
 
-    unsigned int getFramesOn() const;
-    unsigned int getFramesOff() const;
-    void setFramesOn(unsigned int framesOn);
-    void setFramesOff(unsigned int framesOff);
+    void setDurationFrames(unsigned int durationFrames);
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
+
+    void setDirection(enum Direction direction);
+    void setSlant(bool slant);
+    void setSpace(unsigned int space);
+
+    enum Direction getDirection() const;
+    bool getSlant() const;
+    unsigned int getSpace() const;
 
     virtual std::ostream& serialize(std::ostream &strm) const;
 
 };
 
-std::ostream& operator<<(std::ostream &strm, const BlinkAnimation &s);
+std::ostream& operator<<(std::ostream &strm, const MarqueeAnimation &s);
 
-#endif /* SRC_SIGN_BLINKANIMATION_H_ */
+#endif /* SRC_SIGN_CELLS_MARQUEEANIMATION_H_ */

@@ -19,25 +19,25 @@
 
 #include <vector>
 #include "../render/Bitmap.h"
+#include "cells/Display.h"
 #include "SignColor.h"
-#include "SignDisplay.h"
 
 class Sign {
 private:
-    std::vector<SignDisplay*> displays;
+    std::vector<Display*> displays;
 
     unsigned int width;
     unsigned int height;
 
 public:
-    typedef std::vector<SignDisplay*>::iterator SignDisplayVectIt;
-    typedef std::vector<SignDisplay*>::const_iterator SignDisplayVectConstIt;
+    typedef std::vector<Display*>::iterator SignDisplayVectIt;
+    typedef std::vector<Display*>::const_iterator SignDisplayVectConstIt;
 
     Sign(unsigned int width, unsigned int height);
     Sign(unsigned int width, unsigned int height,
-            std::vector<SignDisplay*> displays);
+            std::vector<Display*> displays);
     Sign(unsigned int width, unsigned int height,
-            std::initializer_list<SignDisplay*> displays);
+            std::initializer_list<Display*> displays);
     virtual ~Sign();
 
     unsigned int getHeight() const;
@@ -46,9 +46,9 @@ public:
     void accept(SignTreeVisitor &visitor);
     void accept(ConstSignTreeVisitor &visitor) const;
 
-    bool addDisplay(SignDisplay *display);
-    bool removeDisplay(SignDisplay *display);
-    std::vector<SignDisplay*> getDisplays() const;
+    bool addDisplay(Display *display);
+    bool removeDisplay(Display *display);
+    std::vector<Display*> getDisplays() const;
 
     std::ostream& serialize(std::ostream &strm) const;
 };

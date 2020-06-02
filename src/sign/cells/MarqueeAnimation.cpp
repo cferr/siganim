@@ -18,7 +18,7 @@
 
 MarqueeAnimation::MarqueeAnimation(SignCell *subject,
         unsigned int durationFrames, enum Direction direction, bool slant,
-        unsigned int space) : SignAnimation(subject, durationFrames),
+        unsigned int space) : Animation(subject, durationFrames),
         direction(direction), slant(slant), space(space) {
 }
 

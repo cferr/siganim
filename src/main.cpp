@@ -22,10 +22,11 @@
 #endif
 #include <iostream>
 #include "sign/Sign.h"
-#include "sign/SignCellSplit.h"
-#include "sign/SignCellText.h"
-#include "sign/MarqueeAnimation.h"
-#include "sign/BlinkAnimation.h"
+#include "sign/cells/Display.h"
+#include "sign/cells/Split.h"
+#include "sign/cells/Text.h"
+#include "sign/cells/MarqueeAnimation.h"
+#include "sign/cells/BlinkAnimation.h"
 #include "render/DurationComputer.h"
 #include "render/GIFSink.h"
 #include "font/parsers/GirouetteFontsParser.h"
@@ -60,14 +61,14 @@ int main(int argc, char *argv[]) {
     Font* font1912 = fset.lookup("Test font 19x12", "");
     Font* font1207 = fset.lookup("Test font 12x7", "");
     Font* font0704 = fset.lookup("Test font 7x4", "");
-    SignCellText* modifiableText = new SignCellText(font1207,
-            SignCellText::HALIGN_CENTER,
-            SignCellText::VALIGN_CENTER_BOTTOM,
+    Text* modifiableText = new Text(font1207,
+            Text::HALIGN_CENTER,
+            Text::VALIGN_CENTER_BOTTOM,
             "UNION HUB");
 
-    SignCellText* lineNumber = new SignCellText(font1912,
-            SignCellText::HALIGN_CENTER,
-            SignCellText::VALIGN_CENTER_BOTTOM,
+    Text* lineNumber = new Text(font1912,
+            Text::HALIGN_CENTER,
+            Text::VALIGN_CENTER_BOTTOM,
             "7");
 
     // Set fancy colors...
@@ -78,18 +79,18 @@ int main(int argc, char *argv[]) {
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 24,
-            { new SignDisplay(120, 24, SignDisplay::DISPLAY_RGB_LED,
+            { new Display(120, 24, Display::DISPLAY_RGB_LED,
                     new MarqueeAnimation(
-                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 30,
+                    new Split(Split::SPLIT_VERTICAL, 30,
                             new MarqueeAnimation(lineNumber, 20,
                                     MarqueeAnimation::LEFT, true, 10),
-                            new SignCellSplit(
-                                    SignCellSplit::SPLIT_HORIZONTAL, 12,
+                            new Split(
+                                    Split::SPLIT_HORIZONTAL, 12,
                                     modifiableText,
                                     new BlinkAnimation(
-                                            new SignCellText(font0704,
-                                            SignCellText::HALIGN_CENTER,
-                                            SignCellText::VALIGN_CENTER_BOTTOM,
+                                            new Text(font0704,
+                                            Text::HALIGN_CENTER,
+                                            Text::VALIGN_CENTER_BOTTOM,
                                             "VIA 17TH & 18TH ST"),
                                             10, 5
                                     )

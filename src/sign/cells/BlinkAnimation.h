@@ -14,52 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGN_MARQUEEANIMATION_H_
-#define SRC_SIGN_MARQUEEANIMATION_H_
+#ifndef SRC_SIGN_CELLS_BLINKANIMATION_H_
+#define SRC_SIGN_CELLS_BLINKANIMATION_H_
 
-#include "SignAnimation.h"
+#include "Animation.h"
 
-class MarqueeAnimation: public SignAnimation {
-public:
-    enum Direction { LEFT, RIGHT };
-
+class BlinkAnimation: public Animation {
 private:
-    enum Direction direction;
-    bool slant;
-    unsigned int space;
+    unsigned int framesOn;
+    unsigned int framesOff;
 
 public:
-    MarqueeAnimation(SignCell* subject, unsigned int durationFrames,
-            enum Direction direction, bool slant, unsigned int space);
+    BlinkAnimation(SignCell* subject, const unsigned int framesOn,
+            const unsigned int framesOff);
 
-    virtual ~MarqueeAnimation() {
-    }
+    virtual ~BlinkAnimation() {
 
-    virtual Type getType() const {
-        return Type::MARQUEE_ANIMATION;
     }
 
     virtual const char* CellTypeStr() const {
-        return "Marquee Animation";
+        return "Blink Animation";
     }
 
-    void setDurationFrames(unsigned int durationFrames);
+    unsigned int getFramesOn() const;
+    unsigned int getFramesOff() const;
+    void setFramesOn(unsigned int framesOn);
+    void setFramesOff(unsigned int framesOff);
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
-
-    void setDirection(enum Direction direction);
-    void setSlant(bool slant);
-    void setSpace(unsigned int space);
-
-    enum Direction getDirection() const;
-    bool getSlant() const;
-    unsigned int getSpace() const;
 
     virtual std::ostream& serialize(std::ostream &strm) const;
 
 };
 
-std::ostream& operator<<(std::ostream &strm, const MarqueeAnimation &s);
+std::ostream& operator<<(std::ostream &strm, const BlinkAnimation &s);
 
-#endif /* SRC_SIGN_MARQUEEANIMATION_H_ */
+#endif /* SRC_SIGN_CELLS_BLINKANIMATION_H_ */

@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNCELLSPLIT_H_
-#define SRC_SIGNCELLSPLIT_H_
+#ifndef SRC_SIGN_CELLS_SPLIT_H_
+#define SRC_SIGN_CELLS_SPLIT_H_
 
 #include <vector>
 #include <tuple>
 #include <iostream>
 
-#include "SignCell.h"
-#include "SignImage.h"
-#include "SignTreeVisitor.h"
+#include "../SignCell.h"
+#include "../SignTreeVisitor.h"
 
-class SignCellSplit: public SignCell {
+class Split: public SignCell {
 public:
     enum SplitDirection {
         SPLIT_HORIZONTAL,
@@ -40,13 +39,9 @@ private:
 
 public:
 
-    SignCellSplit(enum SplitDirection splitDirection, unsigned int splitPos,
+    Split(enum SplitDirection splitDirection, unsigned int splitPos,
             SignCell* topOrLeftChild, SignCell* bottomOrRightChild);
-    virtual ~SignCellSplit();
-
-    virtual Type getType() const {
-        return Type::CELL_SPLIT;
-    }
+    virtual ~Split();
 
     virtual const char* CellTypeStr() const {
         return "Cell Split";
@@ -76,6 +71,6 @@ public:
     virtual std::ostream& serialize(std::ostream &strm) const;
 };
 
-std::ostream& operator<<(std::ostream &strm, const SignCellSplit &s);
+std::ostream& operator<<(std::ostream &strm, const Split &s);
 
-#endif /* SRC_SIGNCELLSPLIT_H_ */
+#endif /* SRC_SIGN_CELLS_SPLIT_H_ */

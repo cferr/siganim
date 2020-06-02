@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SIGN_SIGNANIMATION_H_
-#define SIGN_SIGNANIMATION_H_
+#ifndef SRC_SIGN_CELLS_ANIMATION_H_
+#define SRC_SIGN_CELLS_ANIMATION_H_
 
-#include "SignCell.h"
+#include "../SignCell.h"
 
-class SignAnimation: public SignCell {
+class Animation: public SignCell {
 protected:
     SignCell* subject;
     unsigned int durationFrames;
 
 public:
-    SignAnimation(SignCell* subject, unsigned int durationFrames);
-    virtual ~SignAnimation() {
+    Animation(SignCell* subject, unsigned int durationFrames);
+    virtual ~Animation() {
 
     }
 
@@ -43,4 +43,4 @@ public:
 
 };
 
-#endif /* SIGN_SIGNANIMATION_H_ */
+#endif /* SRC_SIGN_CELLS_ANIMATION_H_ */

@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNCELLTEXT_H_
-#define SRC_SIGNCELLTEXT_H_
+#ifndef SRC_SIGN_CELLS_TEXT_H_
+#define SRC_SIGN_CELLS_TEXT_H_
 
 #include <iostream>
 #include <unicode/utypes.h>
 #include <unicode/unistr.h>
 
-#include "SignCell.h"
-#include "SignImage.h"
-#include "SignTreeVisitor.h"
+#include "../SignCell.h"
+#include "../SignImage.h"
+#include "../SignTreeVisitor.h"
 
-#include "../font/Font.h"
+#include "../../font/Font.h"
 
-class SignCellText: public SignCell {
+class Text: public SignCell {
 public:
     enum HorizontalAlignment {
         HALIGN_LEFT, HALIGN_CENTER, HALIGN_RIGHT, HALIGN_JUSTIFY
@@ -53,14 +53,10 @@ private:
     enum VerticalAlignment vAlign;
 
 public:
-    SignCellText(const Font* font, const enum HorizontalAlignment hAlign,
+    Text(const Font* font, const enum HorizontalAlignment hAlign,
             const enum VerticalAlignment vAlign,
             const icu::UnicodeString& text = "");
-    virtual ~SignCellText();
-
-    virtual Type getType() const {
-        return Type::TEXT;
-    }
+    virtual ~Text();
 
     virtual const char* CellTypeStr() const {
         return "Text";
@@ -95,6 +91,6 @@ public:
 
 };
 
-std::ostream& operator<<(std::ostream &strm, const SignCellText &s);
+std::ostream& operator<<(std::ostream &strm, const Text &s);
 
-#endif /* SRC_SIGNCELLTEXT_H_ */
+#endif /* SRC_SIGN_CELLS_TEXT_H_ */

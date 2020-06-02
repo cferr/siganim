@@ -21,8 +21,9 @@
 #include <QMenuBar>
 #include <QLineEdit>
 #include <QVBoxLayout>
+
+#include "../sign/cells/Text.h"
 #include "SignWidget.h"
-#include "../sign/SignCellText.h"
 
 class SiganimMainWindow: public QMainWindow {
     Q_OBJECT
@@ -33,13 +34,13 @@ private:
     SignWidget *signWidget;
 
     // Temporary.
-    SignCellText* textCell;
+    Text* textCell;
 
 public:
 
     SiganimMainWindow();
     // Temporary.
-    SiganimMainWindow(Sign* sign, SignCellText* textCell);
+    SiganimMainWindow(Sign* sign, Text* textCell);
     virtual ~SiganimMainWindow();
 
     // Temporary.

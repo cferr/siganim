@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCellText.h"
-
 #include <unicode/ustream.h>
 
-SignCellText::SignCellText(const Font* font,
+#include "Text.h"
+
+Text::Text(const Font* font,
         const enum HorizontalAlignment hAlign,
         const enum VerticalAlignment vAlign,
         const icu::UnicodeString& text) :
@@ -30,95 +30,95 @@ SignCellText::SignCellText(const Font* font,
     this->text = new icu::UnicodeString(text);
 }
 
-SignCellText::~SignCellText() {
+Text::~Text() {
 
 }
 
-unsigned int SignCellText::getChildHeight(const SignCell* child) const {
+unsigned int Text::getChildHeight(const SignCell* child) const {
     throw NoSuchChildException(this, child);
 }
 
-unsigned int SignCellText::getChildWidth(const SignCell* child) const {
+unsigned int Text::getChildWidth(const SignCell* child) const {
     throw NoSuchChildException(this, child);
 }
 
-unsigned int SignCellText::getHeight() const {
+unsigned int Text::getHeight() const {
     if(this->parent != NULL) {
         return this->parent->getChildHeight(this);
     } else return 0; // Orphan node
 }
 
-unsigned int SignCellText::getWidth() const {
+unsigned int Text::getWidth() const {
     if(this->parent != NULL) {
         return this->parent->getChildWidth(this);
     } else return 0; // Orphan node
 }
 
-void SignCellText::accept(SignTreeVisitor &visitor) {
+void Text::accept(SignTreeVisitor &visitor) {
     visitor.visit(*this);
 }
 
-void SignCellText::accept(ConstSignTreeVisitor &visitor) const {
+void Text::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-void SignCellText::setText(const icu::UnicodeString& text) {
+void Text::setText(const icu::UnicodeString& text) {
     delete this->text;
     this->text = new icu::UnicodeString(text);
 }
 
-icu::UnicodeString* SignCellText::getText() const {
+icu::UnicodeString* Text::getText() const {
     return this->text->clone();
 }
 
-const Font* SignCellText::getFont() const {
+const Font* Text::getFont() const {
     return this->font;
 }
 
-bool SignCellText::setParent(const SignCell *parent) {
+bool Text::setParent(const SignCell *parent) {
     this->parent = parent;
     return true;
 }
 
-const SignColor SignCellText::getForegroundColor() const {
+const SignColor Text::getForegroundColor() const {
     return this->foreground;
 }
 
-const SignColor SignCellText::getBackgroundColor() const {
+const SignColor Text::getBackgroundColor() const {
     return this->background;
 }
 
-enum SignCellText::HorizontalAlignment SignCellText::getHAlign() const {
+enum Text::HorizontalAlignment Text::getHAlign() const {
     return this->hAlign;
 }
 
-enum SignCellText::VerticalAlignment SignCellText::getVAlign() const {
+enum Text::VerticalAlignment Text::getVAlign() const {
     return this->vAlign;
 }
 
-void SignCellText::setHAlign(enum HorizontalAlignment hAlign) {
+void Text::setHAlign(enum HorizontalAlignment hAlign) {
     this->hAlign = hAlign;
 }
 
-void SignCellText::setVAlign(enum VerticalAlignment vAlign) {
+void Text::setVAlign(enum VerticalAlignment vAlign) {
     this->vAlign = vAlign;
 }
 
-std::ostream& SignCellText::serialize(std::ostream &strm) const {
+std::ostream& Text::serialize(std::ostream &strm) const {
     return strm << "{ " << this->getWidth() << "x" << this->getHeight() <<
             " : \"" << *(this->text) << "\" }";
 }
 
-std::ostream& operator<<(std::ostream &strm, const SignCellText &s) {
+std::ostream& operator<<(std::ostream &strm, const Text &s) {
     return s.serialize(strm);
 }
 
-void SignCellText::setBackgroundColor(const SignColor &background) {
+void Text::setBackgroundColor(const SignColor &background) {
     SignColor c(background);
     this->background = c;
 }
 
-void SignCellText::setForegroundColor(const SignColor &foreground) {
+void Text::setForegroundColor(const SignColor &foreground) {
     SignColor c(foreground);
     this->foreground = c;
 }

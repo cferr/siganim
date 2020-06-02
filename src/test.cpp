@@ -17,10 +17,10 @@
 #include <iostream>
 
 #include "sign/Sign.h"
-#include "sign/SignCellSplit.h"
-#include "sign/SignCellText.h"
 #include "render/SignRenderer.h"
 #include "font/parsers/GirouetteFontsParser.h"
+#include "sign/cells/Split.h"
+#include "sign/cells/Text.h"
 
 bool UTF8Test() {
     std::cout << "// UTF-8 Test" << std::endl;
@@ -28,12 +28,12 @@ bool UTF8Test() {
 
     // Are we able to create a sign easily? Yes.
     Sign *UTF8Test = new Sign(120, 80,
-            { new SignDisplay(120, 80, SignDisplay::DISPLAY_FLIPDISC,
-                    new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
-                            new SignCellText(NULL, SignCellText::HALIGN_CENTER,
-                                    SignCellText::VALIGN_CENTER_BOTTOM, "☢"),
-                            new SignCellText(NULL, SignCellText::HALIGN_CENTER,
-                                    SignCellText::VALIGN_CENTER_BOTTOM, "")
+            { new Display(120, 80, Display::DISPLAY_FLIPDISC,
+                    new Split(Split::SPLIT_VERTICAL, 20,
+                            new Text(NULL, Text::HALIGN_CENTER,
+                                    Text::VALIGN_CENTER_BOTTOM, "☢"),
+                            new Text(NULL, Text::HALIGN_CENTER,
+                                    Text::VALIGN_CENTER_BOTTOM, "")
                     ))
             }
     );

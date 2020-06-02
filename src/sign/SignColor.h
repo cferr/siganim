@@ -18,7 +18,8 @@
 #define SRC_SIGNCOLOR_H_
 
 #include <cstdint>
-#include "SignDisplay.h"
+
+#include "cells/Display.h"
 
 class SignColor {
 public:
@@ -61,7 +62,7 @@ public:
 
     bool isDefault() const;
     enum Type getType() const;
-    struct RGB getValue(SignDisplay::DisplayType displayType) const;
+    struct RGB getValue(Display::Type displayType) const;
 
 };
 

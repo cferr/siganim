@@ -21,6 +21,7 @@
 #include "../sign/SignCellSplit.h"
 #include "../sign/MarqueeAnimation.h"
 #include "../sign/BlinkAnimation.h"
+#include "../sign/Compose.h"
 
 DurationComputer::DurationComputer() {
 }
@@ -40,6 +41,14 @@ void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
 
 void DurationComputer::DurationComputerVisitor::visit(const SignDisplay &s) {
     s.getRootCell()->accept(*this);
+}
+
+void DurationComputer::DurationComputerVisitor::visit(const Compose &s) {
+    s.getBackground()->accept(*this);
+    unsigned int bgFrames = this->totalFrames;
+    s.getForeground()->accept(*this);
+    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+        (this->totalFrames, bgFrames);
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const SignCellSplit &s) {

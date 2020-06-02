@@ -24,6 +24,7 @@
 #include "../sign/SignCellText.h"
 #include "../sign/MarqueeAnimation.h"
 #include "../sign/BlinkAnimation.h"
+#include "../sign/Compose.h"
 #include "../font/Character.h"
 
 SignRenderer::SignRenderer() {
@@ -267,6 +268,20 @@ void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
     }
 }
 
+void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
+    std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
+         = new std::vector<struct SignImageTree::SignImageTreeChild>();
+
+    s.getBackground()->accept(*this);
+    childrenImg->push_back({this->resultTree, 0, 0});
+    s.getForeground()->accept(*this);
+    childrenImg->push_back({this->resultTree, 0, 0});
+
+    this->resultTree = new SignImageTree(s.getWidth(), s.getHeight(),
+            childrenImg);
+}
+
+
 // Tree functions
 
 SignRenderer::SignImageTree::SignImageTree(unsigned int width,
@@ -338,3 +353,4 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
         }
     }
 }
+

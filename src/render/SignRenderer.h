@@ -84,6 +84,7 @@ private:
         void visit(const SignCellText &s);
         void visit(const MarqueeAnimation &s);
         void visit(const BlinkAnimation &s);
+        void visit(const Compose &s);
     };
 
 

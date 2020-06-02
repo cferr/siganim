@@ -38,6 +38,7 @@ private:
         virtual void visit(const SignCellText &s);
         virtual void visit(const MarqueeAnimation &s);
         virtual void visit(const BlinkAnimation &s);
+        virtual void visit(const Compose &s);
 
         unsigned int getTotalFrames() {
             return totalFrames;

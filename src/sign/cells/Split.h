@@ -28,7 +28,9 @@ class Split: public SignCell {
 public:
     enum SplitDirection {
         SPLIT_HORIZONTAL,
-        SPLIT_VERTICAL
+        SPLIT_VERTICAL,
+        SPLIT_SW_NE_DIAGONAL,
+        SPLIT_NW_SE_DIAGONAL
     };
 
 private:

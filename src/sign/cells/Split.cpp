@@ -169,6 +169,12 @@ std::ostream& Split::serialize(std::ostream &strm) const {
     case SplitDirection::SPLIT_VERTICAL:
         strm << "V";
         break;
+    case SplitDirection::SPLIT_SW_NE_DIAGONAL:
+        strm << "S";
+        break;
+    case SplitDirection::SPLIT_NW_SE_DIAGONAL:
+        strm << "N";
+        break;
     }
     strm << this->splitPos << " [" << *(this->topOrLeftChild)
             << ", " << *(this->bottomOrRightChild) << "] }";

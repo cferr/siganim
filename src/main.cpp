@@ -66,36 +66,46 @@ int main(int argc, char *argv[]) {
     Text* modifiableText = new Text(font1207,
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
-            "UNION HUB");
+            "UNION STN");
 
-    // Set fancy colors...
+    // Set fancy colors... Palette?
+    // Here you go: https://coolors.co/072ac8-1e96fc-a2d6f9-fcf300-ffc600
     Compose* lineNumber = new Compose(
-            new Fill(SignColor(SignColor::OFF, 155, 0, 255)),
+            new Split(Split::SPLIT_SW_NE_DIAGONAL, 0,
+                    new Split(Split::SPLIT_NW_SE_DIAGONAL, 0,
+                        new Fill(SignColor(SignColor::OFF, 7, 42, 200)),
+                        new Fill(SignColor(SignColor::OFF, 255, 198, 0))
+                    ),
+                    new BlinkAnimation(
+                        new Split(Split::SPLIT_NW_SE_DIAGONAL, 0,
+                            new Fill(SignColor(SignColor::OFF, 252, 243, 0)),
+                            new Fill(SignColor(SignColor::OFF, 162, 214, 249))
+                        ),
+                        5, 5
+                    )
+            ),
             new Text(font1912,
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
-            "7", SignColor(SignColor::ON, 255, 255, 0))
+            "17", SignColor(SignColor::ON, 30, 150, 252))
     );
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 24,
             { new Display(120, 24, Display::DISPLAY_RGB_LED,
-                    new MarqueeAnimation(
-                    new Split(Split::SPLIT_VERTICAL, 30,
-                            new MarqueeAnimation(lineNumber, 20,
-                                    MarqueeAnimation::LEFT, 10),
-                            new Split(
-                                    Split::SPLIT_HORIZONTAL, 12,
-                                    modifiableText,
-                                    new BlinkAnimation(
-                                            new Text(font0704,
-                                            Text::HALIGN_CENTER,
-                                            Text::VALIGN_CENTER_BOTTOM,
-                                            "VIA 17TH & 18TH ST"),
-                                            10, 5
-                                    )
+                    new Split(Split::SPLIT_VERTICAL, 32,
+                        lineNumber,
+                        new Split(Split::SPLIT_HORIZONTAL, 12,
+                            modifiableText,
+                            new MarqueeAnimation(
+                                new Text(font0704,
+                                    Text::HALIGN_CENTER,
+                                    Text::VALIGN_CENTER_BOTTOM,
+                                    "VIA 17TH & 18TH STREETS"
+                                ),
+                                50, MarqueeAnimation::LEFT, 20
                             )
-                    ), 60, MarqueeAnimation::RIGHT, 0
+                        )
                     )
                 )
             }

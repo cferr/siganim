@@ -65,24 +65,50 @@ void SignRenderer::SignRenderVisitor::visit(const Display &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Split &s) {
-
-    std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
-     = new std::vector<struct SignImageTree::SignImageTreeChild>();
+    SignImage* composite = new SignImage(s.getWidth(), s.getHeight(),
+            s.getWidth(), s.getHeight());
 
     s.getTopOrLeftChild()->accept(*this);
-    childrenImg->push_back({this->resultTree, 0, 0});
+    SignImage* upper = this->resultTree->compose()->cropToBox();
+    composite->merge(upper, 0, 0);
+
+    delete this->resultTree;
     s.getBottomOrRightChild()->accept(*this);
+
+    SignImage* lower = this->resultTree->compose()->cropToBox();
+    const SignColor* lowerPixels = lower->getPixels();
+
+    unsigned int boxWidth = s.getWidth();
+    unsigned int boxHeight = s.getHeight();
+
     switch(s.getSplitDirection()) {
     case Split::SPLIT_HORIZONTAL:
-        childrenImg->push_back({this->resultTree, 0, (int)s.getSplitPos()});
+        composite->merge(lower, 0, s.getSplitPos());
         break;
     case Split::SPLIT_VERTICAL:
-        childrenImg->push_back({this->resultTree, (int)s.getSplitPos(), 0});
+        composite->merge(lower, s.getSplitPos(), 0);
+        break;
+    case Split::SPLIT_NW_SE_DIAGONAL:
+        for(unsigned int x = 0; x < boxWidth; ++x) {
+            for(unsigned int y = boxHeight-1;
+                    (int)(y * boxWidth) >= (int)(x * boxHeight); --y) {
+                composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
+            }
+        }
+        break;
+    case Split::SPLIT_SW_NE_DIAGONAL:
+        for(unsigned int x = 0; x < boxWidth; ++x) {
+            for(unsigned int y = boxHeight-1;
+                (int)(x * boxHeight + y * boxWidth)
+                        >= (int)(boxHeight * boxWidth); --y) {
+                composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
+            }
+        }
         break;
     }
-    SignImageTree* result = new SignImageTree(s.getWidth(), s.getHeight(),
-            childrenImg);
-    this->resultTree = result;
+
+    this->resultTree = new SignImageTree(composite);
+
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Text &s) {
@@ -121,7 +147,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
                 s.getWidth(), s.getHeight());
 
         // Compute biggest char's vertical position
-        int32_t yy;
+        int32_t yy = 0;
         switch(s.getVAlign()) {
         case Text::VALIGN_TOP_TOP:
         case Text::VALIGN_TOP_CENTER:
@@ -142,7 +168,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
             break;
         }
 
-        int32_t xx;
+        int32_t xx = 0;
         switch(s.getHAlign()) {
         case Text::HALIGN_LEFT:
         case Text::HALIGN_JUSTIFY:
@@ -171,7 +197,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
                 unsigned int charWidth = c->getWidth();
                 unsigned int charHeight = c->getHeight();
 
-                int32_t yyy;
+                int32_t yyy = 0;
                 switch(s.getVAlign()) {
                 case Text::VALIGN_TOP_TOP:
                 case Text::VALIGN_CENTER_TOP:

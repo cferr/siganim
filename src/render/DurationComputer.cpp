@@ -27,6 +27,13 @@
 DurationComputer::DurationComputer() {
 }
 
+unsigned int DurationComputer::computeTotalFrames(const Sign *s) {
+    DurationComputerVisitor visitor;
+    s->accept(visitor);
+
+    return visitor.getTotalFrames();
+}
+
 void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
     unsigned int signTotalFrames = 1;
     std::vector<Display*> displays = s.getDisplays();
@@ -76,10 +83,6 @@ void DurationComputer::DurationComputerVisitor::visit(const BlinkAnimation &s) {
         (this->totalFrames, s.getDurationFrames());
 }
 
-
-unsigned int DurationComputer::computeTotalFrames(const Sign *s) {
-    DurationComputerVisitor visitor;
-    s->accept(visitor);
-
-    return visitor.getTotalFrames();
+void DurationComputer::DurationComputerVisitor::visit(const Fill &s) {
+    this->totalFrames = 1;
 }

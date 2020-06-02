@@ -27,6 +27,8 @@
 #include "sign/cells/Text.h"
 #include "sign/cells/MarqueeAnimation.h"
 #include "sign/cells/BlinkAnimation.h"
+#include "sign/cells/Compose.h"
+#include "sign/cells/Fill.h"
 #include "render/DurationComputer.h"
 #include "render/GIFSink.h"
 #include "font/parsers/GirouetteFontsParser.h"
@@ -66,16 +68,14 @@ int main(int argc, char *argv[]) {
             Text::VALIGN_CENTER_BOTTOM,
             "UNION HUB");
 
-    Text* lineNumber = new Text(font1912,
+    // Set fancy colors...
+    Compose* lineNumber = new Compose(
+            new Fill(SignColor(SignColor::OFF, 155, 0, 255)),
+            new Text(font1912,
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
-            "7");
-
-    // Set fancy colors...
-    lineNumber->setBackgroundColor(SignColor::RGB(SignColor::BACKGROUND,
-            155, 0, 255));
-    lineNumber->setForegroundColor(SignColor::RGB(SignColor::FOREGROUND,
-                255, 255, 0));
+            "7", SignColor(SignColor::ON, 255, 255, 0))
+    );
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 24,

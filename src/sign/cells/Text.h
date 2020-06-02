@@ -43,7 +43,6 @@ public:
     };
 
 private:
-    SignColor background;     // Background color
     SignColor foreground;     // Foreground color
 
     icu::UnicodeString* text; // Unicode-encoded text
@@ -56,6 +55,10 @@ public:
     Text(const Font* font, const enum HorizontalAlignment hAlign,
             const enum VerticalAlignment vAlign,
             const icu::UnicodeString& text = "");
+    Text(const Font* font, const enum HorizontalAlignment hAlign,
+                const enum VerticalAlignment vAlign,
+                const icu::UnicodeString& text,
+                const SignColor& color);
     virtual ~Text();
 
     virtual const char* CellTypeStr() const {
@@ -75,10 +78,8 @@ public:
 
     const Font* getFont() const;
 
-    void setBackgroundColor(const SignColor& background);
     void setForegroundColor(const SignColor& foreground);
     const SignColor getForegroundColor() const;
-    const SignColor getBackgroundColor() const;
 
     enum HorizontalAlignment getHAlign() const;
     enum VerticalAlignment getVAlign() const;

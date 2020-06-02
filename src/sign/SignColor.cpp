@@ -1,94 +1,74 @@
 #include "SignColor.h"
 
-SignColor SignColor::defaultFlipDiscBG =
-        SignColor(Type::BACKGROUND, Status::DEFAULT, { 100, 100, 100 });
-SignColor SignColor::defaultFlipDiscFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 255, 0 });
-SignColor SignColor::defaultMonoLEDBG =
-        SignColor(Type::BACKGROUND, Status::DEFAULT, { 100, 100, 100 });
-SignColor SignColor::defaultMonoLEDFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 127, 0 });
-SignColor SignColor::defaultRGBLEDBG =
-        SignColor(Type::BACKGROUND, Status::DEFAULT, { 0, 0, 0 });
-SignColor SignColor::defaultRGBLEDFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT, { 255, 255, 255 });
-
-SignColor SignColor::defaultFG =
-        SignColor(Type::FOREGROUND, Status::DEFAULT);
-SignColor SignColor::defaultBG =
-        SignColor(Type::BACKGROUND, Status::DEFAULT);
-
-
 SignColor::~SignColor() {
 
 }
 
-SignColor::SignColor(enum Type type, enum Status status, struct RGB value) :
-    type(type), status(status), value(value) {
+SignColor::SignColor(enum Semantic type) :
+    semantic(type), isCustom(false) {
+
+}
+
+SignColor::SignColor(enum Semantic semantic, const unsigned char r,
+        const unsigned char g, const unsigned char b) :
+    semantic(semantic), isCustom(true) {
+    this->value = { r, g, b };
 }
 
 SignColor::SignColor(const SignColor &that) {
-    this->type = that.type;
-    this->status = that.status;
+    this->semantic = that.semantic;
+    this->isCustom = that.isCustom;
     this->value = that.value;
 }
 
-
-SignColor SignColor::defaultColor(enum Type type) {
-    switch(type) {
-    case FOREGROUND:
-        return defaultFG;
-        break;
-    case BACKGROUND:
-        return defaultBG;
-        break;
-    default:
-        return defaultBG;
-        break;
-    }
+enum SignColor::Semantic SignColor::getSemantic() const {
+    return this->semantic;
 }
 
-SignColor SignColor::RGB(enum Type type, unsigned char r, unsigned char g,
-        unsigned char b) {
-    SignColor c(type, Status::CUSTOM, {r, g, b});
+bool SignColor::hasRGBValue() const {
+    return this->isCustom;
+}
+
+struct SignColor::RGB SignColor::getValue() const {
+    if(this->isCustom)
+        return this->value;
+    else
+        throw NoRGBValueException();
+}
+
+std::ostream& operator <<(std::ostream &strm, const SignColor &s) {
+    return s.serialize(strm);
+
+}
+
+std::ostream& SignColor::serialize(std::ostream &strm) const {
+    return strm << "Color { semantic = " <<
+            ((this->semantic == Semantic::ON)?"on":"off") <<
+            ", " <<
+            ((this->isCustom)?"RGB()":"") << " }";
+}
+
+// Non-commutative OR ! This has priority over that.
+SignColor SignColor::Or(const SignColor &that) const {
+    // ON takes precedence.
+    if(this->semantic == ON)
+        return *this;
+    if(that.semantic == ON)
+        return that;
+    // Both colors are OFF, so if we're custom, then this wins
+    // otherwise, that wins
+    if(this->isCustom)
+        return *this;
+    return that;
+
+}
+
+SignColor SignColor::on() {
+    SignColor c(SignColor::ON);
     return c;
 }
 
-enum SignColor::Type SignColor::getType() const {
-    return this->type;
-}
-
-bool SignColor::isDefault() const {
-    return this->status == Status::DEFAULT;
-}
-
-struct SignColor::RGB SignColor::getValue(
-        Display::Type displayType) const {
-
-    struct RGB ret;
-
-    switch(displayType) {
-    case Display::DISPLAY_FLIPDISC:
-        if(this->type == Type::BACKGROUND)
-            ret = SignColor::defaultFlipDiscBG.value;
-        else
-            ret = SignColor::defaultFlipDiscFG.value;
-        break;
-    case Display::DISPLAY_MONOCHROME_LED:
-        if(this->type == Type::BACKGROUND)
-            ret = SignColor::defaultMonoLEDBG.value;
-        else
-            ret = SignColor::defaultMonoLEDFG.value;
-        break;
-    case Display::DISPLAY_RGB_LED:
-        if(this->status == CUSTOM)
-            ret = this->value;
-        else if(this->type == Type::BACKGROUND)
-            ret = SignColor::defaultRGBLEDBG.value;
-        else
-            ret = SignColor::defaultRGBLEDFG.value;
-        break;
-    }
-
-    return ret;
+SignColor SignColor::off() {
+    SignColor c(SignColor::OFF);
+    return c;
 }

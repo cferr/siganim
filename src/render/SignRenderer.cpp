@@ -26,6 +26,8 @@
 #include "../sign/cells/Compose.h"
 #include "../sign/cells/Split.h"
 #include "../sign/cells/Text.h"
+#include "../sign/cells/Fill.h"
+#include "../SiganimDefaults.h"
 
 SignRenderer::SignRenderer() {
 
@@ -87,6 +89,8 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
     uint32_t cellHeight = s.getHeight();
     uint32_t cellWidth = s.getWidth();
 
+    SignColor off = SignColor::off();
+
     icu::UnicodeString* text = s.getText();
     const Font* cellFont = s.getFont();
     if(cellFont != nullptr) {
@@ -114,7 +118,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
         // How wide do we need to be?
         uint32_t actualWidth = std::max(cellWidth, totalWidth);
         SignImage *textRender = new SignImage(actualWidth, s.getHeight(),
-                s.getWidth(), s.getHeight(), s.getBackgroundColor());
+                s.getWidth(), s.getHeight());
 
         // Compute biggest char's vertical position
         int32_t yy;
@@ -192,7 +196,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
                     for(unsigned int y = 0; y < charHeight; ++y) {
                         textRender->setPixel(xx + x, y + yy + yyy,
                             (bmap[y * charWidth + x] == Character::Bit::ON)?
-                            s.getForegroundColor():s.getBackgroundColor()
+                            s.getForegroundColor():off
                         );
                     }
                 }
@@ -281,6 +285,11 @@ void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
             childrenImg);
 }
 
+void SignRenderer::SignRenderVisitor::visit(const Fill &s) {
+    SignImage *animRender = new SignImage(s.getWidth(), s.getHeight(),
+            s.getWidth(), s.getHeight(), s.getColor());
+    this->resultTree = new SignImageTree(animRender);
+}
 
 // Tree functions
 
@@ -339,10 +348,39 @@ void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
 
     const unsigned int dimgWidth = dest->getWidth();
 
+    struct SignColor::RGB defaultRGBOn;
+    struct SignColor::RGB defaultRGBOff;
+
+    switch(sourceType) {
+    case Display::DISPLAY_FLIPDISC:
+        defaultRGBOn = SiganimDefaults::defaultFlipDiscBG.getValue();
+        defaultRGBOff = SiganimDefaults::defaultFlipDiscFG.getValue();
+        break;
+    case Display::DISPLAY_MONOCHROME_LED:
+        defaultRGBOn = SiganimDefaults::defaultMonoLEDBG.getValue();
+        defaultRGBOff = SiganimDefaults::defaultMonoLEDFG.getValue();
+        break;
+    case Display::DISPLAY_RGB_LED:
+        defaultRGBOn = SiganimDefaults::defaultRGBLEDBG.getValue();
+        defaultRGBOff = SiganimDefaults::defaultRGBLEDFG.getValue();
+        break;
+    }
+
+
     for(unsigned int i = 0; i < simgHeight; ++i) {
         for(unsigned int j = 0; j < simgWidth; ++j) {
-            struct SignColor::RGB p = simgPixels[i*simgWidth+j].getValue(
-                    sourceType);
+            struct SignColor::RGB p;
+            if(sourceType == Display::DISPLAY_RGB_LED) {
+                try {
+                    p = simgPixels[i*simgWidth+j].getValue();
+                } catch(SignColor::NoRGBValueException& e) {
+                    p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
+                            defaultRGBOff;
+                }
+            } else {
+                p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
+                    defaultRGBOff;
+            }
             for(unsigned int ii = 0; ii < 5; ++ii) {
                 for(unsigned int jj = 0; jj < 5; ++jj) {
                     imgPixels[(5*(i+y)+ii)*dimgWidth+5*(j+x)+jj] = {

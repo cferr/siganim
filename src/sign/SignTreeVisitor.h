@@ -26,6 +26,7 @@ class Split;
 class MarqueeAnimation;
 class BlinkAnimation;
 class Compose;
+class Fill;
 
 template<bool isConst>
     class AbstractSignTreeVisitor {
@@ -43,6 +44,8 @@ private:
                 BlinkAnimation>::type BlinkAnimationT;
     typedef typename std::conditional<isConst, const Compose,
                 Compose>::type ComposeT;
+    typedef typename std::conditional<isConst, const Fill,
+                Fill>::type FillT;
 
 public:
     virtual ~AbstractSignTreeVisitor() {
@@ -56,6 +59,7 @@ public:
     virtual void visit(MarqueeAnimationT &s) = 0;
     virtual void visit(BlinkAnimationT &s) = 0;
     virtual void visit(ComposeT &s) = 0;
+    virtual void visit(FillT &s) = 0;
 };
 
 typedef AbstractSignTreeVisitor<false> SignTreeVisitor;

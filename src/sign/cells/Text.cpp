@@ -22,13 +22,20 @@ Text::Text(const Font* font,
         const enum HorizontalAlignment hAlign,
         const enum VerticalAlignment vAlign,
         const icu::UnicodeString& text) :
-    background(SignColor::defaultColor(SignColor::BACKGROUND)),
-    foreground(SignColor::defaultColor(SignColor::FOREGROUND)),
-    font(font),
-    hAlign(hAlign),
-    vAlign(vAlign) {
+        Text(font, hAlign, vAlign, text, SignColor::on()) {
+}
+
+
+Text::Text(const Font *font, const enum HorizontalAlignment hAlign,
+        const enum VerticalAlignment vAlign, const icu::UnicodeString &text,
+        const SignColor &color) :
+        foreground(color),
+            font(font),
+            hAlign(hAlign),
+            vAlign(vAlign) {
     this->text = new icu::UnicodeString(text);
 }
+
 
 Text::~Text() {
 
@@ -84,10 +91,6 @@ const SignColor Text::getForegroundColor() const {
     return this->foreground;
 }
 
-const SignColor Text::getBackgroundColor() const {
-    return this->background;
-}
-
 enum Text::HorizontalAlignment Text::getHAlign() const {
     return this->hAlign;
 }
@@ -111,11 +114,6 @@ std::ostream& Text::serialize(std::ostream &strm) const {
 
 std::ostream& operator<<(std::ostream &strm, const Text &s) {
     return s.serialize(strm);
-}
-
-void Text::setBackgroundColor(const SignColor &background) {
-    SignColor c(background);
-    this->background = c;
 }
 
 void Text::setForegroundColor(const SignColor &foreground) {

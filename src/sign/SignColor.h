@@ -17,53 +17,58 @@
 #ifndef SRC_SIGNCOLOR_H_
 #define SRC_SIGNCOLOR_H_
 
-#include <cstdint>
-
-#include "cells/Display.h"
+#include <iostream>
 
 class SignColor {
 public:
+    class NoRGBValueException : public std::exception
+    {
+    public:
+        NoRGBValueException() {
+        }
+
+        const char* what() const throw () {
+            return "Color has no RGB value";
+        }
+    };
+
     struct RGB {
         unsigned char r;
         unsigned char g;
         unsigned char b;
     };
-    enum Type {
-        BACKGROUND, FOREGROUND
+    enum Semantic {
+        ON, OFF
     };
+
 private:
-    enum Status {
-        DEFAULT, CUSTOM
-    };
 
-    enum Type type;
-    enum Status status;
+    enum Semantic semantic;
+    bool isCustom;
     struct RGB value;
-
-    SignColor(enum Type type, enum Status status, struct RGB value = {0, 0, 0});
-
-    static SignColor defaultFlipDiscBG;
-    static SignColor defaultFlipDiscFG;
-    static SignColor defaultMonoLEDBG;
-    static SignColor defaultMonoLEDFG;
-    static SignColor defaultRGBLEDBG;
-    static SignColor defaultRGBLEDFG;
-
-    static SignColor defaultBG;
-    static SignColor defaultFG;
 
 public:
     SignColor(const SignColor& that);
     virtual ~SignColor();
 
-    static SignColor defaultColor(enum Type type);
-    static SignColor RGB(enum Type type, unsigned char r, unsigned char g,
-            unsigned char b);
+    SignColor(enum Semantic type);
+    SignColor(enum Semantic type, const unsigned char r, const unsigned char g,
+            const unsigned char b);
 
-    bool isDefault() const;
-    enum Type getType() const;
-    struct RGB getValue(Display::Type displayType) const;
+    static SignColor on();
+    static SignColor off();
+
+    bool hasRGBValue() const;
+    enum Semantic getSemantic() const;
+
+    SignColor Or(const SignColor& that) const;
+
+    struct RGB getValue() const;
+
+    std::ostream& serialize(std::ostream &strm) const;
 
 };
+
+std::ostream& operator<<(std::ostream &strm, const SignColor &s);
 
 #endif /* SRC_SIGNCOLOR_H_ */

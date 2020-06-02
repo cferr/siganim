@@ -39,6 +39,7 @@ private:
         virtual void visit(const MarqueeAnimation &s);
         virtual void visit(const BlinkAnimation &s);
         virtual void visit(const Compose &s);
+        virtual void visit(const Fill &s);
 
         unsigned int getTotalFrames() {
             return totalFrames;

@@ -38,7 +38,7 @@ SignImage::SignImage(unsigned int width, unsigned int height,
 SignImage::SignImage(unsigned int width, unsigned int height,
         unsigned int boxWidth, unsigned int boxHeight) :
         SignImage(width, height, boxWidth, boxHeight,
-        SignColor::defaultColor(SignColor::BACKGROUND))
+        SignColor::off())
 {
 
 }
@@ -85,8 +85,10 @@ void SignImage::merge(const SignImage* top, const int x,
         for (unsigned int j = 0; j < top->width; ++j) {
             if(i + y >= 0 && i + y < this->height &&
                     j + x >= 0 && j + x < this->width) {
+
                 this->pixels[((i + y) * this->width) + j + x] =
-                        pixelsToMerge[i * topWidth + j];
+                        pixelsToMerge[i * topWidth + j]
+                          .Or(this->pixels[((i + y) * this->width) + j + x]);
             }
         }
     }
@@ -103,8 +105,8 @@ unsigned int SignImage::getBoxHeight() const {
 
 SignImage* SignImage::cropToBox() const {
     SignImage* ret = new SignImage(this->boxWidth, this->boxHeight,
-            this->boxWidth, this->boxHeight);
-    ret->merge(this, 0, 0);
+            this->boxWidth, this->boxHeight, this->getBackgroundColor());
+    ret->merge(this, 0, 0); // copyBackground doesn't matter here
     return ret;
 }
 

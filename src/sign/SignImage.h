@@ -53,8 +53,7 @@ public:
 
     const SignColor getBackgroundColor() const;
 
-    void merge(const SignImage* top, const int x,
-            const int y);
+    void merge(const SignImage* top, const int x, const int y);
 
     SignImage* cropToBox() const;
 

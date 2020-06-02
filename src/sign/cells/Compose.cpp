@@ -19,6 +19,10 @@
 
 Compose::Compose(SignCell *background, SignCell *foreground) :
     background(background), foreground(foreground) {
+    if(background != nullptr)
+        background->setParent(this);
+    if(foreground != nullptr)
+        foreground->setParent(this);
 }
 
 bool Compose::setParent(const SignCell *parent) {

@@ -85,6 +85,7 @@ private:
         void visit(const MarqueeAnimation &s);
         void visit(const BlinkAnimation &s);
         void visit(const Compose &s);
+        void visit(const Fill &s);
     };
 
 

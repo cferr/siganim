@@ -17,17 +17,13 @@
 #include "MarqueeAnimation.h"
 
 MarqueeAnimation::MarqueeAnimation(SignCell *subject,
-        unsigned int durationFrames, enum Direction direction, bool slant,
+        unsigned int durationFrames, enum Direction direction,
         unsigned int space) : Animation(subject, durationFrames),
-        direction(direction), slant(slant), space(space) {
+        direction(direction), space(space) {
 }
 
 void MarqueeAnimation::setDirection(enum Direction direction) {
     this->direction = direction;
-}
-
-void MarqueeAnimation::setSlant(bool slant) {
-    this->slant = slant;
 }
 
 void MarqueeAnimation::setSpace(unsigned int space) {
@@ -36,9 +32,8 @@ void MarqueeAnimation::setSpace(unsigned int space) {
 
 std::ostream& MarqueeAnimation::serialize(std::ostream &strm) const {
     return strm << "Marquee { " << this->getWidth() << "x" << this->getHeight()
-            << " " << ((this->direction == LEFT)?"Left":"Right") << " " <<
-            ((this->slant)?"Slanted ":"") <<
-            "spacing " << this->space <<
+            << " " << ((this->direction == LEFT)?"Left":"Right") <<
+            " spacing " << this->space <<
             " [" << *(this->subject) << "] }";
 }
 
@@ -56,10 +51,6 @@ void MarqueeAnimation::accept(ConstSignTreeVisitor &visitor) const {
 
 enum MarqueeAnimation::Direction MarqueeAnimation::getDirection() const {
     return this->direction;
-}
-
-bool MarqueeAnimation::getSlant() const {
-    return this->slant;
 }
 
 unsigned int MarqueeAnimation::getSpace() const {

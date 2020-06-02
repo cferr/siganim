@@ -25,12 +25,11 @@ public:
 
 private:
     enum Direction direction;
-    bool slant;
     unsigned int space;
 
 public:
     MarqueeAnimation(SignCell* subject, unsigned int durationFrames,
-            enum Direction direction, bool slant, unsigned int space);
+            enum Direction direction, unsigned int space);
 
     virtual ~MarqueeAnimation() {
     }

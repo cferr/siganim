@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
                     new MarqueeAnimation(
                     new Split(Split::SPLIT_VERTICAL, 30,
                             new MarqueeAnimation(lineNumber, 20,
-                                    MarqueeAnimation::LEFT, true, 10),
+                                    MarqueeAnimation::LEFT, 10),
                             new Split(
                                     Split::SPLIT_HORIZONTAL, 12,
                                     modifiableText,
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
                                             10, 5
                                     )
                             )
-                    ), 60, MarqueeAnimation::RIGHT, true, 0
+                    ), 60, MarqueeAnimation::RIGHT, 0
                     )
                 )
             }

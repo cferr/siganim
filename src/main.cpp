@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 
     // Mock sign just to test.
     Sign *testSign = new Sign(120, 24,
-            { new SignDisplay(120, 24, DisplayType::DISPLAY_RGB_LED,
+            { new SignDisplay(120, 24, SignDisplay::DISPLAY_RGB_LED,
                     new MarqueeAnimation(
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 30,
                             new MarqueeAnimation(lineNumber, 20,

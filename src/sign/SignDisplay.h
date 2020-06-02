@@ -18,12 +18,14 @@
 #define SRC_SIGNDISPLAY_H_
 
 #include <vector>
-#include "SignCellSplit.h"
 #include "SignCell.h"
-#include "SignTreeVisitor.h"
-#include "SignDisplayType.h"
 
 class SignDisplay : public SignCell {
+public:
+    enum DisplayType {
+        DISPLAY_RGB_LED, DISPLAY_MONOCHROME_LED, DISPLAY_FLIPDISC
+    };
+
 private:
     // TODO add some geometry info (margins, display size in cm/in, dpi...)
     unsigned int width;

@@ -312,7 +312,7 @@ SignImage* SignRenderer::SignImageTree::compose() {
 }
 
 void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
-        DisplayType sourceType, unsigned int x, unsigned int y) {
+        SignDisplay::DisplayType sourceType, unsigned int x, unsigned int y) {
     // Crop the result into its own box, in case it hasn't been done before.
     SignImage* sourceCropped = source->cropToBox();
 

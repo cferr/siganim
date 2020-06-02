@@ -18,9 +18,9 @@
 #define SRC_SIGN_H_
 
 #include <vector>
-#include "SignDisplay.h"
 #include "../render/Bitmap.h"
 #include "SignColor.h"
+#include "SignDisplay.h"
 
 class Sign {
 private:

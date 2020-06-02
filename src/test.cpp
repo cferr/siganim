@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "sign/Sign.h"
+#include "sign/SignCellSplit.h"
 #include "sign/SignCellText.h"
 #include "render/SignRenderer.h"
 #include "font/parsers/GirouetteFontsParser.h"
@@ -27,7 +28,7 @@ bool UTF8Test() {
 
     // Are we able to create a sign easily? Yes.
     Sign *UTF8Test = new Sign(120, 80,
-            { new SignDisplay(120, 80, DisplayType::DISPLAY_FLIPDISC,
+            { new SignDisplay(120, 80, SignDisplay::DISPLAY_FLIPDISC,
                     new SignCellSplit(SignCellSplit::SPLIT_VERTICAL, 20,
                             new SignCellText(NULL, SignCellText::HALIGN_CENTER,
                                     SignCellText::VALIGN_CENTER_BOTTOM, "☢"),

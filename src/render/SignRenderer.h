@@ -20,6 +20,7 @@
 #include "Bitmap.h"
 #include "../sign/Sign.h"
 #include "../sign/SignImage.h"
+#include "../sign/SignDisplay.h"
 #include "../sign/SignTreeVisitor.h"
 
 class SignRenderer {
@@ -87,7 +88,8 @@ private:
 
 
     void signImageToBitmap(Bitmap* dest, SignImage* source,
-            DisplayType sourceType, unsigned int x, unsigned int y);
+            SignDisplay::DisplayType sourceType,
+            unsigned int x, unsigned int y);
 
 public:
     SignRenderer();

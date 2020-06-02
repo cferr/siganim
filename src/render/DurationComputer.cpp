@@ -18,6 +18,7 @@
 #include <numeric>
 #include "DurationComputer.h"
 #include "../sign/Sign.h"
+#include "../sign/SignCellSplit.h"
 #include "../sign/MarqueeAnimation.h"
 #include "../sign/BlinkAnimation.h"
 

@@ -76,7 +76,7 @@ SignCell* SignDisplay::getRootCell() const {
     return this->rootCell;
 }
 
-enum DisplayType SignDisplay::getDisplayType() const {
+enum SignDisplay::DisplayType SignDisplay::getDisplayType() const {
     return this->displayType;
 }
 

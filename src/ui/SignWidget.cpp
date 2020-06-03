@@ -20,29 +20,46 @@
 #include "../render/SignRenderer.h"
 
 SignWidget::SignWidget(Sign* sign, QWidget *parent) :
-        QWidget(parent), sign(sign), image(NULL) {
-
-    this->signChangedEvent();
+        QWidget(parent), sign(sign), image(nullptr) {
+    this->sink = new ObservableSink(sign);
+    this->sink->attach(this);
 }
 
 SignWidget::~SignWidget() {
-
+    if(this->image != nullptr)
+        delete this->image;
+    if(this->sink != nullptr)
+        delete this->sink;
 }
 
 void SignWidget::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
-    painter.drawImage(this->image->rect(), *this->image, this->image->rect());
+    if(this->image != nullptr) {
+        QPainter painter(this);
+        painter.drawImage(this->image->rect(),
+                *this->image, this->image->rect());
+    }
 }
 
 void SignWidget::signChangedEvent() {
     // Repaint ourselves according to that sign.
     if(sign != NULL) {
-        SignRenderer r;
-        Bitmap *result = r.render(sign, 0);
+//        SignRenderer r;
+//        Bitmap *result = r.render(sign, 0);
+        Bitmap* result = this->sink->getFrame();
         unsigned char* img = result->toRGB32();
+        if(this->image != nullptr)
+            delete this->image;
         this->image = new QImage(img, result->getWidth(),
                 result->getHeight(), QImage::Format_RGB32);
 
+        free(img);
+
         this->update();
+    }
+}
+
+void SignWidget::observe(const Observable *sender) {
+    if(sender == this->sink) {
+        this->signChangedEvent();
     }
 }

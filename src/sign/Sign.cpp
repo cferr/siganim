@@ -62,6 +62,7 @@ void Sign::accept(ConstSignTreeVisitor &visitor) const {
 
 bool Sign::addDisplay(Display *display) {
     displays.push_back(display);
+    display->setParentSign(this);
     return true;
 }
 
@@ -98,4 +99,8 @@ std::ostream& Sign::serialize(std::ostream &strm) const {
 
 std::ostream& operator<<(std::ostream &strm, const Sign &s) {
     return s.serialize(strm);
+}
+
+void Sign::modified() const {
+    this->changed();
 }

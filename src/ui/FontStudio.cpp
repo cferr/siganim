@@ -14,24 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#include "FontStudio.h"
 
-SignCell::SignCell() : parent(nullptr) {
-}
+FontStudio::FontStudio() {
+    // TODO Auto-generated constructor stub
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
-
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
-
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
-    }
 }
 

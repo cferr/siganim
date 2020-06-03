@@ -17,8 +17,9 @@
 #include "Animation.h"
 
 Animation::Animation(SignCell* subject, unsigned int durationFrames) :
-    subject(nullptr), durationFrames(durationFrames) {
-    this->setSubject(subject);
+    subject(subject), durationFrames(durationFrames) {
+    if(subject != nullptr)
+        subject->setParent(this);
 }
 
 bool Animation::setSubject(SignCell* subject) {
@@ -33,6 +34,7 @@ bool Animation::setSubject(SignCell* subject) {
         this->subject = oldSubject;
         return false;
     }
+    this->modified();
     return true;
 }
 

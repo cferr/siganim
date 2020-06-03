@@ -26,6 +26,7 @@ const SignColor Fill::getColor() const {
 void Fill::setColor(SignColor &color) {
     SignColor c(color);
     this->color = c;
+    this->modified();
 }
 
 unsigned int Fill::getHeight() const {

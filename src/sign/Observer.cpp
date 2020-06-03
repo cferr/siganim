@@ -14,24 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#include "Observer.h"
 
-SignCell::SignCell() : parent(nullptr) {
+void Observable::attach(Observer* observer) {
+    this->observers.push_back(observer);
 }
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
-
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
-
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
+void Observable::detach(Observer* observer) {
+    for(auto i = this->observers.begin(); i < this->observers.end(); ++i) {
+        if(*i == observer)
+            this->observers.erase(i);
     }
 }
 
+void Observable::changed() const {
+    for(auto i = this->observers.begin(); i < this->observers.end(); ++i) {
+        (*i)->observe(this);
+    }
+}

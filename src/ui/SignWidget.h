@@ -20,16 +20,19 @@
 #include <QWidget>
 #include <QImage>
 #include <QPainter>
-#include "../sign/Sign.h"
 #include <QObject>
+#include "../sign/Sign.h"
+#include "../sign/Observer.h"
+#include "../render/ObservableSink.h"
 
-class SignWidget: public QWidget {
+class SignWidget: public QWidget, public Observer {
 
 Q_OBJECT
 
 private:
     Sign *sign;
     QImage *image;
+    ObservableSink* sink;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -39,6 +42,8 @@ public:
     virtual ~SignWidget();
 
     void signChangedEvent();
+
+    virtual void observe(const Observable* sender);
 };
 
 #endif /* SRC_SIGNWIDGET_H_ */

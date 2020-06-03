@@ -46,6 +46,7 @@ void Compose::setForeground(SignCell *foreground) {
             this->foreground->setParent(this);
         if(oldForeground != nullptr)
             oldForeground->setParent(nullptr);
+        this->modified();
     } catch(SetParentFailedException& e) {
         this->foreground = oldForeground;
     }
@@ -59,6 +60,7 @@ void Compose::setBackground(SignCell *background) {
             this->background->setParent(this);
         if(oldBackground != nullptr)
             oldBackground->setParent(nullptr);
+        this->modified();
     } catch(SetParentFailedException& e) {
         this->background = oldBackground;
     }

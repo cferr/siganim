@@ -70,6 +70,8 @@ public:
     virtual unsigned int getChildHeight(const SignCell* child) const override;
     virtual unsigned int getChildWidth(const SignCell* child) const override;
 
+    virtual void modified() const override;
+
     std::ostream& serialize(std::ostream &strm) const;
 };
 

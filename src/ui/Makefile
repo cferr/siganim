@@ -1,7 +1,7 @@
 # Makefile for Meta-Object Code (MOC) generation
 # Run this before invoking CDT's build process.
 
-Q_OBJECTS = SignWidget.h SiganimMainWindow.h
+Q_OBJECTS = SignEditor.h FontStudio.h SignWidget.h SiganimMainWindow.h
 
 MOCS = $(addprefix moc_, $(Q_OBJECTS:.h=.cpp))
 

@@ -14,24 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#include "SignEditor.h"
 
-SignCell::SignCell() : parent(nullptr) {
-}
+SignEditor::SignEditor(Sign* sign, Text* textCell) : textCell(textCell) {
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
+    this->verticalLayout = new QVBoxLayout();
 
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
+    this->signWidget = new SignWidget(sign);
 
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
+    if(textCell != nullptr) {
+        this->text = new QLineEdit();
+        this->verticalLayout->addWidget(this->text);
+        this->text->connect(this->text,
+                &QLineEdit::textChanged,
+                this,
+                &SignEditor::updateSignText);
     }
+
+    this->verticalLayout->addWidget(this->signWidget);
+
+    // Set image widget as central widget
+    this->setLayout(this->verticalLayout);
+
+}
+
+void SignEditor::updateSignText(const QString& text) {
+    this->textCell->setText(icu::UnicodeString(text.toUtf8().data()));
 }
 

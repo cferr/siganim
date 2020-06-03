@@ -14,24 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#ifndef SRC_UI_FONTSTUDIO_H_
+#define SRC_UI_FONTSTUDIO_H_
 
-SignCell::SignCell() : parent(nullptr) {
-}
+#include <QWidget>
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
+class FontStudio : public QWidget {
+    Q_OBJECT
 
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
-
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
+public:
+    FontStudio();
+    virtual ~FontStudio() {
+        // TODO Auto-generated destructor stub
     }
-}
+};
 
+#endif /* SRC_UI_FONTSTUDIO_H_ */

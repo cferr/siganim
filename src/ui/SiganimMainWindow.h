@@ -18,23 +18,19 @@
 #define SRC_SIGANIMMAINWINDOW_H_
 
 #include <QMainWindow>
-#include <QMenuBar>
-#include <QLineEdit>
-#include <QVBoxLayout>
+#include <QTabWidget>
 
+#include "SignEditor.h"
+#include "FontStudio.h"
 #include "../sign/cells/Text.h"
-#include "SignWidget.h"
 
 class SiganimMainWindow: public QMainWindow {
     Q_OBJECT
 private:
 
-    QVBoxLayout *verticalLayout;
-    QLineEdit *text;
-    SignWidget *signWidget;
-
-    // Temporary.
-    Text* textCell;
+    QTabWidget* tabs;
+    SignEditor* editor;
+    FontStudio* studio;
 
 public:
 
@@ -43,9 +39,6 @@ public:
     SiganimMainWindow(Sign* sign, Text* textCell);
     virtual ~SiganimMainWindow();
 
-    // Temporary.
-public slots:
-    void updateSignText(const QString& text);
 
 };
 

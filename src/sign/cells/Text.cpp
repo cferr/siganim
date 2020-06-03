@@ -72,6 +72,7 @@ void Text::accept(ConstSignTreeVisitor &visitor) const {
 void Text::setText(const icu::UnicodeString& text) {
     delete this->text;
     this->text = new icu::UnicodeString(text);
+    this->modified();
 }
 
 icu::UnicodeString* Text::getText() const {
@@ -101,10 +102,12 @@ enum Text::VerticalAlignment Text::getVAlign() const {
 
 void Text::setHAlign(enum HorizontalAlignment hAlign) {
     this->hAlign = hAlign;
+    this->modified();
 }
 
 void Text::setVAlign(enum VerticalAlignment vAlign) {
     this->vAlign = vAlign;
+    this->modified();
 }
 
 std::ostream& Text::serialize(std::ostream &strm) const {
@@ -119,4 +122,5 @@ std::ostream& operator<<(std::ostream &strm, const Text &s) {
 void Text::setForegroundColor(const SignColor &foreground) {
     SignColor c(foreground);
     this->foreground = c;
+    this->modified();
 }

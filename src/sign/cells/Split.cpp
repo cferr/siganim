@@ -85,11 +85,13 @@ enum Split::SplitDirection Split::getSplitDirection() const {
 bool Split::setSplitDirection(
         enum Split::SplitDirection direction) {
     this->splitDirection = direction;
+    this->modified();
     return true;
 }
 
 bool Split::setSplitPos(unsigned int splitPos) {
     this->splitPos = splitPos;
+    this->modified();
     return true;
 }
 
@@ -110,6 +112,7 @@ bool Split::setTopOrLeftChild(SignCell* child) {
             this->topOrLeftChild = oldChild;
             return false;
         }
+    this->modified();
     return true;
 }
 
@@ -130,6 +133,7 @@ bool Split::setBottomOrRightChild(SignCell* child) {
             this->bottomOrRightChild = oldChild;
             return false;
         }
+    this->modified();
     return true;
 }
 

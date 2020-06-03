@@ -91,9 +91,11 @@ protected:
     const SignCell* parent;
 
 public:
+    SignCell();
+
     virtual const char* CellTypeStr() const = 0;
 
-    virtual ~SignCell();
+    virtual ~SignCell() {};
 
     virtual unsigned int getHeight() const = 0;
     virtual unsigned int getWidth() const = 0;
@@ -105,6 +107,8 @@ public:
 
     virtual void accept(SignTreeVisitor& visitor) = 0;
     virtual void accept(ConstSignTreeVisitor& visitor) const = 0;
+
+    virtual void modified() const;
 
     virtual std::ostream& serialize(std::ostream &strm) const = 0;
 

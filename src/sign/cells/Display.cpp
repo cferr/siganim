@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Display.h"
+#include "../Sign.h"
 
 Display::Display(unsigned int width, unsigned int height,
         enum Type type) :
@@ -26,7 +27,7 @@ Display::Display(unsigned int width, unsigned int height,
         enum Type type, SignCell *rootCell) :
         width(width), height(height), displayType(type), rootCell(rootCell),
         parentSign(NULL) {
-    if(rootCell != NULL)
+    if(rootCell != nullptr)
         rootCell->setParent(this);
 }
 
@@ -68,6 +69,7 @@ bool Display::setRootCell(SignCell *rootCell) {
             this->rootCell = oldRoot;
             return false;
         }
+    this->modified();
     return true;
 }
 
@@ -81,6 +83,7 @@ enum Display::Type Display::getDisplayType() const {
 
 bool Display::setDisplayType(enum Type displayType) {
     this->displayType = displayType;
+    this->modified();
     return true;
 }
 
@@ -101,16 +104,17 @@ unsigned int Display::getWidth() const {
 }
 
 void Display::setHeight(const unsigned int height) {
-    return this->resize(height, this->width);
+    this->resize(height, this->width);
 }
 
 void Display::setWidth(const unsigned int height) {
-    return this->resize(this->height, width);
+    this->resize(this->height, width);
 }
 
 void Display::resize(const unsigned int width, const unsigned int height) {
     this->height = height;
     this->width = width;
+    this->modified();
 }
 
 std::ostream& Display::serialize(std::ostream &strm) const {
@@ -120,4 +124,8 @@ std::ostream& Display::serialize(std::ostream &strm) const {
 
 std::ostream& operator<<(std::ostream &strm, const Display &s) {
     return s.serialize(strm);
+}
+
+void Display::modified() const {
+    this->parentSign->modified();
 }

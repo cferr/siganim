@@ -14,24 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#ifndef SRC_RENDER_OBSERVABLESINK_H_
+#define SRC_RENDER_OBSERVABLESINK_H_
 
-SignCell::SignCell() : parent(nullptr) {
-}
+#include <thread>
+#include <mutex>
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
+#include "../sign/Sign.h"
+#include "../sign/Observer.h"
 
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
+class ObservableSink : public Observable, public Observer {
+private:
+    Sign* sign; // cannot be const as attach / detach modify it
 
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
-    }
-}
+    std::vector<Bitmap*> frames;
+    std::vector<Bitmap*>::iterator currentFrame;
 
+    bool continueRunning;
+    std::thread runner;
+
+    bool signUpdated;
+    std::mutex signUpdatedMutex;
+
+    void render();
+    void run();
+
+public:
+    ObservableSink(Sign* sign);
+    virtual ~ObservableSink();
+
+    Bitmap* getFrame() const;
+
+    virtual void observe(const Observable* sender);
+
+};
+
+#endif /* RENDER_OBSERVABLESINK_H_ */

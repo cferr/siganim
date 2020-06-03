@@ -14,24 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#ifndef SRC_SIGN_OBSERVER_H_
+#define SRC_SIGN_OBSERVER_H_
 
-SignCell::SignCell() : parent(nullptr) {
-}
+#include <type_traits>
+#include <vector>
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
+class Observable;
 
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
+class Observer {
 
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
-    }
-}
+public:
+    virtual ~Observer() {}
+    virtual void observe(const Observable* sender) = 0;
+};
 
+class Observable {
+    std::vector<Observer*> observers;
+
+protected:
+    void changed() const;
+
+public:
+    virtual ~Observable() {}
+
+    void attach(Observer* observer);
+    void detach(Observer* observer);
+};
+
+#endif /* SRC_SIGN_OBSERVER_H_ */

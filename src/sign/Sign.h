@@ -21,8 +21,9 @@
 #include "../render/Bitmap.h"
 #include "cells/Display.h"
 #include "SignColor.h"
+#include "Observer.h"
 
-class Sign {
+class Sign : public Observable {
 private:
     std::vector<Display*> displays;
 
@@ -51,6 +52,9 @@ public:
     std::vector<Display*> getDisplays() const;
 
     std::ostream& serialize(std::ostream &strm) const;
+
+    void modified() const;
+
 };
 
 std::ostream& operator<<(std::ostream &strm, const Sign &s);

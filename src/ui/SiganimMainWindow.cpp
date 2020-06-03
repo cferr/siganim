@@ -22,42 +22,28 @@ SiganimMainWindow::SiganimMainWindow() :
 
 }
 
-SiganimMainWindow::SiganimMainWindow(Sign* sign, Text* textCell) :
-    textCell(textCell) {
+SiganimMainWindow::SiganimMainWindow(Sign* sign, Text* textCell)
+{
+    this->studio = new FontStudio();
+    this->editor = new SignEditor(sign, textCell);
+    this->tabs = new QTabWidget();
+    tabs->addTab(this->editor, "Sign Editor");
+    tabs->addTab(this->studio, "Font Studio");
+
     this->setWindowTitle(QString("SigAnim Sign Animator"));
 
-    QWidget *ui_area = new QWidget;
-    this->setCentralWidget(ui_area);
+//    QWidget *ui_area = new QWidget;
+    this->setCentralWidget(this->tabs);
 
     QMenuBar* menuBar = this->menuBar();
     // Generate menus
     menuBar->addAction(new QAction(QString("File"), menuBar));
 
-    this->verticalLayout = new QVBoxLayout();
-
-    this->signWidget = new SignWidget(sign);
-
-    if(textCell != nullptr) {
-        this->text = new QLineEdit();
-        this->verticalLayout->addWidget(this->text);
-        this->text->connect(this->text,
-                &QLineEdit::textChanged,
-                this,
-                &SiganimMainWindow::updateSignText);
-    }
-
-    this->verticalLayout->addWidget(this->signWidget);
-
-    // Set image widget as central widget
-    ui_area->setLayout(this->verticalLayout);
 }
 
 SiganimMainWindow::~SiganimMainWindow() {
 
 }
 
-void SiganimMainWindow::updateSignText(const QString& text) {
-    this->textCell->setText(icu::UnicodeString(text.toUtf8().data()));
-    this->signWidget->signChangedEvent();
-}
+
 

@@ -14,24 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SignCell.h"
-#include <cstddef>
-#include "cells/Display.h"
+#ifndef SRC_UI_SIGNEDITOR_H_
+#define SRC_UI_SIGNEDITOR_H_
 
-SignCell::SignCell() : parent(nullptr) {
-}
+#include <QMenuBar>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QWidget>
 
-const SignCell* SignCell::getParent() const {
-    return this->parent;
-}
+#include "SignWidget.h"
+#include "../sign/cells/Text.h"
 
-std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
-    return s.serialize(strm);
-}
+class SignEditor: public QWidget {
+    Q_OBJECT
 
-void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
+private:
+    QVBoxLayout *verticalLayout;
+    QLineEdit *text;
+    SignWidget *signWidget;
+
+    // Temporary.
+    Text* textCell;
+
+public:
+    SignEditor(Sign* sign, Text* textCell);
+    virtual ~SignEditor() {
     }
-}
 
+    // Temporary.
+public slots:
+    void updateSignText(const QString& text);
+
+};
+
+#endif /* SRC_UI_SIGNEDITOR_H_ */

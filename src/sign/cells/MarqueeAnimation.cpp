@@ -24,10 +24,12 @@ MarqueeAnimation::MarqueeAnimation(SignCell *subject,
 
 void MarqueeAnimation::setDirection(enum Direction direction) {
     this->direction = direction;
+    this->modified();
 }
 
 void MarqueeAnimation::setSpace(unsigned int space) {
     this->space = space;
+    this->modified();
 }
 
 std::ostream& MarqueeAnimation::serialize(std::ostream &strm) const {
@@ -59,4 +61,5 @@ unsigned int MarqueeAnimation::getSpace() const {
 
 void MarqueeAnimation::setDurationFrames(unsigned int durationFrames) {
     this->durationFrames = durationFrames;
+    this->modified();
 }

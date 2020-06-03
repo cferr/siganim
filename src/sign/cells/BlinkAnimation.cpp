@@ -21,7 +21,6 @@ BlinkAnimation::BlinkAnimation(SignCell* subject, const unsigned int framesOn,
         const unsigned int framesOff) :
         Animation(subject, framesOn + framesOff), framesOn(framesOn),
         framesOff(framesOff) {
-
 }
 
 unsigned int BlinkAnimation::getFramesOn() const {
@@ -35,11 +34,13 @@ unsigned int BlinkAnimation::getFramesOff() const {
 void BlinkAnimation::setFramesOn(unsigned int framesOn) {
     this->framesOn = framesOn;
     this->durationFrames = framesOn + this->framesOff;
+    this->modified();
 }
 
 void BlinkAnimation::setFramesOff(unsigned int framesOff) {
     this->framesOff = framesOff;
     this->durationFrames = this->framesOn + framesOff;
+    this->modified();
 }
 
 void BlinkAnimation::accept(SignTreeVisitor &visitor) {

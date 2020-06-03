@@ -40,8 +40,7 @@ void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
     for(auto i = displays.begin(); i < displays.end(); ++i) {
         (*i)->accept(*this);
         unsigned int displayTotal = this->totalFrames;
-        // Eclipse doesn't handle this LCM which is from C++17.
-        signTotalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+        signTotalFrames = std::lcm<unsigned int, unsigned int>
             (signTotalFrames, displayTotal);
     }
     this->totalFrames = signTotalFrames;
@@ -55,7 +54,7 @@ void DurationComputer::DurationComputerVisitor::visit(const Compose &s) {
     s.getBackground()->accept(*this);
     unsigned int bgFrames = this->totalFrames;
     s.getForeground()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+    this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, bgFrames);
 }
 
@@ -63,7 +62,7 @@ void DurationComputer::DurationComputerVisitor::visit(const Split &s) {
     s.getTopOrLeftChild()->accept(*this);
     unsigned int topLeftFrames = this->totalFrames;
     s.getBottomOrRightChild()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+    this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, topLeftFrames);
 }
 
@@ -73,13 +72,13 @@ void DurationComputer::DurationComputerVisitor::visit(const Text &s) {
 
 void DurationComputer::DurationComputerVisitor::visit(const MarqueeAnimation &s) {
     s.getSubject()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+    this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, s.getDurationFrames());
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const BlinkAnimation &s) {
     s.getSubject()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int> // @suppress("Function cannot be resolved") // @suppress("Symbol is not resolved")
+    this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, s.getDurationFrames());
 }
 

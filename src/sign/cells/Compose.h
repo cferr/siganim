@@ -35,8 +35,6 @@ public:
         return "Compose";
     }
 
-    virtual bool setParent(const SignCell* parent);
-
     SignCell* getForeground() const;
     SignCell* getBackground() const;
     void setForeground(SignCell* foreground);

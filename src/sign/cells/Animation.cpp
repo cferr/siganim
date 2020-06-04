@@ -38,25 +38,16 @@ bool Animation::setSubject(SignCell* subject) {
     return true;
 }
 
-bool Animation::setParent(const SignCell* parent) {
-    this->parent = parent;
-    return true;
-}
-
 SignCell* Animation::getSubject() const {
     return this->subject;
 }
 
 unsigned int Animation::getHeight() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildHeight(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildHeight(this);
 }
 
 unsigned int Animation::getWidth() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildWidth(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildWidth(this);
 }
 
 unsigned int Animation::getChildHeight(const SignCell *child) const {

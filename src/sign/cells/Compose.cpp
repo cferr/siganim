@@ -25,11 +25,6 @@ Compose::Compose(SignCell *background, SignCell *foreground) :
         foreground->setParent(this);
 }
 
-bool Compose::setParent(const SignCell *parent) {
-    this->parent = parent;
-    return true;
-}
-
 Compose::SignCell* Compose::getForeground() const {
     return this->foreground;
 }
@@ -67,15 +62,11 @@ void Compose::setBackground(SignCell *background) {
 }
 
 unsigned int Compose::getHeight() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildHeight(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildHeight(this);
 }
 
 unsigned int Compose::getWidth() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildWidth(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildWidth(this);
 }
 
 unsigned int Compose::getChildHeight(const SignCell *child) const {

@@ -112,16 +112,6 @@ int main(int argc, char *argv[]) {
     );
 
 
-
-    // std::cout << *testSign << std::endl;
-
-    DurationComputer r;
-    unsigned int totalFrames = r.computeTotalFrames(testSign);
-    std::cout << "Sign has " << totalFrames << " frames" << std::endl;
-
-//    GIFSink sink(testSign);
-//    sink.render("40.gif");
-
 #ifdef GUI
     SiganimMainWindow m(testSign, modifiableText);
     m.show();

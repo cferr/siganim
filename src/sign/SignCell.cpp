@@ -22,16 +22,26 @@ SignCell::SignCell() : parent(nullptr) {
 }
 
 const SignCell* SignCell::getParent() const {
-    return this->parent;
+    if(this->parent != nullptr)
+        return this->parent;
+    else throw OrphanNodeException(this);
 }
 
 std::ostream& operator<<(std::ostream &strm, const SignCell &s) {
     return s.serialize(strm);
 }
 
+bool SignCell::setParent(const SignCell *parent) {
+    this->parent = parent;
+    this->modified();
+    return true;
+}
+
 void SignCell::modified() const {
-    if(this->parent != nullptr) {
-        this->parent->modified();
+    try {
+        this->getParent()->modified();
+    } catch(OrphanNodeException& e) {
+       // There is no one to notify, then.
     }
 }
 

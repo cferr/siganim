@@ -30,7 +30,6 @@ public:
 
     }
 
-    bool setParent(const SignCell* parent);
     unsigned int getHeight() const;
     unsigned int getWidth() const;
     unsigned int getChildHeight(const SignCell* child) const;

@@ -29,8 +29,6 @@ public:
 
     }
 
-    virtual bool setParent(const SignCell* parent);
-
     virtual const char* CellTypeStr() const {
         return "Fill";
     }

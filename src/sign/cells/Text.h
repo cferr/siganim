@@ -86,8 +86,6 @@ public:
     void setHAlign(enum HorizontalAlignment hAlign);
     void setVAlign(enum VerticalAlignment vAlign);
 
-    bool setParent(const SignCell *parent);
-
     virtual std::ostream& serialize(std::ostream &strm) const;
 
 };

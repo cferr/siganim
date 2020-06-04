@@ -141,27 +141,12 @@ SignCell* Split::getBottomOrRightChild() const {
     return this->bottomOrRightChild;
 }
 
-bool Split::setParent(const SignCell *parent) {
-    this->parent = parent;
-    return true;
-}
-
 unsigned int Split::getHeight() const {
-    try {
-        if(this->parent != nullptr) {
-            return this->parent->getChildHeight(this);
-        } else throw OrphanNodeException(this); // Orphan node
-    } catch(OrphanNodeException& e) {
-        throw;
-    } catch(NoSuchChildException& e) {
-        throw OrphanNodeException(this);
-    }
+    return this->getParent()->getChildHeight(this);
 }
 
 unsigned int Split::getWidth() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildWidth(this);
-    } else throw OrphanNodeException(this); // Orphan node
+    return this->getParent()->getChildWidth(this);
 }
 
 std::ostream& Split::serialize(std::ostream &strm) const {

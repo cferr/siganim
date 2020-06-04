@@ -30,15 +30,11 @@ void Fill::setColor(SignColor &color) {
 }
 
 unsigned int Fill::getHeight() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildHeight(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildHeight(this);
 }
 
 unsigned int Fill::getWidth() const {
-    if(this->parent != nullptr) {
-        return this->parent->getChildWidth(this);
-    } else throw OrphanNodeException(this);
+    return this->getParent()->getChildWidth(this);
 }
 
 unsigned int Fill::getChildHeight(const SignCell *child) const {
@@ -55,11 +51,6 @@ void Fill::accept(SignTreeVisitor &visitor) {
 
 void Fill::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
-}
-
-bool Fill::setParent(const SignCell *parent) {
-    this->parent = parent;
-    return true;
 }
 
 std::ostream& Fill::serialize(std::ostream &strm) const {

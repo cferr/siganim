@@ -44,7 +44,7 @@ public:
             enum Type type, SignCell *rootCell);
     virtual ~Display();
 
-    virtual bool setParent(const SignCell* parent);
+    virtual bool setParent(const SignCell* parent) override;
 
     virtual const char* CellTypeStr() const {
         return "Display";

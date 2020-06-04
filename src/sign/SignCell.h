@@ -102,7 +102,7 @@ public:
     virtual unsigned int getChildHeight(const SignCell* child) const = 0;
     virtual unsigned int getChildWidth(const SignCell* child) const = 0;
 
-    virtual bool setParent(const SignCell* parent) = 0;
+    virtual bool setParent(const SignCell* parent);
     const SignCell* getParent() const;
 
     virtual void accept(SignTreeVisitor& visitor) = 0;

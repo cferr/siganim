@@ -53,7 +53,9 @@ bool Display::setParentSign(const Sign *parent) {
 }
 
 const Sign* Display::getParentSign() const {
-    return this->parentSign;
+    if(this->parentSign != nullptr)
+        return this->parentSign;
+    else throw OrphanNodeException(this);
 }
 
 bool Display::setRootCell(SignCell *rootCell) {
@@ -127,5 +129,5 @@ std::ostream& operator<<(std::ostream &strm, const Display &s) {
 }
 
 void Display::modified() const {
-    this->parentSign->modified();
+    this->getParentSign()->modified();
 }

@@ -68,8 +68,6 @@ public:
     bool setBottomOrRightChild(SignCell* child);
     SignCell* getBottomOrRightChild() const;
 
-    virtual bool setParent(const SignCell *parent);
-
     virtual std::ostream& serialize(std::ostream &strm) const;
 };
 

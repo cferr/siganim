@@ -50,15 +50,11 @@ unsigned int Text::getChildWidth(const SignCell* child) const {
 }
 
 unsigned int Text::getHeight() const {
-    if(this->parent != NULL) {
-        return this->parent->getChildHeight(this);
-    } else return 0; // Orphan node
+    return this->getParent()->getChildHeight(this);
 }
 
 unsigned int Text::getWidth() const {
-    if(this->parent != NULL) {
-        return this->parent->getChildWidth(this);
-    } else return 0; // Orphan node
+    return this->getParent()->getChildWidth(this);
 }
 
 void Text::accept(SignTreeVisitor &visitor) {
@@ -81,11 +77,6 @@ icu::UnicodeString* Text::getText() const {
 
 const Font* Text::getFont() const {
     return this->font;
-}
-
-bool Text::setParent(const SignCell *parent) {
-    this->parent = parent;
-    return true;
 }
 
 const SignColor Text::getForegroundColor() const {

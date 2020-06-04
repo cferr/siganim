@@ -43,17 +43,13 @@ void SignWidget::paintEvent(QPaintEvent *event) {
 void SignWidget::signChangedEvent() {
     // Repaint ourselves according to that sign.
     if(sign != NULL) {
-//        SignRenderer r;
-//        Bitmap *result = r.render(sign, 0);
         Bitmap* result = this->sink->getFrame();
         unsigned char* img = result->toRGB32();
         if(this->image != nullptr)
             delete this->image;
         this->image = new QImage(img, result->getWidth(),
                 result->getHeight(), QImage::Format_RGB32);
-
         free(img);
-
         this->update();
     }
 }

@@ -62,7 +62,7 @@ void ObservableSink::run() {
 void ObservableSink::render() {
     for(auto i = this->frames.begin(); i < this->frames.end(); ++i)
         delete *i;
-    this->frames.clear(); // TODO properly delete frames
+    this->frames.clear();
     SignRenderer r;
     DurationComputer c;
     unsigned int frames = c.computeTotalFrames(this->sign);

@@ -64,6 +64,10 @@ void MarqueeAnimation::setDurationFrames(unsigned int durationFrames) {
     this->modified();
 }
 
-void MarqueeAnimation::callbackDispatch(SignTreeStructureObserver *s) const {
+void MarqueeAnimation::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void MarqueeAnimation::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }

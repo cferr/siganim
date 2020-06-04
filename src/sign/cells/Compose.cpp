@@ -26,11 +26,15 @@ Compose::Compose(SignCell *background, SignCell *foreground) :
 }
 
 Compose::SignCell* Compose::getForeground() const {
-    return this->foreground;
+    if(this->foreground != nullptr)
+        return this->foreground;
+    throw NoSuchChildException(this, nullptr);
 }
 
 Compose::SignCell* Compose::getBackground() const {
-    return this->background;
+    if(this->background != nullptr)
+        return this->background;
+    throw NoSuchChildException(this, nullptr);
 }
 
 void Compose::setForeground(SignCell *foreground) {
@@ -91,7 +95,11 @@ void Compose::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-void Compose::callbackDispatch(SignTreeStructureObserver *s) const {
+void Compose::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void Compose::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 

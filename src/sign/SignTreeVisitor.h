@@ -34,11 +34,11 @@ template<bool isConst>
 private:
     typedef typename std::conditional<isConst, const Sign, Sign>::type SignT;
     typedef typename std::conditional<isConst, const Display,
-            Display>::type SignDisplayT;
+            Display>::type DisplayT;
     typedef typename std::conditional<isConst, const Text,
-                Text>::type SignCellTextT;
+                Text>::type TextT;
     typedef typename std::conditional<isConst, const Split,
-                Split>::type SignCellSplitT;
+                Split>::type SplitT;
     typedef typename std::conditional<isConst, const MarqueeAnimation,
                 MarqueeAnimation>::type MarqueeAnimationT;
     typedef typename std::conditional<isConst, const BlinkAnimation,
@@ -54,9 +54,9 @@ public:
     };
 
     virtual void visit(SignT &s) = 0;
-    virtual void visit(SignDisplayT &s) = 0;
-    virtual void visit(SignCellTextT &s) = 0;
-    virtual void visit(SignCellSplitT &s) = 0;
+    virtual void visit(DisplayT &s) = 0;
+    virtual void visit(TextT &s) = 0;
+    virtual void visit(SplitT &s) = 0;
     virtual void visit(MarqueeAnimationT &s) = 0;
     virtual void visit(BlinkAnimationT &s) = 0;
     virtual void visit(ComposeT &s) = 0;

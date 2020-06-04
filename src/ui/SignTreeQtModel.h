@@ -20,13 +20,18 @@
 
 #include <QTreeWidgetItem>
 #include "../sign/SignTree.h"
+#include "SignTreeDetailsWidget.h"
 
-class SignTreeQtModel: public QTreeWidgetItem, public SignTreeStructureObserver {
+class SignTreeQtModel: public QTreeWidgetItem,
+    public SignTreeStructureObserver, public ConstSignTreeDispatcher {
+
 private:
     SignTree* underlyingTreeItem;
+    SignTreeDetailsWidget* detailsWidget;
 
 public:
-    SignTreeQtModel(SignTree* underlyingTreeItem);
+    SignTreeQtModel(SignTree* underlyingTreeItem,
+            SignTreeDetailsWidget* detailsWidget);
     virtual ~SignTreeQtModel() {
         QList<QTreeWidgetItem*> children = this->takeChildren();
         for(auto i = children.begin(); i < children.end(); ++i)
@@ -45,6 +50,10 @@ public:
     virtual void observeStructure(const SignTree* sender);
 
     void rebuild();
+
+    SignTree* getTreeItem() {
+        return this->underlyingTreeItem;
+    }
 
 };
 

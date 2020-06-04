@@ -77,7 +77,9 @@ bool Display::setRootCell(SignCell *rootCell) {
 }
 
 SignCell* Display::getRootCell() const {
-    return this->rootCell;
+    if(this->rootCell != nullptr)
+        return this->rootCell;
+    throw NoSuchChildException(this, nullptr);
 }
 
 enum Display::Type Display::getDisplayType() const {
@@ -133,6 +135,11 @@ void Display::modified() const {
     this->getParentSign()->modified();
 }
 
-void Display::callbackDispatch(SignTreeStructureObserver *s) const {
+void Display::callbackDispatch(ConstSignTreeDispatcher *s) const {
     s->dispatchCallback(*this);
 }
+
+void Display::callbackDispatch(SignTreeDispatcher *s) {
+    s->dispatchCallback(*this);
+}
+

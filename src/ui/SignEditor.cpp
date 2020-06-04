@@ -23,17 +23,31 @@ SignEditor::SignEditor(Sign* sign) {
 
     this->text = new QLineEdit(this);
     this->tree = new QTreeWidget(this);
+    this->details = new SignTreeDetailsWidget();
     this->signWidget = new SignWidget(sign);
 
     this->verticalLayout->addWidget(this->text);
     this->verticalLayout->addWidget(this->tree);
+    this->verticalLayout->addWidget(this->details);
     this->verticalLayout->addWidget(this->signWidget);
 
     // Set image widget as central widget
     this->setLayout(this->verticalLayout);
 
     // Build tree
-    this->tree->addTopLevelItem(new SignTreeQtModel(sign));
+    this->tree->addTopLevelItem(new SignTreeQtModel(sign, this->details));
     this->tree->expandAll();
 
+    this->tree->connect(this->tree,
+            &QTreeWidget::currentItemChanged, this,
+            &SignEditor::updateDetails);
+
+}
+
+void SignEditor::updateDetails(QTreeWidgetItem *current,
+        QTreeWidgetItem *previous) {
+    // Cast as SignTreeQtModel
+    SignTreeQtModel* model = (SignTreeQtModel*)current;
+
+    this->details->update(model->getTreeItem());
 }

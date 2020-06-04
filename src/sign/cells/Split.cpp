@@ -118,7 +118,9 @@ bool Split::setTopOrLeftChild(SignCell* child) {
 }
 
 SignCell* Split::getTopOrLeftChild() const {
-    return this->topOrLeftChild;
+    if(this->topOrLeftChild != nullptr)
+        return this->topOrLeftChild;
+    throw NoSuchChildException(this, nullptr);
 }
 
 bool Split::setBottomOrRightChild(SignCell* child) {
@@ -140,7 +142,9 @@ bool Split::setBottomOrRightChild(SignCell* child) {
 }
 
 SignCell* Split::getBottomOrRightChild() const {
-    return this->bottomOrRightChild;
+    if(this->bottomOrRightChild != nullptr)
+        return this->bottomOrRightChild;
+    throw NoSuchChildException(this, nullptr);
 }
 
 unsigned int Split::getHeight() const {
@@ -151,7 +155,11 @@ unsigned int Split::getWidth() const {
     return this->getParent()->getChildWidth(this);
 }
 
-void Split::callbackDispatch(SignTreeStructureObserver *s) const {
+void Split::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void Split::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 

@@ -60,6 +60,10 @@ std::ostream& operator <<(std::ostream &strm, const BlinkAnimation &s) {
     return s.serialize(strm);
 }
 
-void BlinkAnimation::callbackDispatch(SignTreeStructureObserver *s) const {
+void BlinkAnimation::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void BlinkAnimation::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }

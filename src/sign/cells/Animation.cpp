@@ -40,7 +40,9 @@ bool Animation::setSubject(SignCell* subject) {
 }
 
 SignCell* Animation::getSubject() const {
-    return this->subject;
+    if(this->subject != nullptr)
+        return this->subject;
+    throw NoSuchChildException(this, nullptr);
 }
 
 unsigned int Animation::getHeight() const {

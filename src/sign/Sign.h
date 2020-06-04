@@ -47,7 +47,8 @@ public:
 
     void accept(SignTreeVisitor &visitor);
     void accept(ConstSignTreeVisitor &visitor) const;
-    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
+    virtual void callbackDispatch(ConstSignTreeDispatcher* s) const;
+    virtual void callbackDispatch(SignTreeDispatcher* s);
 
     bool addDisplay(Display *display);
     bool removeDisplay(Display *display);

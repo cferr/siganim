@@ -111,6 +111,10 @@ void Sign::modified() const {
     this->changed();
 }
 
-void Sign::callbackDispatch(SignTreeStructureObserver *s) const {
+void Sign::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void Sign::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }

@@ -29,7 +29,48 @@ class BlinkAnimation;
 class Compose;
 class Fill;
 
-class SignTreeStructureObserver;
+class SignTree;
+
+template<bool isConst> class AbstractSignTreeDispatcher {
+private:
+    typedef typename std::conditional<isConst, const Sign, Sign>::type SignT;
+    typedef typename std::conditional<isConst, const Display,
+            Display>::type DisplayT;
+    typedef typename std::conditional<isConst, const Text,
+                Text>::type TextT;
+    typedef typename std::conditional<isConst, const Split,
+                Split>::type SplitT;
+    typedef typename std::conditional<isConst, const MarqueeAnimation,
+                MarqueeAnimation>::type MarqueeAnimationT;
+    typedef typename std::conditional<isConst, const BlinkAnimation,
+                BlinkAnimation>::type BlinkAnimationT;
+    typedef typename std::conditional<isConst, const Compose,
+                Compose>::type ComposeT;
+    typedef typename std::conditional<isConst, const Fill,
+                Fill>::type FillT;
+public:
+    virtual ~AbstractSignTreeDispatcher() {}
+
+    virtual void dispatchCallback(SignT& s) = 0;
+    virtual void dispatchCallback(DisplayT& s) = 0;
+    virtual void dispatchCallback(TextT& s) = 0;
+    virtual void dispatchCallback(SplitT& s) = 0;
+    virtual void dispatchCallback(MarqueeAnimationT& s) = 0;
+    virtual void dispatchCallback(BlinkAnimationT& s) = 0;
+    virtual void dispatchCallback(ComposeT& s) = 0;
+    virtual void dispatchCallback(FillT& s) = 0;
+};
+
+typedef AbstractSignTreeDispatcher<true> ConstSignTreeDispatcher;
+typedef AbstractSignTreeDispatcher<false> SignTreeDispatcher;
+
+class SignTreeStructureObserver {
+
+public:
+    virtual ~SignTreeStructureObserver() {}
+    virtual void observeStructure(const SignTree* sender) = 0;
+
+};
 
 class SignTree {
     std::vector<SignTreeStructureObserver*> structureObservers;
@@ -43,24 +84,8 @@ public:
     void attachStructureObserver(SignTreeStructureObserver* observer);
     void detachStructureObserver(SignTreeStructureObserver* observer);
 
-    virtual void callbackDispatch(SignTreeStructureObserver* s) const = 0;
-
-};
-
-class SignTreeStructureObserver {
-
-public:
-    virtual ~SignTreeStructureObserver() {}
-    virtual void observeStructure(const SignTree* sender) = 0;
-
-    virtual void dispatchCallback(const Sign& s) = 0;
-    virtual void dispatchCallback(const Display& s) = 0;
-    virtual void dispatchCallback(const Text& s) = 0;
-    virtual void dispatchCallback(const Split& s) = 0;
-    virtual void dispatchCallback(const MarqueeAnimation& s) = 0;
-    virtual void dispatchCallback(const BlinkAnimation& s) = 0;
-    virtual void dispatchCallback(const Compose& s) = 0;
-    virtual void dispatchCallback(const Fill& s) = 0;
+    virtual void callbackDispatch(ConstSignTreeDispatcher* s) const = 0;
+    virtual void callbackDispatch(SignTreeDispatcher* s) = 0;
 
 };
 

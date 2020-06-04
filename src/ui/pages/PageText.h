@@ -14,37 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_UI_SIGNEDITOR_H_
-#define SRC_UI_SIGNEDITOR_H_
 
-#include <QLineEdit>
-#include <QMenuBar>
-#include <QTreeWidget>
-#include <QVBoxLayout>
+#ifndef UI_PAGES_PAGETEXT_H_
+#define UI_PAGES_PAGETEXT_H_
+
 #include <QWidget>
+#include "../../sign/cells/Text.h"
 
-#include "../sign/cells/Text.h"
-#include "SignTreeDetailsWidget.h"
-#include "SignWidget.h"
-
-class SignEditor: public QWidget {
+class PageText : public QWidget {
     Q_OBJECT
 
 private:
-    QVBoxLayout *verticalLayout;
-    QLineEdit *text;
-    SignWidget *signWidget;
-    QTreeWidget *tree;
-    SignTreeDetailsWidget* details;
+    Text* treeNode;
 
 public:
-    SignEditor(Sign* sign);
-    virtual ~SignEditor() {
-    }
-
-public slots:
-    void updateDetails(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-
+    PageText(Text* treeNode);
+    virtual ~PageText() { }
 };
 
-#endif /* SRC_UI_SIGNEDITOR_H_ */
+#endif /* UI_PAGES_PAGETEXT_H_ */

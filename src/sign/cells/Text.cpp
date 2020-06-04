@@ -101,7 +101,11 @@ void Text::setVAlign(enum VerticalAlignment vAlign) {
     this->modified();
 }
 
-void Text::callbackDispatch(SignTreeStructureObserver *s) const {
+void Text::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void Text::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 

@@ -53,7 +53,11 @@ void Fill::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-void Fill::callbackDispatch(SignTreeStructureObserver *s) const {
+void Fill::callbackDispatch(ConstSignTreeDispatcher *s) const {
+    s->dispatchCallback(*this);
+}
+
+void Fill::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 

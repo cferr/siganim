@@ -101,6 +101,10 @@ void Text::setVAlign(enum VerticalAlignment vAlign) {
     this->modified();
 }
 
+void Text::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
+}
+
 std::ostream& Text::serialize(std::ostream &strm) const {
     return strm << "{ " << this->getWidth() << "x" << this->getHeight() <<
             " : \"" << *(this->text) << "\" }";

@@ -15,30 +15,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SignEditor.h"
+#include "SignTreeQtModel.h"
 
-SignEditor::SignEditor(Sign* sign, Text* textCell) : textCell(textCell) {
+SignEditor::SignEditor(Sign* sign) {
 
     this->verticalLayout = new QVBoxLayout();
 
+    this->text = new QLineEdit(this);
+    this->tree = new QTreeWidget(this);
     this->signWidget = new SignWidget(sign);
 
-    if(textCell != nullptr) {
-        this->text = new QLineEdit();
-        this->verticalLayout->addWidget(this->text);
-        this->text->connect(this->text,
-                &QLineEdit::textChanged,
-                this,
-                &SignEditor::updateSignText);
-    }
-
+    this->verticalLayout->addWidget(this->text);
+    this->verticalLayout->addWidget(this->tree);
     this->verticalLayout->addWidget(this->signWidget);
 
     // Set image widget as central widget
     this->setLayout(this->verticalLayout);
 
-}
+    // Build tree
+    this->tree->addTopLevelItem(new SignTreeQtModel(sign));
+    this->tree->expandAll();
 
-void SignEditor::updateSignText(const QString& text) {
-    this->textCell->setText(icu::UnicodeString(text.toUtf8().data()));
 }
-

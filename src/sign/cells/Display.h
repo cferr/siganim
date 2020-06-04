@@ -52,6 +52,7 @@ public:
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
+    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
 
     bool setParentSign(const Sign* parent);
     const Sign* getParentSign() const;

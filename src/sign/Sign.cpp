@@ -63,6 +63,8 @@ void Sign::accept(ConstSignTreeVisitor &visitor) const {
 bool Sign::addDisplay(Display *display) {
     displays.push_back(display);
     display->setParentSign(this);
+    this->modified();
+    this->structureChanged();
     return true;
 }
 
@@ -74,6 +76,10 @@ bool Sign::removeDisplay(Display *display) {
             this->displays.erase(i);
             ret = true;
         }
+    }
+    if(ret) {
+        this->modified();
+        this->structureChanged();
     }
     return ret;
 }
@@ -103,4 +109,8 @@ std::ostream& operator<<(std::ostream &strm, const Sign &s) {
 
 void Sign::modified() const {
     this->changed();
+}
+
+void Sign::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
 }

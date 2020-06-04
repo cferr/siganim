@@ -35,6 +35,7 @@ bool Animation::setSubject(SignCell* subject) {
         return false;
     }
     this->modified();
+    this->structureChanged();
     return true;
 }
 

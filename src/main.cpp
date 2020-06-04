@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 
 
 #ifdef GUI
-    SiganimMainWindow m(testSign, modifiableText);
+    SiganimMainWindow m(testSign);
     m.show();
     ret |= a.exec();
 #endif

@@ -17,13 +17,14 @@
 #ifndef SRC_UI_SIGNEDITOR_H_
 #define SRC_UI_SIGNEDITOR_H_
 
-#include <QMenuBar>
 #include <QLineEdit>
+#include <QMenuBar>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "SignWidget.h"
 #include "../sign/cells/Text.h"
+#include "SignWidget.h"
 
 class SignEditor: public QWidget {
     Q_OBJECT
@@ -32,18 +33,12 @@ private:
     QVBoxLayout *verticalLayout;
     QLineEdit *text;
     SignWidget *signWidget;
-
-    // Temporary.
-    Text* textCell;
+    QTreeWidget *tree;
 
 public:
-    SignEditor(Sign* sign, Text* textCell);
+    SignEditor(Sign* sign);
     virtual ~SignEditor() {
     }
-
-    // Temporary.
-public slots:
-    void updateSignText(const QString& text);
 
 };
 

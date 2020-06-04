@@ -72,6 +72,7 @@ bool Display::setRootCell(SignCell *rootCell) {
             return false;
         }
     this->modified();
+    this->structureChanged();
     return true;
 }
 
@@ -130,4 +131,8 @@ std::ostream& operator<<(std::ostream &strm, const Display &s) {
 
 void Display::modified() const {
     this->getParentSign()->modified();
+}
+
+void Display::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
 }

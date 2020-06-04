@@ -47,6 +47,7 @@ public:
 
     void accept(SignTreeVisitor& visitor);
     void accept(ConstSignTreeVisitor& visitor) const;
+    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
 
     virtual std::ostream& serialize(std::ostream &strm) const;
 };

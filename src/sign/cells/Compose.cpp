@@ -42,6 +42,7 @@ void Compose::setForeground(SignCell *foreground) {
         if(oldForeground != nullptr)
             oldForeground->setParent(nullptr);
         this->modified();
+        this->structureChanged();
     } catch(SetParentFailedException& e) {
         this->foreground = oldForeground;
     }
@@ -56,6 +57,7 @@ void Compose::setBackground(SignCell *background) {
         if(oldBackground != nullptr)
             oldBackground->setParent(nullptr);
         this->modified();
+        this->structureChanged();
     } catch(SetParentFailedException& e) {
         this->background = oldBackground;
     }
@@ -87,6 +89,10 @@ void Compose::accept(SignTreeVisitor &visitor) {
 
 void Compose::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
+}
+
+void Compose::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
 }
 
 std::ostream& Compose::serialize(std::ostream &strm) const {

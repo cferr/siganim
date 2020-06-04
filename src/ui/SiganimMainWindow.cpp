@@ -18,14 +18,14 @@
 #include "SiganimMainWindow.h"
 
 SiganimMainWindow::SiganimMainWindow() :
-    SiganimMainWindow(nullptr, nullptr) {
+    SiganimMainWindow(nullptr) {
 
 }
 
-SiganimMainWindow::SiganimMainWindow(Sign* sign, Text* textCell)
+SiganimMainWindow::SiganimMainWindow(Sign* sign)
 {
     this->studio = new FontStudio();
-    this->editor = new SignEditor(sign, textCell);
+    this->editor = new SignEditor(sign);
     this->tabs = new QTabWidget();
     tabs->addTab(this->editor, "Sign Editor");
     tabs->addTab(this->studio, "Font Studio");

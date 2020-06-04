@@ -19,6 +19,7 @@
 
 #include <type_traits>
 
+// All classes part of the visitable tree
 class Sign;
 class Display;
 class Text;

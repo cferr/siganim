@@ -14,32 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#include "SignTree.h"
 
-#include <QMainWindow>
-#include <QTabWidget>
+void SignTree::structureChanged() const {
+    for(auto i = this->structureObservers.begin();
+            i < this->structureObservers.end(); ++i) {
+        (*i)->observeStructure(this);
+    }
+}
 
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../sign/cells/Text.h"
+void SignTree::attachStructureObserver(
+        SignTreeStructureObserver *observer) {
+    this->structureObservers.push_back(observer);
+}
 
-class SiganimMainWindow: public QMainWindow {
-    Q_OBJECT
-private:
-
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
-
-public:
-
-    SiganimMainWindow();
-    // Temporary.
-    SiganimMainWindow(Sign* sign);
-    virtual ~SiganimMainWindow();
-
-
-};
-
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */
+void SignTree::detachStructureObserver(
+        SignTreeStructureObserver *observer) {
+    for(auto i = this->structureObservers.begin();
+            i < this->structureObservers.end(); ++i) {
+        if(*i == observer)
+            this->structureObservers.erase(i);
+    }
+}

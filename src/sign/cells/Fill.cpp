@@ -53,6 +53,10 @@ void Fill::accept(ConstSignTreeVisitor &visitor) const {
     visitor.visit(*this);
 }
 
+void Fill::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
+}
+
 std::ostream& Fill::serialize(std::ostream &strm) const {
     return strm << "Fill { color = " << this->color << " }";
 }

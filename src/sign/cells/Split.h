@@ -51,6 +51,7 @@ public:
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
+    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
 
     virtual unsigned int getHeight() const;
     virtual unsigned int getWidth() const;

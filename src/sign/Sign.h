@@ -20,10 +20,11 @@
 #include <vector>
 #include "../render/Bitmap.h"
 #include "cells/Display.h"
-#include "SignColor.h"
 #include "Observer.h"
+#include "SignColor.h"
+#include "SignTree.h"
 
-class Sign : public Observable {
+class Sign : public Observable, public SignTree {
 private:
     std::vector<Display*> displays;
 
@@ -46,6 +47,7 @@ public:
 
     void accept(SignTreeVisitor &visitor);
     void accept(ConstSignTreeVisitor &visitor) const;
+    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
 
     bool addDisplay(Display *display);
     bool removeDisplay(Display *display);

@@ -113,6 +113,7 @@ bool Split::setTopOrLeftChild(SignCell* child) {
             return false;
         }
     this->modified();
+    this->structureChanged();
     return true;
 }
 
@@ -134,6 +135,7 @@ bool Split::setBottomOrRightChild(SignCell* child) {
             return false;
         }
     this->modified();
+    this->structureChanged();
     return true;
 }
 
@@ -147,6 +149,10 @@ unsigned int Split::getHeight() const {
 
 unsigned int Split::getWidth() const {
     return this->getParent()->getChildWidth(this);
+}
+
+void Split::callbackDispatch(SignTreeStructureObserver *s) const {
+    s->dispatchCallback(*this);
 }
 
 std::ostream& Split::serialize(std::ostream &strm) const {

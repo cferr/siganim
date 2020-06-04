@@ -19,9 +19,10 @@
 
 #include <iostream>
 #include <exception>
+#include "SignTree.h"
 #include "SignTreeVisitor.h"
 
-class SignCell {
+class SignCell : public SignTree {
 public:
     class SetParentFailedException : public std::exception
         {

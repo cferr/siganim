@@ -42,13 +42,12 @@ public:
 
     virtual void accept(SignTreeVisitor &visitor);
     virtual void accept(ConstSignTreeVisitor &visitor) const;
+    virtual void callbackDispatch(SignTreeStructureObserver* s) const;
 
     void setDirection(enum Direction direction);
-    void setSlant(bool slant);
     void setSpace(unsigned int space);
 
     enum Direction getDirection() const;
-    bool getSlant() const;
     unsigned int getSpace() const;
 
     virtual std::ostream& serialize(std::ostream &strm) const;

@@ -43,11 +43,15 @@ Split::~Split() {
 unsigned int Split::getChildHeight(const SignCell* child) const {
     unsigned int thisHeight = this->getHeight();
     if(this->splitDirection == SplitDirection::SPLIT_HORIZONTAL) {
-        if(child == this->topOrLeftChild)
-            return this->splitPos;
-        else if(child == this->bottomOrRightChild)
-            return thisHeight - this->splitPos;
-        else throw NoSuchChildException(this, child);
+        if(child == this->topOrLeftChild) {
+            if(thisHeight > this->splitPos)
+                return this->splitPos;
+            else return thisHeight;
+        } else if(child == this->bottomOrRightChild) {
+            if(thisHeight > this->splitPos)
+                return thisHeight - this->splitPos;
+            else return 0;
+        } else throw NoSuchChildException(this, child);
     } else {
         if(child == this->topOrLeftChild || child == this->bottomOrRightChild)
             return thisHeight;
@@ -58,11 +62,15 @@ unsigned int Split::getChildHeight(const SignCell* child) const {
 unsigned int Split::getChildWidth(const SignCell* child) const {
     unsigned int thisWidth = this->getWidth();
     if(this->splitDirection == SplitDirection::SPLIT_VERTICAL) {
-        if(child == this->topOrLeftChild)
-            return this->splitPos;
-        else if(child == this->bottomOrRightChild)
-            return thisWidth - this->splitPos;
-        else throw NoSuchChildException(this, child);
+        if(child == this->topOrLeftChild) {
+            if(thisWidth > this->splitPos)
+                return this->splitPos;
+            else return thisWidth;
+        } else if(child == this->bottomOrRightChild) {
+            if(thisWidth > this->splitPos)
+                return thisWidth - this->splitPos;
+            else return 0;
+        } else throw NoSuchChildException(this, child);
     } else {
         if(child == this->topOrLeftChild || child == this->bottomOrRightChild)
             return thisWidth;

@@ -51,12 +51,16 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
-        (*i)->accept(*this);
-        // set bitmap
-        SignImage* displayImage = this->resultTree->compose();
-        this->rendererInstance.signImageToBitmap(this->resultBitmap,
-                displayImage, (*i)->getDisplayType(), 0, 0);
-        // TODO add display position coords
+        try {
+            (*i)->accept(*this);
+            // set bitmap
+            SignImage* displayImage = this->resultTree->compose();
+            this->rendererInstance.signImageToBitmap(this->resultBitmap,
+                    displayImage, (*i)->getDisplayType(), 0, 0);
+            // TODO add display position coords
+        } catch(std::exception& e) {
+            // Don't go any further with this display, but don't fail.
+        }
     }
 }
 
@@ -68,45 +72,52 @@ void SignRenderer::SignRenderVisitor::visit(const Split &s) {
     SignImage* composite = new SignImage(s.getWidth(), s.getHeight(),
             s.getWidth(), s.getHeight());
 
-    s.getTopOrLeftChild()->accept(*this);
-    SignImage* upper = this->resultTree->compose()->cropToBox();
-    composite->merge(upper, 0, 0);
+    try {
+        s.getTopOrLeftChild()->accept(*this);
+        SignImage* upper = this->resultTree->compose()->cropToBox();
+        composite->merge(upper, 0, 0);
 
-    delete this->resultTree;
-    s.getBottomOrRightChild()->accept(*this);
+        delete this->resultTree;
+    } catch(std::exception& e) {
 
-    SignImage* lower = this->resultTree->compose()->cropToBox();
-    const SignColor* lowerPixels = lower->getPixels();
-
-    unsigned int boxWidth = s.getWidth();
-    unsigned int boxHeight = s.getHeight();
-
-    switch(s.getSplitDirection()) {
-    case Split::SPLIT_HORIZONTAL:
-        composite->merge(lower, 0, s.getSplitPos());
-        break;
-    case Split::SPLIT_VERTICAL:
-        composite->merge(lower, s.getSplitPos(), 0);
-        break;
-    case Split::SPLIT_NW_SE_DIAGONAL:
-        for(unsigned int x = 0; x < boxWidth; ++x) {
-            for(unsigned int y = boxHeight-1;
-                    (int)(y * boxWidth) >= (int)(x * boxHeight); --y) {
-                composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
-            }
-        }
-        break;
-    case Split::SPLIT_SW_NE_DIAGONAL:
-        for(unsigned int x = 0; x < boxWidth; ++x) {
-            for(unsigned int y = boxHeight-1;
-                (int)(x * boxHeight + y * boxWidth)
-                        >= (int)(boxHeight * boxWidth); --y) {
-                composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
-            }
-        }
-        break;
     }
+    try {
+        s.getBottomOrRightChild()->accept(*this);
 
+        SignImage* lower = this->resultTree->compose()->cropToBox();
+        const SignColor* lowerPixels = lower->getPixels();
+
+        unsigned int boxWidth = s.getWidth();
+        unsigned int boxHeight = s.getHeight();
+
+        switch(s.getSplitDirection()) {
+        case Split::SPLIT_HORIZONTAL:
+            composite->merge(lower, 0, s.getSplitPos());
+            break;
+        case Split::SPLIT_VERTICAL:
+            composite->merge(lower, s.getSplitPos(), 0);
+            break;
+        case Split::SPLIT_NW_SE_DIAGONAL:
+            for(unsigned int x = 0; x < boxWidth; ++x) {
+                for(unsigned int y = boxHeight-1;
+                        (int)(y * boxWidth) >= (int)(x * boxHeight); --y) {
+                    composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
+                }
+            }
+            break;
+        case Split::SPLIT_SW_NE_DIAGONAL:
+            for(unsigned int x = 0; x < boxWidth; ++x) {
+                for(unsigned int y = boxHeight-1;
+                    (int)(x * boxHeight + y * boxWidth)
+                            >= (int)(boxHeight * boxWidth); --y) {
+                    composite->setPixel(x, y, lowerPixels[y * boxWidth + x]);
+                }
+            }
+            break;
+        }
+    } catch(std::exception& e) {
+
+    }
     this->resultTree = new SignImageTree(composite);
 
 }
@@ -252,48 +263,58 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
+    try {
+        // Render the child
+        s.getSubject()->accept(*this);
+        SignImage* subjectImage = this->resultTree->compose();
 
-    // Render the child
-    s.getSubject()->accept(*this);
-    SignImage* subjectImage = this->resultTree->compose();
+        // Preserve background color (will be default in case the subject image
+        // is already a composite).
+        SignImage *animRender = new SignImage(s.getWidth(), s.getHeight(),
+            s.getWidth(), s.getHeight(), subjectImage->getBackgroundColor());
 
-    // Preserve background color (will be default in case the subject image
-    // is already a composite).
-    SignImage *animRender = new SignImage(s.getWidth(), s.getHeight(),
-        s.getWidth(), s.getHeight(), subjectImage->getBackgroundColor());
+        enum MarqueeAnimation::Direction direction = s.getDirection();
 
-    enum MarqueeAnimation::Direction direction = s.getDirection();
+        unsigned int duration = s.getDurationFrames();
+        unsigned int frame = (this->frame % duration);
+        unsigned int totalSpace = subjectImage->getWidth() + s.getSpace();
+        unsigned int subjectWidth = subjectImage->getWidth();
 
-    unsigned int duration = s.getDurationFrames();
-    unsigned int frame = (this->frame % duration);
-    unsigned int totalSpace = subjectImage->getWidth() + s.getSpace();
-    unsigned int subjectWidth = subjectImage->getWidth();
+        int dirM = (direction == MarqueeAnimation::LEFT)?-1:1;
 
-    int dirM = (direction == MarqueeAnimation::LEFT)?-1:1;
+        int leftPosition = (-1) * dirM * (int)subjectWidth + dirM * (
+            ((int)totalSpace * (int)frame) / ((int)duration));
 
-    int leftPosition = (-1) * dirM * (int)subjectWidth + dirM * (
-        ((int)totalSpace * (int)frame) / ((int)duration));
+        // Merge right part of the image
+        animRender->merge(subjectImage, leftPosition - totalSpace, 0);
+        // Merge center part of the image
+        animRender->merge(subjectImage, leftPosition, 0);
+        // Merge right part of the image
+        animRender->merge(subjectImage, leftPosition + totalSpace, 0);
 
-    // Merge right part of the image
-    animRender->merge(subjectImage, leftPosition - totalSpace, 0);
-    // Merge center part of the image
-    animRender->merge(subjectImage, leftPosition, 0);
-    // Merge right part of the image
-    animRender->merge(subjectImage, leftPosition + totalSpace, 0);
-
-    delete this->resultTree;
-    this->resultTree = new SignImageTree(animRender);
+        delete this->resultTree;
+        this->resultTree = new SignImageTree(animRender);
+    } catch(std::exception& e) {
+        this->resultTree = new SignImageTree(new SignImage(s.getWidth(),
+                s.getHeight(), s.getWidth(), s.getHeight()));
+    }
 }
 
 void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
-    s.getSubject()->accept(*this);
-    unsigned int framesOn = s.getFramesOn();
-    unsigned int framesOff = s.getFramesOff();
+    try {
+        s.getSubject()->accept(*this);
+        unsigned int framesOn = s.getFramesOn();
+        unsigned int framesOff = s.getFramesOff();
 
-    if(this->frame % (framesOn + framesOff) > framesOn) {
+        if(this->frame % (framesOn + framesOff) > framesOn) {
+            SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
+                    s.getWidth(), s.getHeight());
+            delete this->resultTree;
+            this->resultTree = new SignImageTree(empty);
+        }
+    } catch(std::exception& e) {
         SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
                 s.getWidth(), s.getHeight());
-        delete this->resultTree;
         this->resultTree = new SignImageTree(empty);
     }
 }
@@ -302,10 +323,14 @@ void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
          = new std::vector<struct SignImageTree::SignImageTreeChild>();
 
-    s.getBackground()->accept(*this);
-    childrenImg->push_back({this->resultTree, 0, 0});
-    s.getForeground()->accept(*this);
-    childrenImg->push_back({this->resultTree, 0, 0});
+    try {
+        s.getBackground()->accept(*this);
+        childrenImg->push_back({this->resultTree, 0, 0});
+    } catch(std::exception& e) {}
+    try {
+        s.getForeground()->accept(*this);
+        childrenImg->push_back({this->resultTree, 0, 0});
+    } catch(std::exception& e) {}
 
     this->resultTree = new SignImageTree(s.getWidth(), s.getHeight(),
             childrenImg);

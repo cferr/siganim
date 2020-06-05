@@ -14,36 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef UI_PAGES_PAGEEMPTYCELL_H_
+#define UI_PAGES_PAGEEMPTYCELL_H_
 
-#ifndef UI_PAGES_PAGESPLIT_H_
-#define UI_PAGES_PAGESPLIT_H_
-
-#include <QSpinBox>
-#include <QRadioButton>
+#include <QLabel>
 #include <QWidget>
-#include "../../sign/cells/Split.h"
 
-class PageSplit : public QWidget {
+class PageEmptyCell : public QWidget {
     Q_OBJECT
 
-private:
-    Split* treeNode;
-    QSpinBox* posSpinner;
-    QRadioButton* radioDirHorizontal;
-    QRadioButton* radioDirVertical;
-    QRadioButton* radioDirDiagonalSWNE;
-    QRadioButton* radioDirDiagonalNWSE;
+    QLabel* indicator;
 
 public:
-    PageSplit(Split* treeNode);
-    virtual ~PageSplit() { }
+    PageEmptyCell();
+    virtual ~PageEmptyCell() { }
 
-public slots:
-    void setDirHorizontal(bool set);
-    void setDirVertical(bool set);
-    void setDirDiagonalSWNE(bool set);
-    void setDirDiagonalNWSE(bool set);
-    void setSplitPos(int pos);
 };
 
-#endif /* UI_PAGES_PAGESPLIT_H_ */
+#endif /* UI_PAGES_PAGEEMPTYCELL_H_ */

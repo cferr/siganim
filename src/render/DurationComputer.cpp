@@ -38,7 +38,11 @@ void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
     unsigned int signTotalFrames = 1;
     std::vector<Display*> displays = s.getDisplays();
     for(auto i = displays.begin(); i < displays.end(); ++i) {
-        (*i)->accept(*this);
+        try {
+            (*i)->accept(*this);
+        } catch(std::exception& e) {
+            this->totalFrames = 1;
+        }
         unsigned int displayTotal = this->totalFrames;
         signTotalFrames = std::lcm<unsigned int, unsigned int>
             (signTotalFrames, displayTotal);
@@ -47,21 +51,41 @@ void DurationComputer::DurationComputerVisitor::visit(const Sign &s) {
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const Display &s) {
-    s.getRootCell()->accept(*this);
+    try {
+        s.getRootCell()->accept(*this);
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const Compose &s) {
-    s.getBackground()->accept(*this);
+    try {
+        s.getBackground()->accept(*this);
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
     unsigned int bgFrames = this->totalFrames;
-    s.getForeground()->accept(*this);
+    try {
+        s.getForeground()->accept(*this);
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
     this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, bgFrames);
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const Split &s) {
-    s.getTopOrLeftChild()->accept(*this);
+    try {
+        s.getTopOrLeftChild()->accept(*this);
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
     unsigned int topLeftFrames = this->totalFrames;
-    s.getBottomOrRightChild()->accept(*this);
+    try {
+        s.getBottomOrRightChild()->accept(*this);
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
     this->totalFrames = std::lcm<unsigned int, unsigned int>
         (this->totalFrames, topLeftFrames);
 }
@@ -71,15 +95,25 @@ void DurationComputer::DurationComputerVisitor::visit(const Text &s) {
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const MarqueeAnimation &s) {
-    s.getSubject()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int>
-        (this->totalFrames, s.getDurationFrames());
+    try {
+        s.getSubject()->accept(*this);
+        this->totalFrames = std::lcm<unsigned int, unsigned int>
+            (this->totalFrames, s.getDurationFrames());
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
+
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const BlinkAnimation &s) {
-    s.getSubject()->accept(*this);
-    this->totalFrames = std::lcm<unsigned int, unsigned int>
-        (this->totalFrames, s.getDurationFrames());
+    try {
+        s.getSubject()->accept(*this);
+        this->totalFrames = std::lcm<unsigned int, unsigned int>
+            (this->totalFrames, s.getDurationFrames());
+    } catch(std::exception& e) {
+        this->totalFrames = 1;
+    }
+
 }
 
 void DurationComputer::DurationComputerVisitor::visit(const Fill &s) {

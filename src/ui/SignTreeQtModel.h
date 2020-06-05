@@ -18,12 +18,20 @@
 #ifndef SRC_UI_SIGNTREEQTMODEL_H_
 #define SRC_UI_SIGNTREEQTMODEL_H_
 
+#include <exception>
 #include <QTreeWidgetItem>
 #include "../sign/SignTree.h"
 #include "SignTreeDetailsWidget.h"
 
 class SignTreeQtModel: public QTreeWidgetItem,
     public SignTreeStructureObserver, public ConstSignTreeDispatcher {
+public:
+    class NoTreeItemException : public std::exception {
+    public:
+        const char* what() {
+            return "This tree item has no associated sign tree.";
+        }
+    };
 
 private:
     SignTree* underlyingTreeItem;
@@ -32,6 +40,7 @@ private:
 public:
     SignTreeQtModel(SignTree* underlyingTreeItem,
             SignTreeDetailsWidget* detailsWidget);
+    SignTreeQtModel(SignTreeDetailsWidget* detailsWidget);
     virtual ~SignTreeQtModel() {
         QList<QTreeWidgetItem*> children = this->takeChildren();
         for(auto i = children.begin(); i < children.end(); ++i)
@@ -52,7 +61,9 @@ public:
     void rebuild();
 
     SignTree* getTreeItem() {
-        return this->underlyingTreeItem;
+        if(this->underlyingTreeItem != nullptr)
+            return this->underlyingTreeItem;
+        else throw NoTreeItemException();
     }
 
 };

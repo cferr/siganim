@@ -14,36 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QVBoxLayout>
+#include "PageEmptyCell.h"
 
-#ifndef UI_PAGES_PAGESPLIT_H_
-#define UI_PAGES_PAGESPLIT_H_
+PageEmptyCell::PageEmptyCell() {
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    this->indicator = new QLabel("This cell is empty. "
+            "Right-click on it to see what options are available.");
+    layout->addWidget(this->indicator);
+    this->setLayout(layout);
+}
 
-#include <QSpinBox>
-#include <QRadioButton>
-#include <QWidget>
-#include "../../sign/cells/Split.h"
-
-class PageSplit : public QWidget {
-    Q_OBJECT
-
-private:
-    Split* treeNode;
-    QSpinBox* posSpinner;
-    QRadioButton* radioDirHorizontal;
-    QRadioButton* radioDirVertical;
-    QRadioButton* radioDirDiagonalSWNE;
-    QRadioButton* radioDirDiagonalNWSE;
-
-public:
-    PageSplit(Split* treeNode);
-    virtual ~PageSplit() { }
-
-public slots:
-    void setDirHorizontal(bool set);
-    void setDirVertical(bool set);
-    void setDirDiagonalSWNE(bool set);
-    void setDirDiagonalNWSE(bool set);
-    void setSplitPos(int pos);
-};
-
-#endif /* UI_PAGES_PAGESPLIT_H_ */

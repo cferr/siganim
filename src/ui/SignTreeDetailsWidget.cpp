@@ -19,6 +19,7 @@
 #include "pages/PageBlinkAnimation.h"
 #include "pages/PageCompose.h"
 #include "pages/PageDisplay.h"
+#include "pages/PageEmptyCell.h"
 #include "pages/PageFill.h"
 #include "pages/PageMarqueeAnimation.h"
 #include "pages/PageSign.h"
@@ -26,7 +27,8 @@
 #include "pages/PageText.h"
 
 SignTreeDetailsWidget::SignTreeDetailsWidget() : currentWidget(nullptr) {
-    this->layout = new QVBoxLayout();
+    this->layout = new QVBoxLayout(this);
+    this->setLayout(this->layout);
 }
 
 void SignTreeDetailsWidget::update(SignTree *t) {
@@ -40,6 +42,10 @@ void SignTreeDetailsWidget::updateWidget(QWidget *widget) {
     }
     this->currentWidget = widget;
     this->layout->addWidget(widget);
+}
+
+void SignTreeDetailsWidget::updateEmpty() {
+    this->updateWidget(new PageEmptyCell());
 }
 
 void SignTreeDetailsWidget::dispatchCallback(Sign &s) {

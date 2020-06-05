@@ -34,6 +34,11 @@ SignTreeQtModel::SignTreeQtModel(SignTree *underlyingTreeItem,
     this->rebuild();
 }
 
+SignTreeQtModel::SignTreeQtModel(SignTreeDetailsWidget* detailsWidget) :
+        underlyingTreeItem(nullptr), detailsWidget(detailsWidget) {
+    this->rebuild();
+}
+
 void SignTreeQtModel::observeStructure(const SignTree *sender) {
     if(sender == this->underlyingTreeItem) {
         this->rebuild();
@@ -46,8 +51,11 @@ void SignTreeQtModel::rebuild() {
     for(auto i = children.begin(); i < children.end(); ++i)
         delete *i;
 
-    this->underlyingTreeItem->callbackDispatch(this);
-
+    if(this->underlyingTreeItem != nullptr)
+        this->underlyingTreeItem->callbackDispatch(this);
+    else {
+        this->setText(0, "Empty");
+    }
 }
 
 // Class-specific builder functions
@@ -67,7 +75,7 @@ void SignTreeQtModel::dispatchCallback(const Display &s) {
         this->addChild(new SignTreeQtModel(s.getRootCell(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
 }
 
@@ -81,13 +89,13 @@ void SignTreeQtModel::dispatchCallback(const Split &s) {
         this->addChild(new SignTreeQtModel(s.getTopOrLeftChild(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
     try {
         this->addChild(new SignTreeQtModel(s.getBottomOrRightChild(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
 }
 
@@ -97,7 +105,7 @@ void SignTreeQtModel::dispatchCallback(const MarqueeAnimation &s) {
         this->addChild(new SignTreeQtModel(s.getSubject(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
 }
 
@@ -107,7 +115,7 @@ void SignTreeQtModel::dispatchCallback(const BlinkAnimation &s) {
         this->addChild(new SignTreeQtModel(s.getSubject(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
 }
 
@@ -117,13 +125,13 @@ void SignTreeQtModel::dispatchCallback(const Compose &s) {
         this->addChild(new SignTreeQtModel(s.getBackground(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
     try {
         this->addChild(new SignTreeQtModel(s.getForeground(),
                 this->detailsWidget));
     } catch(SignCell::NoSuchChildException& e) {
-
+        this->addChild(new SignTreeQtModel(this->detailsWidget));
     }
 }
 

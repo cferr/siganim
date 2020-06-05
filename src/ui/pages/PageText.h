@@ -18,6 +18,9 @@
 #ifndef UI_PAGES_PAGETEXT_H_
 #define UI_PAGES_PAGETEXT_H_
 
+#include <QColorDialog>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QWidget>
 #include "../../sign/cells/Text.h"
 
@@ -26,10 +29,30 @@ class PageText : public QWidget {
 
 private:
     Text* treeNode;
+    QLineEdit* textLine;
+    QPushButton* halignLeft;
+    QPushButton* halignCenter;
+    QPushButton* halignRight;
+    QPushButton* halignJustify;
+
+    QPushButton* pickColor;
+    QColorDialog* colorPicker;
+
+    // add vertical alignment list / widget
+    // add font selection widget
 
 public:
     PageText(Text* treeNode);
     virtual ~PageText() { }
+
+    void updateText(const QString& text);
+    void setHAlignLeft();
+    void setHAlignCenter();
+    void setHAlignRight();
+    void setHAlignJustify();
+
+    void selectColor();
+    void setColor(const QColor& color);
 };
 
 #endif /* UI_PAGES_PAGETEXT_H_ */

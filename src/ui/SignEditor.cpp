@@ -49,5 +49,9 @@ void SignEditor::updateDetails(QTreeWidgetItem *current,
     // Cast as SignTreeQtModel
     SignTreeQtModel* model = (SignTreeQtModel*)current;
 
-    this->details->update(model->getTreeItem());
+    try {
+        this->details->update(model->getTreeItem());
+    } catch(SignTreeQtModel::NoTreeItemException& e) {
+        this->details->updateEmpty();
+    }
 }

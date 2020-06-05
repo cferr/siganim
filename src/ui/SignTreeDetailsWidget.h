@@ -35,6 +35,7 @@ public:
     virtual ~SignTreeDetailsWidget() { }
 
     void update(SignTree* t);
+    void updateEmpty();
 
     void dispatchCallback(Sign& s);
     void dispatchCallback(Display& s);

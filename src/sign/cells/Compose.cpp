@@ -25,6 +25,32 @@ Compose::Compose(SignCell *background, SignCell *foreground) :
         foreground->setParent(this);
 }
 
+Compose::Compose(const Compose* a) {
+    try {
+        this->background = a->getBackground()->copy();
+        this->background->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->background = nullptr;
+    }
+    try {
+        this->foreground= a->getForeground()->copy();
+        this->foreground->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->foreground = nullptr;
+    }
+}
+
+SignCell* Compose::copy() {
+    return new Compose(this);
+}
+
+Compose::~Compose() {
+    if(this->background != nullptr)
+        delete this->background;
+    if(this->foreground != nullptr)
+        delete this->foreground;
+}
+
 Compose::SignCell* Compose::getForeground() const {
     if(this->foreground != nullptr)
         return this->foreground;

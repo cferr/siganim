@@ -48,7 +48,16 @@ Bitmap* SignRenderer::render(const Sign *s, unsigned int frame) {
 
 void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     std::vector<Display*> displays = s.getDisplays();
-    this->resultBitmap = new Bitmap(5 * s.getWidth(), 5 * s.getHeight());
+    // compute total width / height
+    unsigned int totalWidth = 0;
+    unsigned int totalHeight = 0;
+    for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
+            ++i) {
+        totalWidth += (*i)->getWidth();
+        totalHeight += (*i)->getHeight();
+    }
+
+    this->resultBitmap = new Bitmap(5 * totalWidth, 5 * totalHeight);
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
         try {

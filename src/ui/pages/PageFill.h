@@ -17,6 +17,8 @@
 #ifndef UI_PAGES_PAGEFILL_H_
 #define UI_PAGES_PAGEFILL_H_
 
+#include <QColorDialog>
+#include <QPushButton>
 #include <QWidget>
 #include "../../sign/cells/Fill.h"
 
@@ -24,10 +26,15 @@ class PageFill : public QWidget {
     Q_OBJECT
 private:
     Fill* treeNode;
+    QColorDialog* colorPicker;
+    QPushButton* pickColor;
 
 public:
     PageFill(Fill* treeNode);
     virtual ~PageFill() { }
+
+    void selectColor();
+    void setColor(const QColor& color);
 };
 
 #endif /* UI_PAGES_PAGEFILL_H_ */

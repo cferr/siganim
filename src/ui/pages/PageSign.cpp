@@ -18,6 +18,10 @@
 #include "PageSign.h"
 
 PageSign::PageSign(Sign* treeNode) : treeNode(treeNode) {
-
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    this->indicator = new QLabel("There is no configurable option "
+            "on this cell.");
+    layout->addWidget(this->indicator);
+    this->setLayout(layout);
 }
 

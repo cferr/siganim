@@ -32,9 +32,7 @@ private:
     unsigned int height;
 
     enum Type displayType;  // LEDs (monochromatic, RGB) or flip discs.
-
     SignCell *rootCell;
-
     const Sign *parentSign;
 
 public:
@@ -42,6 +40,8 @@ public:
             enum Type type);
     Display(unsigned int width, unsigned int height,
             enum Type type, SignCell *rootCell);
+    Display(const Display* a);
+    SignCell* copy();
     virtual ~Display();
 
     virtual bool setParent(const SignCell* parent) override;

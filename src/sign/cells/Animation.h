@@ -26,9 +26,8 @@ protected:
 
 public:
     Animation(SignCell* subject, unsigned int durationFrames);
-    virtual ~Animation() {
-
-    }
+    Animation(const Animation* a);
+    virtual ~Animation();
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;

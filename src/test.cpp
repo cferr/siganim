@@ -27,7 +27,7 @@ bool UTF8Test() {
     // Sign with a UTF-8 symbol inside.
 
     // Are we able to create a sign easily? Yes.
-    Sign *UTF8Test = new Sign(120, 80,
+    Sign *UTF8Test = new Sign(
             { new Display(120, 80, Display::DISPLAY_FLIPDISC,
                     new Split(Split::SPLIT_VERTICAL, 20,
                             new Text(NULL, Text::HALIGN_CENTER,

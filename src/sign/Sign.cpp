@@ -20,36 +20,31 @@
 #include <cstring>
 #include <cstdarg>
 
-Sign::Sign(unsigned int width, unsigned int height) :
-    width(width), height(height) {
+Sign::Sign() {
 
 }
 
-Sign::Sign(unsigned int width, unsigned int height,
-        std::vector<Display*> displays) :
-        Sign(width, height) {
+Sign::Sign(std::vector<Display*> displays) {
     for (SignDisplayVectIt i = displays.begin(); i < displays.end(); ++i) {
         this->addDisplay(*i);
     }
 }
 
-Sign::Sign(unsigned int width, unsigned int height,
-        std::initializer_list<Display*> displays) :
-        Sign(width, height) {
+Sign::Sign(std::initializer_list<Display*> displays) {
     for (auto display : displays)
         this->addDisplay(display);
 }
 
+Sign::Sign(const Sign *a) {
+    for(auto display : a->displays) {
+        this->addDisplay(new Display(display));
+    }
+}
+
 Sign::~Sign() {
     // Destroy every child cell
-}
-
-unsigned int Sign::getHeight() const {
-    return this->height;
-}
-
-unsigned int Sign::getWidth() const {
-    return this->width;
+    for (auto display : this->displays)
+        delete display;
 }
 
 void Sign::accept(SignTreeVisitor &visitor) {
@@ -89,7 +84,7 @@ std::vector<Display*> Sign::getDisplays() const {
 }
 
 std::ostream& Sign::serialize(std::ostream &strm) const {
-    strm << "Sign { " << this->width << "x" << this->height << " { ";
+    strm << "Sign { ";
 
     SignDisplayVectConstIt i = this->displays.begin();
     while (i < this->displays.end()) {
@@ -99,7 +94,7 @@ std::ostream& Sign::serialize(std::ostream &strm) const {
             strm << ", ";
     }
 
-    strm << " } }";
+    strm << " }";
     return strm;
 }
 

@@ -27,6 +27,8 @@ private:
 public:
     BlinkAnimation(SignCell* subject, const unsigned int framesOn,
             const unsigned int framesOff);
+    BlinkAnimation(const BlinkAnimation* a);
+    SignCell* copy();
 
     virtual ~BlinkAnimation() {
 

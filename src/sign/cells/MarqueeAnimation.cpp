@@ -22,6 +22,14 @@ MarqueeAnimation::MarqueeAnimation(SignCell *subject,
         direction(direction), space(space) {
 }
 
+MarqueeAnimation::MarqueeAnimation(const MarqueeAnimation *a) :
+    Animation(a), direction(a->direction), space(a->space) {
+}
+
+SignCell* MarqueeAnimation::copy() {
+    return new MarqueeAnimation(this);
+}
+
 void MarqueeAnimation::setDirection(enum Direction direction) {
     this->direction = direction;
     this->modified();

@@ -59,7 +59,9 @@ public:
                 const enum VerticalAlignment vAlign,
                 const icu::UnicodeString& text,
                 const SignColor& color);
+    Text(const Text* a);
     virtual ~Text();
+    virtual SignCell* copy();
 
     virtual const char* CellTypeStr() const {
         return "Text";

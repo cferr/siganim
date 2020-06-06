@@ -14,9 +14,44 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QVBoxLayout>
 #include "PageFill.h"
 
 PageFill::PageFill(Fill* treeNode) : treeNode(treeNode) {
+    QVBoxLayout* layout = new QVBoxLayout(this);
 
+    this->pickColor = new QPushButton("Color");
+    this->colorPicker = new QColorDialog(this);
+
+    this->pickColor->connect(this->pickColor,
+            &QPushButton::pressed,
+            this,
+            &PageFill::selectColor);
+
+    this->colorPicker->connect(this->colorPicker,
+            &QColorDialog::colorSelected,
+            this,
+            &PageFill::setColor);
+
+    layout->addWidget(pickColor);
+    this->setLayout(layout);
 }
 
+void PageFill::selectColor() {
+    SignColor currentColor = treeNode->getColor();
+    QColor qtColor(0, 0, 0, 0);
+    try {
+        SignColor::RGB val = currentColor.getValue();
+        qtColor.setRgb(val.r, val.g, val.b, 0);
+    } catch(SignColor::NoRGBValueException& e) {
+
+    }
+    this->colorPicker->setCurrentColor(qtColor);
+    this->colorPicker->show();
+}
+
+void PageFill::setColor(const QColor& color) {
+    this->treeNode->setColor(
+            SignColor(SignColor::OFF,
+                    color.red(), color.green(), color.blue()));
+}

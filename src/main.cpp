@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     );
 
     // Mock sign just to test.
-    Sign *testSign = new Sign(120, 24,
+    Sign *testSign = new Sign(
             { new Display(120, 24, Display::DISPLAY_RGB_LED,
                     new Split(Split::SPLIT_VERTICAL, 32,
                         lineNumber,

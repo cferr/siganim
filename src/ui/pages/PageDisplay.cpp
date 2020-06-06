@@ -14,9 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QVBoxLayout>
 #include "PageDisplay.h"
 
 PageDisplay::PageDisplay(Display* treeNode) : treeNode(treeNode) {
+    QVBoxLayout* layout = new QVBoxLayout(this);
+
+    this->widthSpinner = new QSpinBox(this);
+    this->widthSpinner->setMinimum(0);
+    this->widthSpinner->setMaximum(999);
+    this->widthSpinner->setValue(treeNode->getWidth());
+    this->heightSpinner = new QSpinBox(this);
+    this->heightSpinner->setMinimum(0);
+    this->heightSpinner->setMaximum(999);
+    this->heightSpinner->setValue(treeNode->getHeight());
+
+    connect(this->widthSpinner,
+                SIGNAL(valueChanged(int)),
+                this,
+                SLOT(setWidth(int)));
+    connect(this->heightSpinner,
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(setHeight(int)));
+
+    layout->addWidget(this->widthSpinner);
+    layout->addWidget(this->heightSpinner);
+
+    this->setLayout(layout);
 
 }
 
+void PageDisplay::setHeight(int height) {
+    this->treeNode->setHeight((unsigned int)height);
+}
+
+void PageDisplay::setWidth(int width) {
+    this->treeNode->setWidth((unsigned int)width);
+}

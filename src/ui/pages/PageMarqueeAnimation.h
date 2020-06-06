@@ -18,6 +18,8 @@
 #ifndef UI_PAGES_PAGEMARQUEEANIMATION_H_
 #define UI_PAGES_PAGEMARQUEEANIMATION_H_
 
+#include <QRadioButton>
+#include <QSpinBox>
 #include <QWidget>
 #include "../../sign/cells/MarqueeAnimation.h"
 
@@ -25,10 +27,20 @@ class PageMarqueeAnimation : public QWidget {
     Q_OBJECT
 private:
     MarqueeAnimation* treeNode;
+    QRadioButton* directionLeft;
+    QRadioButton* directionRight;
+    QSpinBox* spaceSpinner;
+    QSpinBox* durationSpinner;
 
 public:
     PageMarqueeAnimation(MarqueeAnimation* treeNode);
     virtual ~PageMarqueeAnimation() { }
+
+public slots:
+    void setSpace(int space);
+    void setDuration(int frames);
+    void setDirectionLeft(bool set);
+    void setDirectionRight(bool set);
 };
 
 #endif /* UI_PAGES_PAGEMARQUEEANIMATION_H_ */

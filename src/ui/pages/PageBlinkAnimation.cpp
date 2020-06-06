@@ -14,10 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
+#include <QVBoxLayout>
 #include "PageBlinkAnimation.h"
 
 PageBlinkAnimation::PageBlinkAnimation(BlinkAnimation* treeNode) :
     treeNode(treeNode) {
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    this->onFramesSpinner = new QSpinBox(this);
+    this->onFramesSpinner->setMinimum(0);
+    this->onFramesSpinner->setMaximum(999);
+    this->onFramesSpinner->setValue(treeNode->getFramesOn());
+    this->offFramesSpinner = new QSpinBox(this);
+    this->offFramesSpinner->setMinimum(0);
+    this->offFramesSpinner->setMaximum(999);
+    this->offFramesSpinner->setValue(treeNode->getFramesOff());
+
+    layout->addWidget(onFramesSpinner);
+    layout->addWidget(offFramesSpinner);
+
+    this->setLayout(layout);
+
+    connect(this->onFramesSpinner, SIGNAL(valueChanged(int)),
+            this, SLOT(setFramesOn(int)));
+    connect(this->offFramesSpinner, SIGNAL(valueChanged(int)),
+                this, SLOT(setFramesOff(int)));
 }
 
+void PageBlinkAnimation::setFramesOn(int frames) {
+    this->treeNode->setFramesOn((unsigned int)frames);
+}
+
+void PageBlinkAnimation::setFramesOff(int frames) {
+    this->treeNode->setFramesOff((unsigned int)frames);
+}

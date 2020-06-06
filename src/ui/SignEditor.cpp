@@ -19,24 +19,25 @@
 
 SignEditor::SignEditor(Sign* sign) {
 
-    this->verticalLayout = new QVBoxLayout();
+    this->layout = new QGridLayout(this);
 
-    this->text = new QLineEdit(this);
     this->tree = new QTreeWidget(this);
     this->details = new SignTreeDetailsWidget();
     this->signWidget = new SignWidget(sign);
 
-    this->verticalLayout->addWidget(this->text);
-    this->verticalLayout->addWidget(this->tree);
-    this->verticalLayout->addWidget(this->details);
-    this->verticalLayout->addWidget(this->signWidget);
+    this->layout->addWidget(this->tree, 0, 0, Qt::AlignLeft);
+    this->layout->addWidget(this->details, 0, 1, Qt::AlignLeft);
+
+    this->layout->addWidget(this->signWidget, 1, 0, 1, 2, Qt::AlignCenter);
+
 
     // Set image widget as central widget
-    this->setLayout(this->verticalLayout);
+    this->setLayout(this->layout);
 
     // Build tree
     this->tree->addTopLevelItem(new SignTreeQtModel(sign, this->details));
     this->tree->expandAll();
+    this->tree->setHeaderHidden(true);
 
     this->tree->connect(this->tree,
             &QTreeWidget::currentItemChanged, this,

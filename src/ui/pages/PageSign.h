@@ -18,6 +18,8 @@
 #ifndef UI_PAGES_PAGESIGN_H_
 #define UI_PAGES_PAGESIGN_H_
 
+#include <QLabel>
+#include <QVBoxLayout>
 #include <QWidget>
 #include "../../sign/Sign.h"
 
@@ -26,6 +28,7 @@ class PageSign: public QWidget {
 
 private:
     Sign* treeNode;
+    QLabel* indicator;
 
 public:
     PageSign(Sign* treeNode);

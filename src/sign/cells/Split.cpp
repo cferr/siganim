@@ -36,8 +36,31 @@ Split::Split(enum SplitDirection splitDirection,
     }
 }
 
-Split::~Split() {
+Split::Split(const Split *a) : splitDirection(a->splitDirection),
+        splitPos(a->splitPos) {
+    try {
+        this->topOrLeftChild = a->getTopOrLeftChild()->copy();
+        this->topOrLeftChild->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->topOrLeftChild = nullptr;
+    }
+    try {
+        this->bottomOrRightChild = a->getBottomOrRightChild()->copy();
+        this->bottomOrRightChild->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->bottomOrRightChild = nullptr;
+    }
+}
 
+SignCell* Split::copy() {
+    return new Split(this);
+}
+
+Split::~Split() {
+    if(this->topOrLeftChild != nullptr)
+        delete this->topOrLeftChild;
+    if(this->bottomOrRightChild != nullptr)
+        delete this->bottomOrRightChild;
 }
 
 unsigned int Split::getChildHeight(const SignCell* child) const {

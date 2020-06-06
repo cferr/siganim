@@ -26,13 +26,28 @@ Display::Display(unsigned int width, unsigned int height,
 Display::Display(unsigned int width, unsigned int height,
         enum Type type, SignCell *rootCell) :
         width(width), height(height), displayType(type), rootCell(rootCell),
-        parentSign(NULL) {
+        parentSign(nullptr) {
     if(rootCell != nullptr)
         rootCell->setParent(this);
 }
 
-Display::~Display() {
+Display::Display(const Display* a) : width(a->width), height(a->height),
+        displayType(a->displayType), parentSign(nullptr) {
+    try {
+        this->rootCell = a->getRootCell()->copy();
+        this->rootCell->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->rootCell = nullptr;
+    }
+}
 
+SignCell* Display::copy() {
+    return new Display(this);
+}
+
+Display::~Display() {
+    if(this->rootCell != nullptr)
+        delete this->rootCell;
 }
 
 void Display::accept(SignTreeVisitor &visitor) {
@@ -93,11 +108,15 @@ bool Display::setDisplayType(enum Type displayType) {
 }
 
 unsigned int Display::getChildHeight(const SignCell* child) const {
-    return this->height;
+    if(child == this->rootCell)
+        return this->height;
+    else throw NoSuchChildException(this, child);
 }
 
 unsigned int Display::getChildWidth(const SignCell* child) const {
-    return this->width;
+    if(child == this->rootCell)
+        return this->width;
+    else throw NoSuchChildException(this, child);
 }
 
 unsigned int Display::getHeight() const {
@@ -109,11 +128,11 @@ unsigned int Display::getWidth() const {
 }
 
 void Display::setHeight(const unsigned int height) {
-    this->resize(height, this->width);
+    this->resize(this->width, height);
 }
 
-void Display::setWidth(const unsigned int height) {
-    this->resize(this->height, width);
+void Display::setWidth(const unsigned int width) {
+    this->resize(width, this->height);
 }
 
 void Display::resize(const unsigned int width, const unsigned int height) {

@@ -27,6 +27,8 @@ class ObservableSink : public Observable, public Observer {
 private:
     Sign* sign; // cannot be const as attach / detach modify it
 
+    const Sign* signCopy;
+
     std::vector<Bitmap*> frames;
     std::vector<Bitmap*>::iterator currentFrame;
 
@@ -38,6 +40,7 @@ private:
 
     void render();
     void run();
+    void copySign();
 
 public:
     ObservableSink(Sign* sign);

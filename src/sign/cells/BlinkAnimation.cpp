@@ -23,6 +23,14 @@ BlinkAnimation::BlinkAnimation(SignCell* subject, const unsigned int framesOn,
         framesOff(framesOff) {
 }
 
+BlinkAnimation::BlinkAnimation(const BlinkAnimation *a) :
+    Animation(a), framesOn(a->framesOn), framesOff(a->framesOff) {
+}
+
+SignCell* BlinkAnimation::copy() {
+    return new BlinkAnimation(this);
+}
+
 unsigned int BlinkAnimation::getFramesOn() const {
     return this->framesOn;
 }

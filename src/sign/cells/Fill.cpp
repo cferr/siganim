@@ -19,11 +19,18 @@
 Fill::Fill(const SignColor &color) : color(color) {
 }
 
+Fill::Fill(const Fill *a) : color(a->color) {
+}
+
+SignCell* Fill::copy() {
+    return new Fill(this);
+}
+
 const SignColor Fill::getColor() const {
     return this->color;
 }
 
-void Fill::setColor(SignColor &color) {
+void Fill::setColor(const SignColor &color) {
     SignColor c(color);
     this->color = c;
     this->modified();

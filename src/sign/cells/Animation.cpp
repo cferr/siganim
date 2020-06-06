@@ -22,6 +22,20 @@ Animation::Animation(SignCell* subject, unsigned int durationFrames) :
         subject->setParent(this);
 }
 
+Animation::Animation(const Animation* a) : durationFrames(a->durationFrames) {
+    try {
+        this->subject = a->getSubject()->copy();
+        this->subject->setParent(this);
+    } catch(NoSuchChildException& e) {
+        this->subject = nullptr;
+    }
+}
+
+Animation::~Animation() {
+    if(this->subject != nullptr)
+        delete this->subject;
+}
+
 bool Animation::setSubject(SignCell* subject) {
     SignCell* oldSubject = this->subject;
     this->subject = subject;

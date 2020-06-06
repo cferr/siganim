@@ -28,8 +28,9 @@ private:
 
 public:
     Compose(SignCell* background, SignCell* foreground);
-    virtual ~Compose() {
-    }
+    Compose(const Compose* a);
+    SignCell* copy();
+    virtual ~Compose();
 
     virtual const char* CellTypeStr() const {
         return "Compose";

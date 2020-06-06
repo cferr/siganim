@@ -18,6 +18,7 @@
 #ifndef UI_PAGES_PAGEBLINKANIMATION_H_
 #define UI_PAGES_PAGEBLINKANIMATION_H_
 
+#include <QSpinBox>
 #include <QWidget>
 #include "../../sign/cells/BlinkAnimation.h"
 
@@ -25,10 +26,16 @@ class PageBlinkAnimation : public QWidget {
     Q_OBJECT
 private:
     BlinkAnimation* treeNode;
+    QSpinBox* onFramesSpinner;
+    QSpinBox* offFramesSpinner;
 
 public:
     PageBlinkAnimation(BlinkAnimation* treeNode);
     virtual ~PageBlinkAnimation() { }
+
+public slots:
+    void setFramesOn(int frames);
+    void setFramesOff(int frames);
 };
 
 #endif /* UI_PAGES_PAGEBLINKANIMATION_H_ */

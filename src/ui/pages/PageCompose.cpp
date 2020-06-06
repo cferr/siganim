@@ -14,9 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QVBoxLayout>
 #include "PageCompose.h"
 
 PageCompose::PageCompose(Compose* treeNode) : treeNode(treeNode) {
-
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    this->indicator = new QLabel("There is no configurable option "
+            "on this cell.");
+    layout->addWidget(this->indicator);
+    this->setLayout(layout);
 }
 

@@ -25,6 +25,8 @@ class Fill: public SignCell {
     SignColor color;
 public:
     Fill(const SignColor& color);
+    Fill(const Fill* a);
+    SignCell* copy();
     virtual ~Fill() {
 
     }
@@ -34,7 +36,7 @@ public:
     }
 
     const SignColor getColor() const;
-    void setColor(SignColor& color);
+    void setColor(const SignColor& color);
 
     virtual unsigned int getHeight() const;
     virtual unsigned int getWidth() const;

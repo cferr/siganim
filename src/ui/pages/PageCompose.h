@@ -18,6 +18,7 @@
 #ifndef UI_PAGES_PAGECOMPOSE_H_
 #define UI_PAGES_PAGECOMPOSE_H_
 
+#include <QLabel>
 #include <QWidget>
 #include "../../sign/cells/Compose.h"
 
@@ -25,6 +26,7 @@ class PageCompose : public QWidget {
     Q_OBJECT
 private:
     Compose* treeNode;
+    QLabel* indicator;
 
 public:
     PageCompose(Compose* treeNode);

@@ -43,6 +43,8 @@ public:
 
     Split(enum SplitDirection splitDirection, unsigned int splitPos,
             SignCell* topOrLeftChild, SignCell* bottomOrRightChild);
+    Split(const Split* a);
+    SignCell* copy();
     virtual ~Split();
 
     virtual const char* CellTypeStr() const {

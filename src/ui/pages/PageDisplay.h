@@ -18,6 +18,7 @@
 #ifndef UI_PAGES_PAGEDISPLAY_H_
 #define UI_PAGES_PAGEDISPLAY_H_
 
+#include <QSpinBox>
 #include <QWidget>
 #include "../../sign/cells/Display.h"
 
@@ -25,10 +26,16 @@ class PageDisplay : public QWidget {
     Q_OBJECT
 private:
     Display* treeNode;
+    QSpinBox* heightSpinner;
+    QSpinBox* widthSpinner;
 
 public:
     PageDisplay(Display* treeNode);
     virtual ~PageDisplay() { }
+
+public slots:
+    void setHeight(int height);
+    void setWidth(int width);
 };
 
 #endif /* UI_PAGES_PAGEDISPLAY_H_ */

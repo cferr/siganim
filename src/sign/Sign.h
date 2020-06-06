@@ -28,22 +28,15 @@ class Sign : public Observable, public SignTree {
 private:
     std::vector<Display*> displays;
 
-    unsigned int width;
-    unsigned int height;
-
 public:
     typedef std::vector<Display*>::iterator SignDisplayVectIt;
     typedef std::vector<Display*>::const_iterator SignDisplayVectConstIt;
 
-    Sign(unsigned int width, unsigned int height);
-    Sign(unsigned int width, unsigned int height,
-            std::vector<Display*> displays);
-    Sign(unsigned int width, unsigned int height,
-            std::initializer_list<Display*> displays);
+    Sign();
+    Sign(std::vector<Display*> displays);
+    Sign(std::initializer_list<Display*> displays);
+    Sign(const Sign* a);
     virtual ~Sign();
-
-    unsigned int getHeight() const;
-    unsigned int getWidth() const;
 
     void accept(SignTreeVisitor &visitor);
     void accept(ConstSignTreeVisitor &visitor) const;

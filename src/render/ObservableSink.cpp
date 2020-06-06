@@ -19,9 +19,13 @@
 #include "SignRenderer.h"
 #include "DurationComputer.h"
 
-ObservableSink::ObservableSink(Sign* sign) : sign(sign),
-    continueRunning(true), runner(&ObservableSink::run, this),
-    signUpdated(true) {
+ObservableSink::ObservableSink(Sign* sign) : sign(sign), signCopy(nullptr),
+    continueRunning(true),
+    signUpdated(false) {
+
+    this->copySign();
+    this->runner = std::thread(&ObservableSink::run, this);
+
     if(this->sign != nullptr) {
         this->sign->attach(this);
     }
@@ -38,6 +42,8 @@ ObservableSink::~ObservableSink() {
 }
 
 void ObservableSink::run() {
+
+    bool doRender = true;
     if(sign == nullptr)
         return;
 
@@ -45,11 +51,17 @@ void ObservableSink::run() {
         {
             std::lock_guard<std::mutex> guard(this->signUpdatedMutex);
             if(this->signUpdated) {
-                this->render();
+                doRender = true;
+                this->copySign();
                 this->signUpdated = false;
             }
+        // Mutex gets unlocked after this point
         }
-        // Mutex gets unlocked here
+        // Render with mutex unlocked
+        if(doRender) {
+            this->render();
+            doRender = false;
+        }
         this->changed();
         this->currentFrame++;
         if(this->currentFrame == this->frames.end())
@@ -59,15 +71,21 @@ void ObservableSink::run() {
     }
 }
 
+void ObservableSink::copySign() {
+    if(this->signCopy != nullptr)
+        delete this->signCopy;
+    this->signCopy = new Sign(this->sign);
+}
+
 void ObservableSink::render() {
     for(auto i = this->frames.begin(); i < this->frames.end(); ++i)
         delete *i;
     this->frames.clear();
     SignRenderer r;
     DurationComputer c;
-    unsigned int frames = c.computeTotalFrames(this->sign);
+    unsigned int frames = c.computeTotalFrames(this->signCopy);
     for(unsigned int frame = 1; frame < frames; frame++) {
-        Bitmap* bmap = r.render(this->sign, frame);
+        Bitmap* bmap = r.render(this->signCopy, frame);
         this->frames.push_back(bmap);
     }
     this->currentFrame = this->frames.begin();

@@ -113,6 +113,8 @@ public:
 
     virtual std::ostream& serialize(std::ostream &strm) const = 0;
 
+    virtual SignCell* copy() = 0;
+
 };
 
 std::ostream& operator<<(std::ostream &strm, const SignCell &s);

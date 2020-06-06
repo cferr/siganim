@@ -17,10 +17,9 @@
 #ifndef SRC_UI_SIGNEDITOR_H_
 #define SRC_UI_SIGNEDITOR_H_
 
-#include <QLineEdit>
+#include <QGridLayout>
 #include <QMenuBar>
 #include <QTreeWidget>
-#include <QVBoxLayout>
 #include <QWidget>
 
 #include "../sign/cells/Text.h"
@@ -31,8 +30,7 @@ class SignEditor: public QWidget {
     Q_OBJECT
 
 private:
-    QVBoxLayout *verticalLayout;
-    QLineEdit *text;
+    QGridLayout* layout;
     SignWidget *signWidget;
     QTreeWidget *tree;
     SignTreeDetailsWidget* details;

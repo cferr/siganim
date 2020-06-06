@@ -35,7 +35,7 @@ SignWidget::~SignWidget() {
 void SignWidget::paintEvent(QPaintEvent *event) {
     if(this->image != nullptr) {
         QPainter painter(this);
-        painter.drawImage(this->image->rect(),
+        painter.drawImage(event->rect(),
                 *this->image, this->image->rect());
     }
 }
@@ -51,8 +51,13 @@ void SignWidget::signChangedEvent() {
                 result->getHeight(), QImage::Format_RGB32);
         this->setMinimumHeight(result->getHeight());
         this->setMinimumWidth(result->getWidth());
+        this->setMaximumHeight(result->getHeight());
+        this->setMaximumWidth(result->getWidth());
         free(img);
         this->update();
+    } else {
+        this->setFixedHeight(0);
+        this->setFixedWidth(0);
     }
 }
 

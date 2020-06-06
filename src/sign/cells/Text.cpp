@@ -36,9 +36,17 @@ Text::Text(const Font *font, const enum HorizontalAlignment hAlign,
     this->text = new icu::UnicodeString(text);
 }
 
+Text::Text(const Text *a) : foreground(a->foreground), font(a->font),
+        hAlign(a->hAlign), vAlign(a->vAlign) {
+    this->text = new icu::UnicodeString(*(a->text));
+}
+
+SignCell* Text::copy() {
+    return new Text(this);
+}
 
 Text::~Text() {
-
+    delete this->text;
 }
 
 unsigned int Text::getChildHeight(const SignCell* child) const {

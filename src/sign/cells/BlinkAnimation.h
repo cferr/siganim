@@ -25,6 +25,7 @@ private:
     unsigned int framesOff;
 
 public:
+    BlinkAnimation();
     BlinkAnimation(SignCell* subject, const unsigned int framesOn,
             const unsigned int framesOff);
     BlinkAnimation(const BlinkAnimation* a);

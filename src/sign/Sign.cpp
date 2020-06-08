@@ -113,3 +113,29 @@ void Sign::callbackDispatch(ConstSignTreeDispatcher *s) const {
 void Sign::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
+
+Sign::DisplayBuilder::DisplayBuilder(Sign *sign) : sign(sign) {
+}
+
+bool Sign::DisplayBuilder::build(Display *display) {
+    return this->sign->addDisplay(display);
+}
+
+Sign::DisplayBuilder* Sign::displayBuilder() {
+    return new DisplayBuilder(this);
+}
+
+void Sign::deleteChild(SignTree *child) {
+    for(auto i = this->displays.begin(); i < this->displays.end(); ++i) {
+        if(*i == child) {
+            this->removeDisplay(*i);
+            delete *i;
+        }
+    }
+}
+
+void Sign::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
+    for(auto display : this->displays)
+        display->detachStructureObserver(observer);
+}

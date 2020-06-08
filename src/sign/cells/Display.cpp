@@ -17,6 +17,10 @@
 #include "Display.h"
 #include "../Sign.h"
 
+Display::Display() : Display(20, 20, Type::DISPLAY_FLIPDISC) {
+
+}
+
 Display::Display(unsigned int width, unsigned int height,
         enum Type type) :
         Display(width, height, type, NULL) {
@@ -141,6 +145,10 @@ void Display::resize(const unsigned int width, const unsigned int height) {
     this->modified();
 }
 
+Display::RootCellBuilder* Display::rootCellBuilder() {
+    return new RootCellBuilder(this);
+}
+
 std::ostream& Display::serialize(std::ostream &strm) const {
     return strm << "Disp { " << this->width << "x" << this->height << " ("
             << this->displayType << ") : " << *(this->rootCell) << " }";
@@ -162,3 +170,27 @@ void Display::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 
+Display::RootCellBuilder::RootCellBuilder(Display *display) : display(display) {
+}
+
+bool Display::RootCellBuilder::build(SignCell *child) {
+    return this->display->setRootCell(child);
+}
+
+void Display::deleteChild(SignTree *child) {
+    try {
+        if(child == this->getRootCell()) {
+            this->setRootCell(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+}
+
+void Display::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
+    try {
+        this->getRootCell()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
+}

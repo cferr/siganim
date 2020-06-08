@@ -17,6 +17,10 @@
 
 #include "Compose.h"
 
+Compose::Compose() : Compose(nullptr, nullptr) {
+
+}
+
 Compose::Compose(SignCell *background, SignCell *foreground) :
     background(background), foreground(foreground) {
     if(background != nullptr)
@@ -63,7 +67,7 @@ Compose::SignCell* Compose::getBackground() const {
     throw NoSuchChildException(this, nullptr);
 }
 
-void Compose::setForeground(SignCell *foreground) {
+bool Compose::setForeground(SignCell *foreground) {
     SignCell* oldForeground = this->foreground;
     this->foreground = foreground;
     try {
@@ -75,10 +79,12 @@ void Compose::setForeground(SignCell *foreground) {
         this->structureChanged();
     } catch(SetParentFailedException& e) {
         this->foreground = oldForeground;
+        return false;
     }
+    return true;
 }
 
-void Compose::setBackground(SignCell *background) {
+bool Compose::setBackground(SignCell *background) {
     SignCell* oldBackground = this->background;
     this->background = background;
     try {
@@ -90,7 +96,9 @@ void Compose::setBackground(SignCell *background) {
         this->structureChanged();
     } catch(SetParentFailedException& e) {
         this->background = oldBackground;
+        return false;
     }
+    return true;
 }
 
 unsigned int Compose::getHeight() const {
@@ -129,6 +137,26 @@ void Compose::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 
+void Compose::deleteChild(SignTree *child) {
+    try {
+        if(child == this->getBackground()) {
+            this->setBackground(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    try {
+        if(child == this->getForeground()) {
+            this->setForeground(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+}
+
 std::ostream& Compose::serialize(std::ostream &strm) const {
     return strm << "Compose [" << *(this->background) << ", "
             << *(this->foreground) << "]";
@@ -136,4 +164,38 @@ std::ostream& Compose::serialize(std::ostream &strm) const {
 
 std::ostream& operator <<(std::ostream &strm, const Compose &s) {
     return s.serialize(strm);
+}
+
+Compose::ForegroundBuilder::ForegroundBuilder(Compose *compose) :
+    compose(compose) {
+}
+
+bool Compose::ForegroundBuilder::build(SignCell *child) {
+    return this->compose->setForeground(child);
+}
+
+Compose::BackgroundBuilder::BackgroundBuilder(Compose *compose) :
+    compose(compose) {
+}
+
+bool Compose::BackgroundBuilder::build(SignCell *child) {
+    return this->compose->setBackground(child);
+}
+
+Compose::BackgroundBuilder* Compose::backgroundBuilder() {
+    return new BackgroundBuilder(this);
+}
+
+Compose::ForegroundBuilder* Compose::foregroundBuilder() {
+    return new ForegroundBuilder(this);
+}
+
+void Compose::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
+    try {
+        this->getBackground()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
+    try {
+        this->getForeground()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
 }

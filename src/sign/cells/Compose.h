@@ -22,11 +22,27 @@
 #include "../SignTreeVisitor.h"
 
 class Compose : public SignCell {
+public:
+    class ForegroundBuilder : public Builder {
+    private:
+        Compose* compose;
+    public:
+        ForegroundBuilder(Compose* compose);
+        bool build(SignCell* child);
+    };
+    class BackgroundBuilder : public Builder {
+    private:
+        Compose* compose;
+    public:
+        BackgroundBuilder(Compose* compose);
+        bool build(SignCell* child);
+    };
 private:
     SignCell* background;
     SignCell* foreground;
 
 public:
+    Compose();
     Compose(SignCell* background, SignCell* foreground);
     Compose(const Compose* a);
     SignCell* copy();
@@ -38,8 +54,10 @@ public:
 
     SignCell* getForeground() const;
     SignCell* getBackground() const;
-    void setForeground(SignCell* foreground);
-    void setBackground(SignCell* background);
+    bool setForeground(SignCell* foreground);
+    bool setBackground(SignCell* background);
+    BackgroundBuilder* backgroundBuilder();
+    ForegroundBuilder* foregroundBuilder();
 
     virtual unsigned int getHeight() const;
     virtual unsigned int getWidth() const;
@@ -51,7 +69,10 @@ public:
     virtual void callbackDispatch(ConstSignTreeDispatcher* s) const;
     virtual void callbackDispatch(SignTreeDispatcher* s);
 
+    void deleteChild(SignTree* child);
+
     virtual std::ostream& serialize(std::ostream &strm) const;
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Compose &s);

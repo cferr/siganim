@@ -16,6 +16,7 @@
 
 #include "SignTree.h"
 
+#include <iostream>
 void SignTree::structureChanged() const {
     for(auto i = this->structureObservers.begin();
             i < this->structureObservers.end(); ++i) {
@@ -30,9 +31,11 @@ void SignTree::attachStructureObserver(
 
 void SignTree::detachStructureObserver(
         SignTreeStructureObserver *observer) {
-    for(auto i = this->structureObservers.begin();
-            i < this->structureObservers.end(); ++i) {
+    auto i = this->structureObservers.begin();
+    while(i < this->structureObservers.end()) {
         if(*i == observer)
             this->structureObservers.erase(i);
+        else
+            ++i;
     }
 }

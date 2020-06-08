@@ -26,6 +26,22 @@
 
 class Split: public SignCell {
 public:
+    class TopOrLeftChildBuilder : public Builder {
+    private:
+        Split* split;
+    public:
+        TopOrLeftChildBuilder(Split* split);
+        bool build(SignCell* child);
+    };
+
+    class BottomOrRightChildBuilder : public Builder {
+    private:
+        Split* split;
+    public:
+        BottomOrRightChildBuilder(Split* split);
+        bool build(SignCell* child);
+    };
+
     enum SplitDirection {
         SPLIT_HORIZONTAL,
         SPLIT_VERTICAL,
@@ -40,7 +56,7 @@ private:
     SignCell* bottomOrRightChild;
 
 public:
-
+    Split();
     Split(enum SplitDirection splitDirection, unsigned int splitPos,
             SignCell* topOrLeftChild, SignCell* bottomOrRightChild);
     Split(const Split* a);
@@ -71,8 +87,14 @@ public:
     SignCell* getTopOrLeftChild() const;
     bool setBottomOrRightChild(SignCell* child);
     SignCell* getBottomOrRightChild() const;
+    TopOrLeftChildBuilder* topOrLeftChildBuilder();
+    BottomOrRightChildBuilder* bottomOrRightChildBuilder();
+
+    void deleteChild(SignTree* child);
 
     virtual std::ostream& serialize(std::ostream &strm) const;
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Split &s);

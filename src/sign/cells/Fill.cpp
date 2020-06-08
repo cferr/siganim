@@ -22,6 +22,9 @@ Fill::Fill(const SignColor &color) : color(color) {
 Fill::Fill(const Fill *a) : color(a->color) {
 }
 
+Fill::Fill() : color(SignColor::off()) {
+}
+
 SignCell* Fill::copy() {
     return new Fill(this);
 }
@@ -68,10 +71,18 @@ void Fill::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 
+void Fill::deleteChild(SignTree *child) {
+
+}
+
 std::ostream& Fill::serialize(std::ostream &strm) const {
     return strm << "Fill { color = " << this->color << " }";
 }
 
 std::ostream& operator <<(std::ostream &strm, const Fill &s) {
     return s.serialize(strm);
+}
+
+void Fill::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
 }

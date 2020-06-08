@@ -17,12 +17,13 @@
 #include "SignEditor.h"
 #include "SignTreeQtModel.h"
 
-SignEditor::SignEditor(Sign* sign) {
+SignEditor::SignEditor(Sign* sign) : sign(sign) {
 
     this->layout = new QGridLayout(this);
 
-    this->tree = new QTreeWidget(this);
     this->details = new SignTreeDetailsWidget();
+    this->tree = new SignTreeWidget(this, this->details);
+
     this->signWidget = new SignWidget(sign);
 
     this->layout->addWidget(this->tree, 0, 0, Qt::AlignLeft);
@@ -35,24 +36,22 @@ SignEditor::SignEditor(Sign* sign) {
     this->setLayout(this->layout);
 
     // Build tree
-    this->tree->addTopLevelItem(new SignTreeQtModel(sign, this->details));
+    SignTreeQtModel* model = new SignTreeQtModel(sign);
+    this->tree->setModel(model);
+
     this->tree->expandAll();
     this->tree->setHeaderHidden(true);
-
-    this->tree->connect(this->tree,
-            &QTreeWidget::currentItemChanged, this,
-            &SignEditor::updateDetails);
-
+//    connect(model, &SignTreeQtModel::modelReset,
+//            this, &SignEditor::resetTree);
 }
 
-void SignEditor::updateDetails(QTreeWidgetItem *current,
-        QTreeWidgetItem *previous) {
-    // Cast as SignTreeQtModel
-    SignTreeQtModel* model = (SignTreeQtModel*)current;
-
-    try {
-        this->details->update(model->getTreeItem());
-    } catch(SignTreeQtModel::NoTreeItemException& e) {
-        this->details->updateEmpty();
-    }
+void SignEditor::resetTree() {
+//    std::cout << "Plop" << std::endl;
+//    this->tree->reset();
+//    QAbstractItemModel* m = this->tree->model();
+//    SignTreeQtModel* model = new SignTreeQtModel(this->sign);
+//    this->tree->setModel(model);
+//    delete m;
 }
+
+

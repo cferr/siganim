@@ -52,6 +52,7 @@ private:
     enum VerticalAlignment vAlign;
 
 public:
+    Text();
     Text(const Font* font, const enum HorizontalAlignment hAlign,
             const enum VerticalAlignment vAlign,
             const icu::UnicodeString& text = "");
@@ -90,7 +91,11 @@ public:
     void setHAlign(enum HorizontalAlignment hAlign);
     void setVAlign(enum VerticalAlignment vAlign);
 
+    void deleteChild(SignTree* child);
+
     virtual std::ostream& serialize(std::ostream &strm) const;
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 
 };
 

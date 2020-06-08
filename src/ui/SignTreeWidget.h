@@ -14,36 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_UI_SIGNEDITOR_H_
-#define SRC_UI_SIGNEDITOR_H_
 
-#include <QGridLayout>
-#include <QMenuBar>
-#include <QTreeWidget>
-#include <QWidget>
+#ifndef UI_SIGNTREEWIDGET_H_
+#define UI_SIGNTREEWIDGET_H_
 
-#include "../sign/cells/Text.h"
+#include <QTreeView>
 #include "SignTreeDetailsWidget.h"
-#include "SignTreeWidget.h"
-#include "SignWidget.h"
 
-class SignEditor: public QWidget {
+class SignTreeWidget : public QTreeView {
     Q_OBJECT
-
 private:
-    QGridLayout* layout;
-    SignWidget *signWidget;
-    SignTreeWidget *tree;
-    SignTreeDetailsWidget* details;
-    Sign* sign;
+    SignTreeDetailsWidget* detailsWidget;
 
 public:
-    SignEditor(Sign* sign);
-    virtual ~SignEditor() {
+    SignTreeWidget(QWidget* parent,
+            SignTreeDetailsWidget* detailsWidget);
+    virtual ~SignTreeWidget() {
     }
 
-public slots:
-    void resetTree();
+    void contextMenuEvent(QContextMenuEvent* event);
+    virtual void currentChanged(const QModelIndex &current,
+            const QModelIndex &previous) override;
+
 };
 
-#endif /* SRC_UI_SIGNEDITOR_H_ */
+#endif /* UI_SIGNTREEWIDGET_H_ */

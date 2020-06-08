@@ -25,6 +25,15 @@
 #include "SignTree.h"
 
 class Sign : public Observable, public SignTree {
+public:
+    class DisplayBuilder {
+    private:
+        Sign* sign;
+    public:
+        DisplayBuilder(Sign* sign);
+        bool build(Display* display);
+    };
+
 private:
     std::vector<Display*> displays;
 
@@ -36,6 +45,7 @@ public:
     Sign(std::vector<Display*> displays);
     Sign(std::initializer_list<Display*> displays);
     Sign(const Sign* a);
+
     virtual ~Sign();
 
     void accept(SignTreeVisitor &visitor);
@@ -46,10 +56,15 @@ public:
     bool addDisplay(Display *display);
     bool removeDisplay(Display *display);
     std::vector<Display*> getDisplays() const;
+    DisplayBuilder* displayBuilder();
 
     std::ostream& serialize(std::ostream &strm) const;
 
     void modified() const;
+
+    void deleteChild(SignTree* child);
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 
 };
 

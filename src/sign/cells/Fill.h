@@ -24,6 +24,7 @@
 class Fill: public SignCell {
     SignColor color;
 public:
+    Fill();
     Fill(const SignColor& color);
     Fill(const Fill* a);
     SignCell* copy();
@@ -48,7 +49,11 @@ public:
     virtual void callbackDispatch(ConstSignTreeDispatcher* s) const;
     virtual void callbackDispatch(SignTreeDispatcher* s);
 
+    void deleteChild(SignTree* child);
+
     virtual std::ostream& serialize(std::ostream &strm) const;
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Fill &s);

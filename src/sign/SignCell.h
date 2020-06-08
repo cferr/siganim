@@ -88,6 +88,29 @@ public:
         const SignCell* getSender() const { return sender; };
     };
 
+    class IllegalOperationException : public std::exception
+    {
+    private:
+        const SignCell* sender;
+        std::string message;
+    public:
+        IllegalOperationException(const SignCell* sender, const char* op)
+            : sender(sender) {
+            this->message = "Illegal operation: " + std::string(op);
+        }
+
+        const char* what() const throw () {
+            return this->message.c_str();
+        }
+        const SignCell* getSender() const { return sender; };
+    };
+
+    class Builder {
+    public:
+        virtual ~Builder() {}
+        virtual bool build(SignCell* child) = 0;
+    };
+
 protected:
     const SignCell* parent;
 
@@ -106,8 +129,8 @@ public:
     virtual bool setParent(const SignCell* parent);
     const SignCell* getParent() const;
 
-    virtual void accept(SignTreeVisitor& visitor) = 0;
-    virtual void accept(ConstSignTreeVisitor& visitor) const = 0;
+//    virtual void accept(SignTreeVisitor& visitor) = 0;
+//    virtual void accept(ConstSignTreeVisitor& visitor) const = 0;
 
     virtual void modified() const;
 

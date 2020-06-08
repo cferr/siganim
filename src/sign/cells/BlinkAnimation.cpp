@@ -17,6 +17,11 @@
 #include <iostream>
 #include "BlinkAnimation.h"
 
+BlinkAnimation::BlinkAnimation() : Animation(nullptr, 10+10), framesOn(10),
+    framesOff(10) {
+
+}
+
 BlinkAnimation::BlinkAnimation(SignCell* subject, const unsigned int framesOn,
         const unsigned int framesOff) :
         Animation(subject, framesOn + framesOff), framesOn(framesOn),

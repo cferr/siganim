@@ -28,6 +28,7 @@ private:
     unsigned int space;
 
 public:
+    MarqueeAnimation();
     MarqueeAnimation(SignCell* subject, unsigned int durationFrames,
             enum Direction direction, unsigned int space);
     MarqueeAnimation(const MarqueeAnimation* a);

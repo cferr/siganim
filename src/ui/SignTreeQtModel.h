@@ -19,52 +19,107 @@
 #define SRC_UI_SIGNTREEQTMODEL_H_
 
 #include <exception>
-#include <QTreeWidgetItem>
+#include <map>
+#include <vector>
+#include <QAbstractItemModel>
+#include <QModelIndex>
+#include "../sign/SignCell.h"
 #include "../sign/SignTree.h"
+#include "../sign/Sign.h"
 #include "SignTreeDetailsWidget.h"
 
-class SignTreeQtModel: public QTreeWidgetItem,
-    public SignTreeStructureObserver, public ConstSignTreeDispatcher {
-public:
-    class NoTreeItemException : public std::exception {
+class SignTreeQtModel: public QAbstractItemModel,
+    public SignTreeStructureObserver {
+
+    Q_OBJECT
+
+private:
+    class ModelBuilder : public SignTreeVisitor {
+    private:
+        QModelIndex parentIndex;
+        unsigned int currentRow;
+        SignTreeQtModel* model;
+
     public:
-        const char* what() {
-            return "This tree item has no associated sign tree.";
+        ModelBuilder(SignTreeQtModel* model);
+        ModelBuilder(SignTreeQtModel *model, QModelIndex parentIndex,
+                unsigned int currentRow);
+
+        void run(SignTree* root);
+
+        virtual void visit(Sign& s);
+        virtual void visit(Display& s);
+        virtual void visit(Text& s);
+        virtual void visit(Split& s);
+        virtual void visit(MarqueeAnimation& s);
+        virtual void visit(BlinkAnimation& s);
+        virtual void visit(Compose& s);
+        virtual void visit(Fill& s);
+    };
+
+public:
+
+
+    class IRPointer {
+    public:
+        class NoSuchItemException : public std::exception {
+        public:
+            const char* what() {
+                return "This model element has no such tree.";
+            }
+        };
+    private:
+        union {
+            SignTree* signTree;
+            SignCell::Builder* signCellBuilder;
+            Sign::DisplayBuilder* displayBuilder;
+        };
+        enum { SIGN_TREE, SIGN_CELL_BUILDER, DISPLAY_BUILDER } type;
+    public:
+        IRPointer(SignTree* tree) {
+            this->signTree = tree;
+            this->type = SIGN_TREE;
         }
+        IRPointer(SignCell::Builder* builder) {
+            this->signCellBuilder = builder;
+            this->type = SIGN_CELL_BUILDER;
+        }
+        IRPointer(Sign::DisplayBuilder* builder) {
+            this->displayBuilder = builder;
+            this->type = DISPLAY_BUILDER;
+        }
+        virtual ~IRPointer() { }
+        SignTree* getTree();
+        SignCell::Builder* getSignCellBuilder();
+        Sign::DisplayBuilder* getDisplayBuilder();
+
     };
 
 private:
-    SignTree* underlyingTreeItem;
-    SignTreeDetailsWidget* detailsWidget;
+    SignTree* tree;
+    typedef std::vector<QModelIndex> QModelIndexVector;
+    std::map<IRPointer*, QModelIndex> modelBackward;
+    std::map<IRPointer*, QModelIndex> parentTable;
+    std::map<IRPointer*, QModelIndexVector> childrenTable;
+    std::map<IRPointer*, QString> labels;
+    std::vector<IRPointer*> pointers;
+
+    void addNode(const char* label, QModelIndex& index, QModelIndex& parent);
+    void removeNode(QModelIndex& index);
 
 public:
-    SignTreeQtModel(SignTree* underlyingTreeItem,
-            SignTreeDetailsWidget* detailsWidget);
-    SignTreeQtModel(SignTreeDetailsWidget* detailsWidget);
-    virtual ~SignTreeQtModel() {
-        QList<QTreeWidgetItem*> children = this->takeChildren();
-        for(auto i = children.begin(); i < children.end(); ++i)
-            delete *i;
-    }
+    SignTreeQtModel(SignTree* tree);
+    virtual ~SignTreeQtModel() { }
 
-    virtual void dispatchCallback(const Sign& s);
-    virtual void dispatchCallback(const Display& s);
-    virtual void dispatchCallback(const Text& s);
-    virtual void dispatchCallback(const Split& s);
-    virtual void dispatchCallback(const MarqueeAnimation& s);
-    virtual void dispatchCallback(const BlinkAnimation& s);
-    virtual void dispatchCallback(const Compose& s);
-    virtual void dispatchCallback(const Fill& s);
+    virtual QModelIndex index(int row, int column,
+                              const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex parent(const QModelIndex &child) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole)
+        const;
 
     virtual void observeStructure(const SignTree* sender);
-
-    void rebuild();
-
-    SignTree* getTreeItem() {
-        if(this->underlyingTreeItem != nullptr)
-            return this->underlyingTreeItem;
-        else throw NoTreeItemException();
-    }
 
 };
 

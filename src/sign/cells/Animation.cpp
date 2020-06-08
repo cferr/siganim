@@ -79,6 +79,37 @@ unsigned int Animation::getChildWidth(const SignCell *child) const {
     else throw NoSuchChildException(this, child);
 }
 
+Animation::SubjectBuilder* Animation::subjectBuilder() {
+    return new SubjectBuilder(this);
+}
+
 unsigned int Animation::getDurationFrames() const {
     return this->durationFrames;
+}
+
+Animation::SubjectBuilder::SubjectBuilder(Animation *animation) :
+    animation(animation) {
+}
+
+bool Animation::SubjectBuilder::build(SignCell* child) {
+    return this->animation->setSubject(child);
+}
+
+void Animation::deleteChild(SignTree *child) {
+    try {
+        if(child == this->getSubject()) {
+            this->setSubject(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+}
+
+void Animation::deepDetachStructureObserver(
+        SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
+    try {
+        this->getSubject()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
 }

@@ -17,6 +17,11 @@
 #include <iostream>
 #include "Split.h"
 
+Split::Split() : Split(SplitDirection::SPLIT_HORIZONTAL, 10,
+        nullptr, nullptr) {
+
+}
+
 Split::Split(enum SplitDirection splitDirection,
         unsigned int splitPos, SignCell* topOrLeftChild,
         SignCell* bottomOrRightChild) :
@@ -194,6 +199,34 @@ void Split::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 
+Split::TopOrLeftChildBuilder* Split::topOrLeftChildBuilder() {
+    return new TopOrLeftChildBuilder(this);
+}
+
+Split::BottomOrRightChildBuilder* Split::bottomOrRightChildBuilder() {
+    return new BottomOrRightChildBuilder(this);
+}
+
+void Split::deleteChild(SignTree *child) {
+    try {
+        if(child == this->getTopOrLeftChild()) {
+            this->setTopOrLeftChild(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    try {
+        if(child == this->getBottomOrRightChild()) {
+            this->setBottomOrRightChild(nullptr);
+            delete child;
+        }
+    } catch(NoSuchChildException& e) {
+
+    }
+}
+
 std::ostream& Split::serialize(std::ostream &strm) const {
     strm << "{ " << this->getWidth() << "x" << this->getHeight() << " +";
     switch(this->splitDirection) {
@@ -217,4 +250,30 @@ std::ostream& Split::serialize(std::ostream &strm) const {
 
 std::ostream& operator<<(std::ostream &strm, const Split &s) {
     return s.serialize(strm);
+}
+
+Split::TopOrLeftChildBuilder::TopOrLeftChildBuilder(Split *split) :
+    split(split) {
+}
+
+bool Split::TopOrLeftChildBuilder::build(SignCell *child) {
+    return this->split->setTopOrLeftChild(child);
+}
+
+Split::BottomOrRightChildBuilder::BottomOrRightChildBuilder(Split *split) :
+    split(split) {
+}
+
+bool Split::BottomOrRightChildBuilder::build(SignCell *child) {
+    return this->split->setBottomOrRightChild(child);
+}
+
+void Split::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
+    try {
+        this->getTopOrLeftChild()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
+        try {
+        this->getBottomOrRightChild()->deepDetachStructureObserver(observer);
+    } catch(NoSuchChildException& e) { }
 }

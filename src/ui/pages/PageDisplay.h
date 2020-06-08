@@ -18,6 +18,7 @@
 #ifndef UI_PAGES_PAGEDISPLAY_H_
 #define UI_PAGES_PAGEDISPLAY_H_
 
+#include <QRadioButton>
 #include <QSpinBox>
 #include <QWidget>
 #include "../../sign/cells/Display.h"
@@ -28,6 +29,9 @@ private:
     Display* treeNode;
     QSpinBox* heightSpinner;
     QSpinBox* widthSpinner;
+    QRadioButton* displayType_DISPLAY_RGB_LED;
+    QRadioButton* displayType_DISPLAY_MONOCHROME_LED;
+    QRadioButton* displayType_DISPLAY_FLIPDISC;
 
 public:
     PageDisplay(Display* treeNode);
@@ -36,6 +40,9 @@ public:
 public slots:
     void setHeight(int height);
     void setWidth(int width);
+    void setDisplayType_DISPLAY_RGB_LED(bool set);
+    void setDisplayType_DISPLAY_MONOCHROME_LED(bool set);
+    void setDisplayType_DISPLAY_FLIPDISC(bool set);
 };
 
 #endif /* UI_PAGES_PAGEDISPLAY_H_ */

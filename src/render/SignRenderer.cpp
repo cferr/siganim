@@ -54,10 +54,11 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
         totalWidth += (*i)->getWidth();
-        totalHeight += (*i)->getHeight();
+        totalHeight = std::max(totalHeight, (*i)->getHeight());
     }
 
     this->resultBitmap = new Bitmap(5 * totalWidth, 5 * totalHeight);
+    unsigned int x = 0;
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
         try {
@@ -65,8 +66,9 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
             // set bitmap
             SignImage* displayImage = this->resultTree->compose();
             this->rendererInstance.signImageToBitmap(this->resultBitmap,
-                    displayImage, (*i)->getDisplayType(), 0, 0);
+                    displayImage, (*i)->getDisplayType(), x, 0);
             // TODO add display position coords
+            x += (*i)->getWidth();
         } catch(std::exception& e) {
             // Don't go any further with this display, but don't fail.
         }
@@ -74,7 +76,19 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Display &s) {
-    (s.getRootCell())->accept(*this);
+    SignImage* result = new SignImage(s.getWidth(), s.getHeight(),
+            s.getWidth(), s.getHeight());
+    try {
+        (s.getRootCell())->accept(*this);
+        SignImage* rootCellImage = this->resultTree->compose()->cropToBox();
+        result->merge(rootCellImage, 0, 0);
+        delete this->resultTree;
+    } catch(std::exception& e) {
+
+    }
+
+    this->resultTree = new SignImageTree(result);
+
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Split &s) {

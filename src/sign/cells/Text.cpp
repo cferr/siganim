@@ -18,6 +18,10 @@
 
 #include "Text.h"
 
+Text::Text() : Text(nullptr, HorizontalAlignment::HALIGN_CENTER,
+        VerticalAlignment::VALIGN_CENTER_BOTTOM, ""){
+}
+
 Text::Text(const Font* font,
         const enum HorizontalAlignment hAlign,
         const enum VerticalAlignment vAlign,
@@ -117,6 +121,9 @@ void Text::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
 
+void Text::deleteChild(SignTree *child) {
+}
+
 std::ostream& Text::serialize(std::ostream &strm) const {
     return strm << "{ " << this->getWidth() << "x" << this->getHeight() <<
             " : \"" << *(this->text) << "\" }";
@@ -130,4 +137,8 @@ void Text::setForegroundColor(const SignColor &foreground) {
     SignColor c(foreground);
     this->foreground = c;
     this->modified();
+}
+
+void Text::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
+    this->detachStructureObserver(observer);
 }

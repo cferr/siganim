@@ -18,6 +18,7 @@
 #define SRC_SIGN_SIGNTREE_H_
 
 #include <vector>
+#include "SignTreeVisitor.h"
 
 // All classes part of the tree
 class Sign;
@@ -83,9 +84,16 @@ public:
 
     void attachStructureObserver(SignTreeStructureObserver* observer);
     void detachStructureObserver(SignTreeStructureObserver* observer);
+    virtual void deepDetachStructureObserver
+        (SignTreeStructureObserver* observer) = 0;
 
     virtual void callbackDispatch(ConstSignTreeDispatcher* s) const = 0;
     virtual void callbackDispatch(SignTreeDispatcher* s) = 0;
+
+    virtual void deleteChild(SignTree* child) = 0;
+
+    virtual void accept(SignTreeVisitor& visitor) = 0;
+    virtual void accept(ConstSignTreeVisitor& visitor) const = 0;
 
 };
 

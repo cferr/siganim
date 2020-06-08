@@ -63,10 +63,11 @@ void ObservableSink::run() {
             doRender = false;
         }
         this->changed();
-        this->currentFrame++;
-        if(this->currentFrame == this->frames.end())
-            this->currentFrame = this->frames.begin();
-
+        if(!this->frames.empty()) {
+            this->currentFrame++;
+            if(this->currentFrame == this->frames.end())
+                this->currentFrame = this->frames.begin();
+        }
         std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
     }
 }
@@ -84,7 +85,7 @@ void ObservableSink::render() {
     SignRenderer r;
     DurationComputer c;
     unsigned int frames = c.computeTotalFrames(this->signCopy);
-    for(unsigned int frame = 1; frame < frames; frame++) {
+    for(unsigned int frame = 0; frame < frames; frame++) {
         Bitmap* bmap = r.render(this->signCopy, frame);
         this->frames.push_back(bmap);
     }

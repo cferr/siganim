@@ -22,6 +22,14 @@
 
 class Display : public SignCell {
 public:
+    class RootCellBuilder : public Builder {
+    private:
+        Display* display;
+    public:
+        RootCellBuilder(Display* display);
+        bool build(SignCell* child);
+    };
+
     enum Type {
         DISPLAY_RGB_LED, DISPLAY_MONOCHROME_LED, DISPLAY_FLIPDISC
     };
@@ -36,6 +44,7 @@ private:
     const Sign *parentSign;
 
 public:
+    Display();
     Display(unsigned int width, unsigned int height,
             enum Type type);
     Display(unsigned int width, unsigned int height,
@@ -60,6 +69,7 @@ public:
 
     bool setRootCell(SignCell *rootCell);
     SignCell* getRootCell() const;
+    RootCellBuilder* rootCellBuilder();
 
     enum Type getDisplayType() const;
     bool setDisplayType(enum Type displayType);
@@ -74,7 +84,11 @@ public:
 
     virtual void modified() const override;
 
+    void deleteChild(SignTree* child);
+
     std::ostream& serialize(std::ostream &strm) const;
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Display &s);

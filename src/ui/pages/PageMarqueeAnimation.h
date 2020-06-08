@@ -27,8 +27,8 @@ class PageMarqueeAnimation : public QWidget {
     Q_OBJECT
 private:
     MarqueeAnimation* treeNode;
-    QRadioButton* directionLeft;
-    QRadioButton* directionRight;
+    QRadioButton* direction_LEFT;
+    QRadioButton* direction_RIGHT;
     QSpinBox* spaceSpinner;
     QSpinBox* durationSpinner;
 
@@ -38,9 +38,9 @@ public:
 
 public slots:
     void setSpace(int space);
-    void setDuration(int frames);
-    void setDirectionLeft(bool set);
-    void setDirectionRight(bool set);
+    void setDurationFrames(int frames);
+    void setDirection_LEFT(bool set);
+    void setDirection_RIGHT(bool set);
 };
 
 #endif /* UI_PAGES_PAGEMARQUEEANIMATION_H_ */

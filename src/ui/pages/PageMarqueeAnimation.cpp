@@ -20,71 +20,73 @@
 
 PageMarqueeAnimation::PageMarqueeAnimation(MarqueeAnimation* treeNode) :
     treeNode(treeNode) {
-    QWidget* dirRadioGroup = new QWidget(this);
+    QWidget* radio_direction = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(this);
-    QHBoxLayout *radioLayout = new QHBoxLayout(dirRadioGroup);
+    QHBoxLayout *radio_direction_layout = new QHBoxLayout(radio_direction);
 
-    this->directionLeft = new QRadioButton("Right-to-left", dirRadioGroup);
-    this->directionRight = new QRadioButton("Left-to-right", dirRadioGroup);
+    this->direction_LEFT = new QRadioButton("Right-to-left", radio_direction);
+    this->direction_RIGHT = new QRadioButton("Left-to-right", radio_direction);
 
     this->spaceSpinner = new QSpinBox(this);
     this->spaceSpinner->setMinimum(0);
+    this->spaceSpinner->setMaximum(999);
     this->spaceSpinner->setValue(this->treeNode->getSpace());
 
     this->durationSpinner = new QSpinBox(this);
     this->durationSpinner->setMinimum(0);
+    this->durationSpinner->setMaximum(999);
     this->durationSpinner->setValue(this->treeNode->getDurationFrames());
 
     switch(this->treeNode->getDirection()) {
     case MarqueeAnimation::LEFT:
-        this->directionLeft->setChecked(true);
+        this->direction_LEFT->setChecked(true);
         break;
     case MarqueeAnimation::RIGHT:
-        this->directionRight->setChecked(true);
+        this->direction_RIGHT->setChecked(true);
         break;
     }
 
-    radioLayout->addWidget(directionLeft);
-    radioLayout->addWidget(directionRight);
+    radio_direction_layout->addWidget(direction_LEFT);
+    radio_direction_layout->addWidget(direction_RIGHT);
 
-    layout->addWidget(dirRadioGroup);
+    layout->addWidget(radio_direction);
     layout->addWidget(this->spaceSpinner);
     layout->addWidget(this->durationSpinner);
 
     this->setLayout(layout);
 
-    connect(this->directionLeft,
+    connect(this->direction_LEFT,
             &QRadioButton::toggled,
             this,
-            &PageMarqueeAnimation::setDirectionLeft);
+            &PageMarqueeAnimation::setDirection_LEFT);
 
-    connect(this->directionRight,
+    connect(this->direction_RIGHT,
             &QRadioButton::toggled,
             this,
-            &PageMarqueeAnimation::setDirectionRight);
+            &PageMarqueeAnimation::setDirection_RIGHT);
 
     connect(this->spaceSpinner, SIGNAL(valueChanged(int)),
             this, SLOT(setSpace(int)));
 
     connect(this->durationSpinner, SIGNAL(valueChanged(int)),
-            this, SLOT(setDuration(int)));
+            this, SLOT(setDurationFrames(int)));
 }
 
 void PageMarqueeAnimation::setSpace(int space) {
     this->treeNode->setSpace((unsigned int)space);
 }
 
-void PageMarqueeAnimation::setDuration(int frames) {
+void PageMarqueeAnimation::setDurationFrames(int frames) {
     this->treeNode->setDurationFrames((unsigned int)frames);
 }
 
-void PageMarqueeAnimation::setDirectionLeft(bool set) {
+void PageMarqueeAnimation::setDirection_LEFT(bool set) {
     if(set) {
         this->treeNode->setDirection(MarqueeAnimation::LEFT);
     }
 }
 
-void PageMarqueeAnimation::setDirectionRight(bool set) {
+void PageMarqueeAnimation::setDirection_RIGHT(bool set) {
     if(set) {
         this->treeNode->setDirection(MarqueeAnimation::RIGHT);
     }

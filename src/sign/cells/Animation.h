@@ -20,6 +20,15 @@
 #include "../SignCell.h"
 
 class Animation: public SignCell {
+public:
+    class SubjectBuilder : public Builder {
+    private:
+        Animation* animation;
+    public:
+        SubjectBuilder(Animation* animation);
+        bool build(SignCell* child);
+    };
+
 protected:
     SignCell* subject;
     unsigned int durationFrames;
@@ -36,8 +45,13 @@ public:
 
     bool setSubject(SignCell* subject);
     SignCell* getSubject() const;
+    SubjectBuilder* subjectBuilder();
 
     unsigned int getDurationFrames() const;
+
+    void deleteChild(SignTree* child);
+
+    void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 
 };
 

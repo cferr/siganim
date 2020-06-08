@@ -16,6 +16,11 @@
 
 #include "MarqueeAnimation.h"
 
+MarqueeAnimation::MarqueeAnimation() : MarqueeAnimation(nullptr, 20,
+        Direction::LEFT, 10) {
+
+}
+
 MarqueeAnimation::MarqueeAnimation(SignCell *subject,
         unsigned int durationFrames, enum Direction direction,
         unsigned int space) : Animation(subject, durationFrames),

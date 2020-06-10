@@ -27,55 +27,64 @@ SignTreeWidget::SignTreeWidget(QWidget* parent,
 
 void SignTreeWidget::contextMenuEvent(QContextMenuEvent* event) {
     QModelIndex idx = this->currentIndex();
-    SignTreeQtModel::IRPointer* ptr =
-            (SignTreeQtModel::IRPointer*)(idx.internalPointer());
-    QMenu *menu = nullptr;
-    SignTreeContextMenuProvider* menuProvider = nullptr;
-    // Any better way to do this except a visitor?
-    if(ptr != nullptr) {
-        try {
-            SignTree* current = ptr->getTree();
-            SignTreeQtModel::IRPointer* parentPtr =
-                    (SignTreeQtModel::IRPointer*)(idx.parent()
-                            .internalPointer());
-            if(parentPtr != nullptr) {
-                SignTree* parent = parentPtr->getTree();
-                menuProvider = new SignTreeContextMenuProvider(current, parent);
-                menu = menuProvider->getContextMenu();
-            }
-        } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
+    if(idx.isValid()) {
+        SignTreeQtModel::IRPointer* ptr =
+                ((SignTreeQtModel::Chain*)(idx.internalPointer()))
+                    ->getSignModelPtr();
+        QMenu *menu = nullptr;
+        SignTreeContextMenuProvider* menuProvider = nullptr;
+        // Any better way to do this except a visitor?
+        if(ptr != nullptr) {
             try {
-                SignCell::Builder* builder = ptr->getSignCellBuilder();
-                menuProvider = new SignTreeContextMenuProvider(builder);
-                menu = menuProvider->getContextMenu();
+                SignTree* current = ptr->getTree();
+                SignTreeQtModel::IRPointer* parentPtr =
+                        ((SignTreeQtModel::Chain*)(idx.parent()
+                                .internalPointer()))->getSignModelPtr();
+                if(parentPtr != nullptr) {
+                    SignTree* parent = parentPtr->getTree();
+                    menuProvider = new SignTreeContextMenuProvider(current,
+                            parent);
+                    menu = menuProvider->getContextMenu();
+                }
             } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
                 try {
-                    Sign::DisplayBuilder* builder = ptr->getDisplayBuilder();
+                    SignCell::Builder* builder = ptr->getSignCellBuilder();
                     menuProvider = new SignTreeContextMenuProvider(builder);
                     menu = menuProvider->getContextMenu();
                 } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
+                    try {
+                        Sign::DisplayBuilder* builder =
+                                ptr->getDisplayBuilder();
+                        menuProvider = new SignTreeContextMenuProvider(builder);
+                        menu = menuProvider->getContextMenu();
+                    } catch(SignTreeQtModel::IRPointer::NoSuchItemException&
+                            e) {
 
+                    }
                 }
             }
-        }
-        if(menu != nullptr) {
-            menu->exec(event->globalPos());
-            delete menu;
-            delete menuProvider;
+            if(menu != nullptr) {
+                menu->exec(event->globalPos());
+                delete menu;
+                delete menuProvider;
+            }
         }
     }
 }
 
 void SignTreeWidget::currentChanged(const QModelIndex &current,
         const QModelIndex &previous) {
-    SignTreeQtModel::IRPointer* ptr =
-            (SignTreeQtModel::IRPointer*)current.internalPointer();
-    try {
-        if(ptr != nullptr) {
-            SignTree* t = ptr->getTree();
-            this->detailsWidget->update(t);
+    if(current.isValid()) {
+        SignTreeQtModel::IRPointer* ptr =
+                ((SignTreeQtModel::Chain*)current.internalPointer())
+                    ->getSignModelPtr();
+        try {
+            if(ptr != nullptr) {
+                SignTree* t = ptr->getTree();
+                this->detailsWidget->update(t);
+            }
+        } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
+            this->detailsWidget->updateEmpty();
         }
-    } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
-        this->detailsWidget->updateEmpty();
     }
 }

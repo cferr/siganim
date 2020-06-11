@@ -23,6 +23,7 @@
 SignTreeWidget::SignTreeWidget(QWidget* parent,
         SignTreeDetailsWidget* detailsWidget) : QTreeView(parent),
         detailsWidget(detailsWidget) {
+    this->setUniformRowHeights(true);
 }
 
 void SignTreeWidget::contextMenuEvent(QContextMenuEvent* event) {
@@ -37,14 +38,16 @@ void SignTreeWidget::contextMenuEvent(QContextMenuEvent* event) {
         if(ptr != nullptr) {
             try {
                 SignTree* current = ptr->getTree();
-                SignTreeQtModel::IRPointer* parentPtr =
-                        ((SignTreeQtModel::Chain*)(idx.parent()
-                                .internalPointer()))->getSignModelPtr();
-                if(parentPtr != nullptr) {
-                    SignTree* parent = parentPtr->getTree();
-                    menuProvider = new SignTreeContextMenuProvider(current,
-                            parent);
-                    menu = menuProvider->getContextMenu();
+                if(idx.parent().isValid()) {
+                    SignTreeQtModel::IRPointer* parentPtr =
+                            ((SignTreeQtModel::Chain*)(idx.parent()
+                                    .internalPointer()))->getSignModelPtr();
+                    if(parentPtr != nullptr) {
+                        SignTree* parent = parentPtr->getTree();
+                        menuProvider = new SignTreeContextMenuProvider(current,
+                                parent);
+                        menu = menuProvider->getContextMenu();
+                    }
                 }
             } catch(SignTreeQtModel::IRPointer::NoSuchItemException& e) {
                 try {
@@ -87,4 +90,10 @@ void SignTreeWidget::currentChanged(const QModelIndex &current,
             this->detailsWidget->updateEmpty();
         }
     }
+}
+
+void SignTreeWidget::expandTreeRows(const QModelIndex &parent, int first,
+        int last) {
+    this->expand(parent);
+    this->setCurrentIndex(parent);
 }

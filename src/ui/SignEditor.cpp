@@ -41,17 +41,7 @@ SignEditor::SignEditor(Sign* sign) : sign(sign) {
 
     this->tree->expandAll();
     this->tree->setHeaderHidden(true);
-//    connect(model, &SignTreeQtModel::modelReset,
-//            this, &SignEditor::resetTree);
+    connect(model, &SignTreeQtModel::rowsInserted,
+            this->tree, &SignTreeWidget::expandTreeRows);
 }
-
-void SignEditor::resetTree() {
-//    std::cout << "Plop" << std::endl;
-//    this->tree->reset();
-//    QAbstractItemModel* m = this->tree->model();
-//    SignTreeQtModel* model = new SignTreeQtModel(this->sign);
-//    this->tree->setModel(model);
-//    delete m;
-}
-
 

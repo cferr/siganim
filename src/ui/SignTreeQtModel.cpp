@@ -259,7 +259,13 @@ void SignTreeQtModel::removeNode(QModelIndex &index, bool removeNext) {
             i = this->allChainNodes.erase(i);
         else
             ++i;
+
+    if(this->treeAsChain == indexAsChain) {
+        this->treeAsChain = indexAsChain->getNextOrNull();
+    }
+
     delete indexAsChain;
+
 
     this->endRemoveRows();
 }

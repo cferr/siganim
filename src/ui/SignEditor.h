@@ -42,8 +42,6 @@ public:
     virtual ~SignEditor() {
     }
 
-public slots:
-    void resetTree();
 };
 
 #endif /* SRC_UI_SIGNEDITOR_H_ */

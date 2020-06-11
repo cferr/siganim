@@ -35,7 +35,7 @@ public:
     void contextMenuEvent(QContextMenuEvent* event);
     virtual void currentChanged(const QModelIndex &current,
             const QModelIndex &previous) override;
-
+    void expandTreeRows(const QModelIndex &parent, int first, int last);
 };
 
 #endif /* UI_SIGNTREEWIDGET_H_ */

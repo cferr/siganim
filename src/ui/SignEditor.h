@@ -22,6 +22,7 @@
 #include <QTreeWidget>
 #include <QWidget>
 
+#include "../font/FontSet.h"
 #include "../sign/cells/Text.h"
 #include "SignTreeDetailsWidget.h"
 #include "SignTreeWidget.h"
@@ -36,9 +37,10 @@ private:
     SignTreeWidget *tree;
     SignTreeDetailsWidget* details;
     Sign* sign;
+    const FontSet* fontSet;
 
 public:
-    SignEditor(Sign* sign);
+    SignEditor(Sign* sign, const FontSet* fontSet);
     virtual ~SignEditor() {
     }
 

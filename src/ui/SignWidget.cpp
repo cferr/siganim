@@ -19,9 +19,9 @@
 #include "SignWidget.h"
 #include "../render/SignRenderer.h"
 
-SignWidget::SignWidget(Sign* sign, QWidget *parent) :
+SignWidget::SignWidget(Sign* sign, const FontSet* fontSet, QWidget *parent) :
         QWidget(parent), sign(sign), image(nullptr) {
-    this->sink = new ObservableSink(sign);
+    this->sink = new ObservableSink(sign, fontSet);
     this->sink->attach(this);
 }
 

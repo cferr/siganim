@@ -16,14 +16,17 @@
 
 #ifndef SRC_RENDER_GIFSINK_H_
 #define SRC_RENDER_GIFSINK_H_
+
+#include "../font/FontSet.h"
 #include "../sign/Sign.h"
 
 class GIFSink {
 private:
     const Sign* sign;
+    const FontSet* fontSet;
 
 public:
-    GIFSink(const Sign* sign);
+    GIFSink(const Sign* sign, const FontSet* fontSet);
     virtual ~GIFSink();
 
     void render(const char* fileName);

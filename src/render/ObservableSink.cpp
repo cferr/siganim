@@ -19,7 +19,8 @@
 #include "SignRenderer.h"
 #include "DurationComputer.h"
 
-ObservableSink::ObservableSink(Sign* sign) : sign(sign), signCopy(nullptr),
+ObservableSink::ObservableSink(Sign* sign, const FontSet* fontSet) :
+    sign(sign), fontSet(fontSet), signCopy(nullptr),
     continueRunning(true),
     signUpdated(false) {
 
@@ -86,7 +87,7 @@ void ObservableSink::render() {
     DurationComputer c;
     unsigned int frames = c.computeTotalFrames(this->signCopy);
     for(unsigned int frame = 0; frame < frames; frame++) {
-        Bitmap* bmap = r.render(this->signCopy, frame);
+        Bitmap* bmap = r.render(this->signCopy, this->fontSet, frame);
         this->frames.push_back(bmap);
     }
     this->currentFrame = this->frames.begin();

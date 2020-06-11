@@ -20,6 +20,7 @@
 #include <thread>
 #include <mutex>
 
+#include "../font/FontSet.h"
 #include "../sign/Sign.h"
 #include "../sign/Observer.h"
 
@@ -27,6 +28,7 @@ class ObservableSink : public Observable, public Observer {
 private:
     Sign* sign; // cannot be const as attach / detach modify it
 
+    const FontSet* fontSet;
     const Sign* signCopy;
 
     std::vector<Bitmap*> frames;
@@ -43,7 +45,7 @@ private:
     void copySign();
 
 public:
-    ObservableSink(Sign* sign);
+    ObservableSink(Sign* sign, const FontSet* fontSet);
     virtual ~ObservableSink();
 
     Bitmap* getFrame() const;

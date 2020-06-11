@@ -46,20 +46,23 @@ private:
     SignColor foreground;     // Foreground color
 
     icu::UnicodeString* text; // Unicode-encoded text
-    const Font* font;         // One font only per text cell
+    std::string fontFamily;
+    std::string fontStyle;
 
     enum HorizontalAlignment hAlign;
     enum VerticalAlignment vAlign;
 
 public:
     Text();
-    Text(const Font* font, const enum HorizontalAlignment hAlign,
+    Text(const std::string fontFamily, const std::string fontStyle,
+            const enum HorizontalAlignment hAlign,
             const enum VerticalAlignment vAlign,
             const icu::UnicodeString& text = "");
-    Text(const Font* font, const enum HorizontalAlignment hAlign,
-                const enum VerticalAlignment vAlign,
-                const icu::UnicodeString& text,
-                const SignColor& color);
+    Text(const std::string fontFamily, const std::string fontStyle,
+            const enum HorizontalAlignment hAlign,
+            const enum VerticalAlignment vAlign,
+            const icu::UnicodeString& text,
+            const SignColor& color);
     Text(const Text* a);
     virtual ~Text();
     virtual SignCell* copy();
@@ -81,7 +84,10 @@ public:
     void setText(const icu::UnicodeString& text);
     icu::UnicodeString* getText() const;
 
-    const Font* getFont() const;
+    void setFontFamily(const std::string& fontFamily);
+    std::string getFontFamily() const;
+    void setFontStyle(const std::string& fontStyle);
+    std::string getFontStyle() const;
 
     void setForegroundColor(const SignColor& foreground);
     const SignColor getForegroundColor() const;

@@ -36,7 +36,7 @@ void FontSet::addFonts(std::vector<Font*> fonts) {
         this->fonts.push_back(*i);
 }
 
-std::vector<Font*> FontSet::getFonts() {
+std::vector<Font*> FontSet::getFonts() const {
     return this->fonts;
 }
 
@@ -49,12 +49,12 @@ bool FontSet::removeFont(Font *f) {
 }
 
 std::vector<Font*> FontSet::multiLookup(std::string family,
-        std::string style) {
+        std::string style) const {
     std::vector<Font*> ret;
 
     bool lookupFamily = !(family.empty());
     bool lookupStyle = !(style.empty());
-    for(std::vector<Font*>::iterator i = this->fonts.begin();
+    for(std::vector<Font*>::const_iterator i = this->fonts.begin();
             i < this->fonts.end(); ++i) {
         if( (lookupFamily && (*i)->getFamily() == family)
                 || (lookupStyle && (*i)->getStyle() == family)){
@@ -65,8 +65,8 @@ std::vector<Font*> FontSet::multiLookup(std::string family,
     return ret;
 }
 
-Font* FontSet::lookup(std::string family, std::string style) {
-    for(std::vector<Font*>::iterator i = this->fonts.begin();
+Font* FontSet::lookup(std::string family, std::string style) const {
+    for(std::vector<Font*>::const_iterator i = this->fonts.begin();
                 i < this->fonts.end(); ++i) {
         bool lookupFamily = !(family.empty());
         bool lookupStyle = !(style.empty());

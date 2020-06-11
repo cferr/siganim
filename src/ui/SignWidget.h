@@ -21,6 +21,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QObject>
+#include "../font/FontSet.h"
 #include "../sign/Sign.h"
 #include "../sign/Observer.h"
 #include "../render/ObservableSink.h"
@@ -38,7 +39,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 public:
-    SignWidget(Sign* sign, QWidget *parent = nullptr);
+    SignWidget(Sign* sign, const FontSet* fontSet, QWidget *parent = nullptr);
     virtual ~SignWidget();
 
     void signChangedEvent();

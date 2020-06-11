@@ -18,10 +18,12 @@
 #ifndef UI_PAGES_PAGETEXT_H_
 #define UI_PAGES_PAGETEXT_H_
 
+#include <QComboBox>
 #include <QColorDialog>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QWidget>
+#include "../../font/FontSet.h"
 #include "../../sign/cells/Text.h"
 
 class PageText : public QWidget {
@@ -37,13 +39,21 @@ private:
 
     QPushButton* pickColor;
     QColorDialog* colorPicker;
+    QComboBox* fontFamilyCombo;
+    QComboBox* fontStyleCombo;
+
+    const FontSet* fontSet;
 
     // add vertical alignment list / widget
     // add font selection widget
 
 public:
-    PageText(Text* treeNode);
+    PageText(Text* treeNode, const FontSet* fontSet);
     virtual ~PageText() { }
+
+    void setFontFamily(const QString& fontFamily);
+    void populateFontStyles(const std::string& fontFamily);
+    void setFontStyle(const QString& fontStyle);
 
     void updateText(const QString& text);
     void setHAlignLeft();

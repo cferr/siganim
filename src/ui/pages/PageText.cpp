@@ -20,7 +20,8 @@
 #include "PageText.h"
 #include "../../sign/SignColor.h"
 
-PageText::PageText(Text* treeNode) : treeNode(treeNode) {
+PageText::PageText(Text* treeNode, const FontSet* fontSet) :
+    treeNode(treeNode), fontSet(fontSet) {
     this->textLine = new QLineEdit(this);
     icu::UnicodeString* text = treeNode->getText();
     this->textLine->setText(
@@ -31,15 +32,32 @@ PageText::PageText(Text* treeNode) : treeNode(treeNode) {
     this->halignJustify = new QPushButton("Justify");
     this->pickColor = new QPushButton("Color");
     this->colorPicker = new QColorDialog(this);
+    this->fontFamilyCombo = new QComboBox(this);
+    this->fontFamilyCombo->setEditable(true);
+    this->fontStyleCombo = new QComboBox(this);
+    this->fontStyleCombo->setEditable(true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(this->textLine);
+    layout->addWidget(this->fontFamilyCombo);
+    layout->addWidget(this->fontStyleCombo);
     layout->addWidget(this->halignLeft);
     layout->addWidget(this->halignCenter);
     layout->addWidget(this->halignRight);
     layout->addWidget(this->halignJustify);
     layout->addWidget(this->pickColor);
     this->setLayout(layout);
+
+    // Populate font list
+    std::vector<Font*> fonts = this->fontSet->getFonts();
+    for(auto i = fonts.begin(); i < fonts.end(); ++i) {
+        QString family = QString::fromStdString((*i)->getFamily());
+        this->fontFamilyCombo->addItem(family, family);
+    }
+
+    this->fontFamilyCombo->setCurrentText(
+            QString::fromStdString(this->treeNode->getFontFamily()));
+    this->populateFontStyles(this->treeNode->getFontFamily());
 
     this->textLine->connect(this->textLine,
             &QLineEdit::textChanged,
@@ -71,6 +89,16 @@ PageText::PageText(Text* treeNode) : treeNode(treeNode) {
             &QColorDialog::colorSelected,
             this,
             &PageText::setColor);
+
+    this->fontFamilyCombo->connect(this->fontFamilyCombo,
+            &QComboBox::currentTextChanged,
+            this,
+            &PageText::setFontFamily);
+
+    this->fontFamilyCombo->connect(this->fontStyleCombo,
+            &QComboBox::currentTextChanged,
+            this,
+            &PageText::setFontStyle);
 }
 
 void PageText::updateText(const QString& text) {
@@ -104,6 +132,26 @@ void PageText::selectColor() {
     }
     this->colorPicker->setCurrentColor(qtColor);
     this->colorPicker->show();
+}
+
+void PageText::setFontFamily(const QString &fontFamily) {
+    this->treeNode->setFontFamily(fontFamily.toStdString());
+    this->populateFontStyles(fontFamily.toStdString());
+}
+
+void PageText::populateFontStyles(const std::string &fontFamily) {
+    this->fontStyleCombo->clear();
+
+    std::vector<Font*> fonts =
+            this->fontSet->multiLookup(fontFamily);
+    for(auto i = fonts.begin(); i < fonts.end(); ++i) {
+        QString style = QString::fromStdString((*i)->getStyle());
+        this->fontStyleCombo->addItem(style, style);
+    }
+}
+
+void PageText::setFontStyle(const QString &fontStyle) {
+    this->treeNode->setFontStyle(fontStyle.toStdString());
 }
 
 void PageText::setColor(const QColor& color) {

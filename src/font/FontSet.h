@@ -57,10 +57,11 @@ public:
     void addFonts(std::vector<Font*> fonts);
     bool removeFont(std::string family, std::string style);
     bool removeFont(Font* f);
-    std::vector<Font*> getFonts();
+    std::vector<Font*> getFonts() const;
 
-    std::vector<Font*> multiLookup(std::string family, std::string style);
-    Font* lookup(std::string family, std::string style);
+    std::vector<Font*> multiLookup(std::string family,
+            std::string style = "") const;
+    Font* lookup(std::string family, std::string style = "") const;
 };
 
 #endif /* SRC_FONT_FONTSET_H_ */

@@ -22,6 +22,7 @@
 
 #include "SignEditor.h"
 #include "FontStudio.h"
+#include "../font/FontSet.h"
 #include "../sign/cells/Text.h"
 
 class SiganimMainWindow: public QMainWindow {
@@ -36,7 +37,7 @@ public:
 
     SiganimMainWindow();
     // Temporary.
-    SiganimMainWindow(Sign* sign);
+    SiganimMainWindow(Sign* sign, FontSet* fontSet);
     virtual ~SiganimMainWindow();
 
 

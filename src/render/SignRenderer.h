@@ -17,8 +17,9 @@
 #ifndef SRC_SIGNRENDERER_H_
 #define SRC_SIGNRENDERER_H_
 
-#include "../sign/cells/Display.h"
 #include "Bitmap.h"
+#include "../font/FontSet.h"
+#include "../sign/cells/Display.h"
 #include "../sign/Sign.h"
 #include "../sign/SignImage.h"
 #include "../sign/SignTreeVisitor.h"
@@ -64,11 +65,13 @@ private:
         SignImageTree* resultTree;
         Bitmap* resultBitmap;
         unsigned int frame;
+        const FontSet* fontSet;
 
     public:
-        SignRenderVisitor(SignRenderer& rendererInstance, unsigned int frame) :
+        SignRenderVisitor(SignRenderer& rendererInstance,
+                const FontSet* fontSet,unsigned int frame) :
             rendererInstance(rendererInstance), resultTree(nullptr),
-            resultBitmap(nullptr), frame(frame) {
+            resultBitmap(nullptr), frame(frame), fontSet(fontSet) {
         }
 
         virtual ~SignRenderVisitor() {
@@ -95,7 +98,7 @@ private:
 
 public:
     SignRenderer();
-    Bitmap* render(const Sign *s, unsigned int frame);
+    Bitmap* render(const Sign *s, const FontSet* fontSet, unsigned int frame);
 
     virtual ~SignRenderer();
 };

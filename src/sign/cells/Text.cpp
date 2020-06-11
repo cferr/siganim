@@ -18,29 +18,32 @@
 
 #include "Text.h"
 
-Text::Text() : Text(nullptr, HorizontalAlignment::HALIGN_CENTER,
+Text::Text() : Text("", "", HorizontalAlignment::HALIGN_CENTER,
         VerticalAlignment::VALIGN_CENTER_BOTTOM, ""){
 }
 
-Text::Text(const Font* font,
+Text::Text(const std::string fontFamily, const std::string fontStyle,
         const enum HorizontalAlignment hAlign,
         const enum VerticalAlignment vAlign,
         const icu::UnicodeString& text) :
-        Text(font, hAlign, vAlign, text, SignColor::on()) {
+        Text(fontFamily, fontStyle, hAlign, vAlign, text, SignColor::on()) {
 }
 
 
-Text::Text(const Font *font, const enum HorizontalAlignment hAlign,
+Text::Text(const std::string fontFamily, const std::string fontStyle,
+        const enum HorizontalAlignment hAlign,
         const enum VerticalAlignment vAlign, const icu::UnicodeString &text,
         const SignColor &color) :
         foreground(color),
-            font(font),
+            fontFamily(fontFamily),
+            fontStyle(fontStyle),
             hAlign(hAlign),
             vAlign(vAlign) {
     this->text = new icu::UnicodeString(text);
 }
 
-Text::Text(const Text *a) : foreground(a->foreground), font(a->font),
+Text::Text(const Text *a) : foreground(a->foreground),
+        fontFamily(a->fontFamily), fontStyle(a->fontStyle),
         hAlign(a->hAlign), vAlign(a->vAlign) {
     this->text = new icu::UnicodeString(*(a->text));
 }
@@ -87,8 +90,12 @@ icu::UnicodeString* Text::getText() const {
     return this->text->clone();
 }
 
-const Font* Text::getFont() const {
-    return this->font;
+std::string Text::getFontFamily() const {
+    return this->fontFamily;
+}
+
+std::string Text::getFontStyle() const {
+    return this->fontStyle;
 }
 
 const SignColor Text::getForegroundColor() const {
@@ -141,4 +148,14 @@ void Text::setForegroundColor(const SignColor &foreground) {
 
 void Text::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
     this->detachStructureObserver(observer);
+}
+
+void Text::setFontFamily(const std::string &fontFamily) {
+    this->fontFamily = std::string(fontFamily);
+    this->modified();
+}
+
+void Text::setFontStyle(const std::string &fontStyle) {
+    this->fontStyle = std::string(fontStyle);
+    this->modified();
 }

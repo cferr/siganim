@@ -34,11 +34,6 @@
 #include "font/parsers/GirouetteFontsParser.h"
 #include "font/FontSet.h"
 
-
-#ifdef TEST
-#include "test.h"
-#endif
-
 #ifdef GUI
 #include "ui/SiganimMainWindow.h"
 #endif
@@ -49,21 +44,12 @@ int main(int argc, char *argv[]) {
 #endif
     int ret = 0;
 
-#ifdef TEST
-    if(!siganimTests())
-        ret = 1;
-#endif
-
-
-    FontSet fset;
+    FontSet* fset = new FontSet();
     // Test import font.
     std::vector<Font*> girouetteFonts = GirouetteFontsParser::parseGirouetteXML(
                 "./font.xml");
-    fset.addFonts(girouetteFonts);
-    Font* font1912 = fset.lookup("Test font 19x12", "");
-    Font* font1207 = fset.lookup("Test font 12x7", "");
-    Font* font0704 = fset.lookup("Test font 7x4", "");
-    Text* modifiableText = new Text(font1207,
+    fset->addFonts(girouetteFonts);
+    Text* modifiableText = new Text("Test font 12x7", "",
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
             "UNION STN");
@@ -85,7 +71,7 @@ int main(int argc, char *argv[]) {
                         5, 5
                     )
             ),
-            new Text(font1912,
+            new Text("Test font 19x12", "",
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
             "17", SignColor(SignColor::ON, 30, 150, 252))
@@ -99,7 +85,7 @@ int main(int argc, char *argv[]) {
                         new Split(Split::SPLIT_HORIZONTAL, 12,
                             modifiableText,
                             new MarqueeAnimation(
-                                new Text(font0704,
+                                new Text("Test font 7x4", "",
                                     Text::HALIGN_CENTER,
                                     Text::VALIGN_CENTER_BOTTOM,
                                     "VIA 17TH & 18TH STREETS"
@@ -114,11 +100,12 @@ int main(int argc, char *argv[]) {
 
 
 #ifdef GUI
-    SiganimMainWindow m(testSign);
+    SiganimMainWindow m(testSign, fset);
     m.show();
     ret |= a.exec();
 #endif
 
+    delete fset;
     delete testSign; // also deletes modifiableText
 
     return ret;

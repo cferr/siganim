@@ -19,6 +19,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include "../font/FontSet.h"
 #include "../sign/SignTree.h"
 
 class SignTreeDetailsWidget: public QWidget, public SignTreeDispatcher {
@@ -27,11 +28,12 @@ class SignTreeDetailsWidget: public QWidget, public SignTreeDispatcher {
 private:
     QVBoxLayout *layout;
     QWidget *currentWidget;
+    const FontSet* fontSet;
 
     void updateWidget(QWidget *widget);
 
 public:
-    SignTreeDetailsWidget();
+    SignTreeDetailsWidget(const FontSet* fontSet);
     virtual ~SignTreeDetailsWidget() { }
 
     void update(SignTree* t);

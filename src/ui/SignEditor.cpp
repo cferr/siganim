@@ -17,14 +17,15 @@
 #include "SignEditor.h"
 #include "SignTreeQtModel.h"
 
-SignEditor::SignEditor(Sign* sign) : sign(sign) {
+SignEditor::SignEditor(Sign* sign, const FontSet* fontSet) : sign(sign),
+    fontSet(fontSet) {
 
     this->layout = new QGridLayout(this);
 
-    this->details = new SignTreeDetailsWidget();
+    this->details = new SignTreeDetailsWidget(this->fontSet);
     this->tree = new SignTreeWidget(this, this->details);
 
-    this->signWidget = new SignWidget(sign);
+    this->signWidget = new SignWidget(sign, fontSet);
 
     this->layout->addWidget(this->tree, 0, 0, Qt::AlignLeft);
     this->layout->addWidget(this->details, 0, 1, Qt::AlignLeft);

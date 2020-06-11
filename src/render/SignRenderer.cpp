@@ -18,6 +18,7 @@
 #include <unicode/schriter.h>
 
 #include "SignRenderer.h"
+#include "../font/FontSet.h"
 #include "../font/Character.h"
 #include "../sign/Sign.h"
 #include "../sign/SignImage.h"
@@ -37,9 +38,10 @@ SignRenderer::~SignRenderer() {
 
 }
 
-Bitmap* SignRenderer::render(const Sign *s, unsigned int frame) {
+Bitmap* SignRenderer::render(const Sign *s, const FontSet* fontSet,
+        unsigned int frame) {
     // Prepare s, if need be.
-    SignRenderVisitor visitor(*this, frame);
+    SignRenderVisitor visitor(*this, fontSet, frame);
     // Render by visiting
     s->accept(visitor);
 
@@ -152,8 +154,9 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
     SignColor off = SignColor::off();
 
     icu::UnicodeString* text = s.getText();
-    const Font* cellFont = s.getFont();
-    if(cellFont != nullptr) {
+    try {
+        const Font* cellFont = this->fontSet->lookup(s.getFontFamily(),
+            s.getFontStyle());
         // Compute min, max height of all characters.
         uint32_t minHeight = UINT_LEAST32_MAX;
         uint32_t maxHeight = 0;
@@ -277,7 +280,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
             }
         }
         this->resultTree = new SignImageTree(textRender);
-    } else {
+    } catch(FontSet::FontNotFoundException& e) {
         // Return an empty image of the right height and width
         this->resultTree = new SignImageTree(
                 new SignImage(s.getWidth(), s.getHeight(),

@@ -26,7 +26,8 @@
 #include "pages/PageSplit.h"
 #include "pages/PageText.h"
 
-SignTreeDetailsWidget::SignTreeDetailsWidget() : currentWidget(nullptr) {
+SignTreeDetailsWidget::SignTreeDetailsWidget(const FontSet* fontSet) :
+    currentWidget(nullptr), fontSet(fontSet) {
     this->layout = new QVBoxLayout(this);
     this->setLayout(this->layout);
 }
@@ -57,7 +58,7 @@ void SignTreeDetailsWidget::dispatchCallback(Display &s) {
 }
 
 void SignTreeDetailsWidget::dispatchCallback(Text &s) {
-    this->updateWidget(new PageText(&s));
+    this->updateWidget(new PageText(&s, this->fontSet));
 }
 
 void SignTreeDetailsWidget::dispatchCallback(Split &s) {

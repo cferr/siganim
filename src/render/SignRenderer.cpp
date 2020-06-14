@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <cassert>
 #include <iostream>
 #include <unicode/schriter.h>
 
@@ -28,7 +29,6 @@
 #include "../sign/cells/Split.h"
 #include "../sign/cells/Text.h"
 #include "../sign/cells/Fill.h"
-#include "../SiganimDefaults.h"
 
 SignRenderer::SignRenderer() {
 
@@ -38,10 +38,13 @@ SignRenderer::~SignRenderer() {
 
 }
 
-Bitmap* SignRenderer::render(const Sign *s, const FontSet* fontSet,
-        unsigned int frame) {
+Bitmap* SignRenderer::render(const Rasterizer* rasterizer, const Sign *s,
+        const FontSet* fontSet, unsigned int frame) {
+    // If this condition is not met, the renderer may work anyway.
+    // It shouldn't (call on null pointer)
+    assert(rasterizer != nullptr);
     // Prepare s, if need be.
-    SignRenderVisitor visitor(*this, fontSet, frame);
+    SignRenderVisitor visitor(rasterizer, fontSet, frame);
     // Render by visiting
     s->accept(visitor);
 
@@ -51,29 +54,40 @@ Bitmap* SignRenderer::render(const Sign *s, const FontSet* fontSet,
 void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     std::vector<Display*> displays = s.getDisplays();
     // compute total width / height
-    unsigned int totalWidth = 0;
-    unsigned int totalHeight = 0;
-    for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
-            ++i) {
-        totalWidth += (*i)->getWidth();
-        totalHeight = std::max(totalHeight, (*i)->getHeight());
-    }
+//    unsigned int totalWidth = 0;
+//    unsigned int totalHeight = 0;
+//    for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
+//            ++i) {
+//        totalWidth += (*i)->getWidth();
+//        totalHeight = std::max(totalHeight, (*i)->getHeight());
+//    }
 
-    this->resultBitmap = new Bitmap(5 * totalWidth, 5 * totalHeight);
-    unsigned int x = 0;
+    //this->resultBitmap = new Bitmap(5 * totalWidth, 5 * totalHeight);
+    unsigned int totalWidth = 0;
+    unsigned int maxHeight = 0;
+    std::vector<Bitmap*> bitmaps;
     for (Sign::SignDisplayVectIt i = displays.begin(); i < displays.end();
             ++i) {
         try {
             (*i)->accept(*this);
             // set bitmap
             SignImage* displayImage = this->resultTree->compose();
-            this->rendererInstance.signImageToBitmap(this->resultBitmap,
-                    displayImage, (*i)->getDisplayType(), x, 0);
-            // TODO add display position coords
-            x += (*i)->getWidth();
+            Bitmap* bmap = this->rasterizer->rasterize(displayImage,
+                    (*i)->getDisplayType());
+            bitmaps.push_back(bmap);
+            totalWidth += bmap->getWidth();
+            maxHeight = std::max(maxHeight, bmap->getHeight());
+
         } catch(std::exception& e) {
             // Don't go any further with this display, but don't fail.
         }
+    }
+
+    this->resultBitmap = new Bitmap(totalWidth, maxHeight);
+    unsigned int x = 0;
+    for(auto i = bitmaps.begin(); i < bitmaps.end(); ++i) {
+        this->resultBitmap->overlay(*i, x, 0);
+        x += (*i)->getWidth();
     }
 }
 
@@ -255,8 +269,8 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
                     break;
                 }
 
-                for(unsigned int x = 0; x < charWidth; ++x) {
-                    for(unsigned int y = 0; y < charHeight; ++y) {
+                for(int x = 0; (unsigned int)x < charWidth; ++x) {
+                    for(int y = 0; (unsigned int)y < charHeight; ++y) {
                         textRender->setPixel(xx + x, y + yy + yyy,
                             (bmap[y * charWidth + x] == Character::Bit::ON)?
                             s.getForegroundColor():off
@@ -411,61 +425,3 @@ SignImage* SignRenderer::SignImageTree::compose() {
         return this->image;
     }
 }
-
-void SignRenderer::signImageToBitmap(Bitmap* dest, SignImage* source,
-        Display::Type sourceType, unsigned int x, unsigned int y) {
-    // Crop the result into its own box, in case it hasn't been done before.
-    SignImage* sourceCropped = source->cropToBox();
-
-    const SignColor* simgPixels = sourceCropped->getPixels();
-    struct Bitmap::pixel* imgPixels = dest->getPixels();
-
-    const unsigned int simgHeight = sourceCropped->getHeight();
-    const unsigned int simgWidth = sourceCropped->getWidth();
-
-    const unsigned int dimgWidth = dest->getWidth();
-
-    struct SignColor::RGB defaultRGBOn;
-    struct SignColor::RGB defaultRGBOff;
-
-    switch(sourceType) {
-    case Display::DISPLAY_FLIPDISC:
-        defaultRGBOn = SiganimDefaults::defaultFlipDiscBG.getValue();
-        defaultRGBOff = SiganimDefaults::defaultFlipDiscFG.getValue();
-        break;
-    case Display::DISPLAY_MONOCHROME_LED:
-        defaultRGBOn = SiganimDefaults::defaultMonoLEDBG.getValue();
-        defaultRGBOff = SiganimDefaults::defaultMonoLEDFG.getValue();
-        break;
-    case Display::DISPLAY_RGB_LED:
-        defaultRGBOn = SiganimDefaults::defaultRGBLEDBG.getValue();
-        defaultRGBOff = SiganimDefaults::defaultRGBLEDFG.getValue();
-        break;
-    }
-
-
-    for(unsigned int i = 0; i < simgHeight; ++i) {
-        for(unsigned int j = 0; j < simgWidth; ++j) {
-            struct SignColor::RGB p;
-            if(sourceType == Display::DISPLAY_RGB_LED) {
-                try {
-                    p = simgPixels[i*simgWidth+j].getValue();
-                } catch(SignColor::NoRGBValueException& e) {
-                    p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
-                            defaultRGBOff;
-                }
-            } else {
-                p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
-                    defaultRGBOff;
-            }
-            for(unsigned int ii = 0; ii < 5; ++ii) {
-                for(unsigned int jj = 0; jj < 5; ++jj) {
-                    imgPixels[(5*(i+y)+ii)*dimgWidth+5*(j+x)+jj] = {
-                            p.r, p.g, p.b
-                    };
-                }
-            }
-        }
-    }
-}
-

@@ -19,8 +19,9 @@
 #include "SignRenderer.h"
 #include "DurationComputer.h"
 
-GIFSink::GIFSink(const Sign* sign, const FontSet* fontSet) : sign(sign),
-    fontSet(fontSet) {
+GIFSink::GIFSink(const Sign* sign, const FontSet* fontSet,
+        const Rasterizer* rasterizer) : sign(sign),
+    fontSet(fontSet), rasterizer(rasterizer) {
 }
 
 GIFSink::~GIFSink() {
@@ -30,7 +31,7 @@ GIFSink::~GIFSink() {
 void GIFSink::render(const char* fileName) {
     SignRenderer r;
 
-    Bitmap* bmap = r.render(this->sign, this->fontSet, 0);
+    Bitmap* bmap = r.render(this->rasterizer, this->sign, this->fontSet, 0);
     unsigned int width = bmap->getWidth();
     unsigned int height = bmap->getHeight();
 
@@ -43,7 +44,7 @@ void GIFSink::render(const char* fileName) {
     GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
 
     for(unsigned int frame = 1; frame < frames; frame++) {
-        bmap = r.render(this->sign, this->fontSet, frame);
+        bmap = r.render(this->rasterizer, this->sign, this->fontSet, frame);
         GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
     }
 

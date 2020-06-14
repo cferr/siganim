@@ -19,14 +19,17 @@
 
 #include "../font/FontSet.h"
 #include "../sign/Sign.h"
+#include "Rasterizer.h"
 
 class GIFSink {
 private:
     const Sign* sign;
     const FontSet* fontSet;
+    const Rasterizer* rasterizer;
 
 public:
-    GIFSink(const Sign* sign, const FontSet* fontSet);
+    GIFSink(const Sign* sign, const FontSet* fontSet,
+            const Rasterizer* rasterizer);
     virtual ~GIFSink();
 
     void render(const char* fileName);

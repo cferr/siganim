@@ -36,11 +36,13 @@ private:
     QPushButton* halignCenter;
     QPushButton* halignRight;
     QPushButton* halignJustify;
+    QComboBox* valignCombo;
 
     QPushButton* pickColor;
     QColorDialog* colorPicker;
     QComboBox* fontFamilyCombo;
     QComboBox* fontStyleCombo;
+
 
     const FontSet* fontSet;
 
@@ -63,6 +65,9 @@ public:
 
     void selectColor();
     void setColor(const QColor& color);
+
+public slots:
+    void setVAlign(int align);
 };
 
 #endif /* UI_PAGES_PAGETEXT_H_ */

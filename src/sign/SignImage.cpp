@@ -47,9 +47,9 @@ SignImage::~SignImage() {
     free(this->pixels);
 }
 
-bool SignImage::setPixel(const unsigned int x, const unsigned int y,
-        const SignColor& value) {
-    if(x < this->width && y < this->height) {
+bool SignImage::setPixel(const int x, const int y, const SignColor& value) {
+    if(0 <= x && (unsigned int)x < this->width && 0 <= y &&
+            (unsigned int)y < this->height) {
         this->pixels[y * this->width + x] = value;
         return true;
     }

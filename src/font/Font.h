@@ -64,6 +64,7 @@ public:
     bool removeCharacter(UChar32 index);
     bool removeCharacter(Character* character);
     unsigned int getNbCharacters();
+    std::vector<UChar32> listCharCodes() const;
 };
 
 #endif /* SRC_FONT_H_ */

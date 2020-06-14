@@ -5,7 +5,8 @@ Q_OBJECTS = SignEditor.h FontStudio.h SignWidget.h SiganimMainWindow.h \
 	SignTreeDetailsWidget.h pages/PageBlinkAnimation.h pages/PageCompose.h \
 	pages/PageDisplay.h pages/PageFill.h pages/PageMarqueeAnimation.h \
 	pages/PageSign.h pages/PageSplit.h pages/PageText.h pages/PageEmptyCell.h \
-	SignTreeWidget.h SignTreeQtModel.cpp SignTreeContextMenuProvider.cpp
+	SignTreeWidget.h SignTreeQtModel.h SignTreeContextMenuProvider.h \
+	FontVisualEditor.h FontQtModel.h CharacterListWidget.h
 
 MOCS = $(join $(dir $(Q_OBJECTS)), $(addsuffix .cpp, $(addprefix moc_, $(basename $(notdir $(Q_OBJECTS))))))
 

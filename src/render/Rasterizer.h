@@ -14,30 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#ifndef RENDER_RASTERIZER_H_
+#define RENDER_RASTERIZER_H_
 
-#include <QMainWindow>
-#include <QTabWidget>
+#include "Bitmap.h"
+#include "../sign/SignImage.h"
+#include "../sign/cells/Display.h"
 
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
-
-class SiganimMainWindow: public QMainWindow {
-    Q_OBJECT
-private:
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
+class Rasterizer {
+    std::string name;
+    Bitmap* pixelOverlay;
+    bool hasPixelOverlay;
 
 public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
-    virtual ~SiganimMainWindow();
+    Rasterizer(std::string name);
+    Rasterizer(std::string name, Bitmap* pixelOverlay);
+    virtual ~Rasterizer() {
+    }
 
+    std::string getName() const;
+
+    void rasterizeAdd(Bitmap* dest, SignImage* source,
+            Display::Type sourceType, unsigned int x, unsigned int y) const;
+    Bitmap* rasterize(SignImage* source, Display::Type sourceType) const;
 };
 
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */
+#endif /* RENDER_RASTERIZER_H_ */

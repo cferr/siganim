@@ -18,6 +18,7 @@
 #define SRC_SIGNRENDERER_H_
 
 #include "Bitmap.h"
+#include "Rasterizer.h"
 #include "../font/FontSet.h"
 #include "../sign/cells/Display.h"
 #include "../sign/Sign.h"
@@ -61,16 +62,16 @@ private:
     // Renderer Visitor
     class SignRenderVisitor : public ConstSignTreeVisitor {
     private:
-        SignRenderer& rendererInstance;
+        const Rasterizer* rasterizer;
         SignImageTree* resultTree;
         Bitmap* resultBitmap;
         unsigned int frame;
         const FontSet* fontSet;
 
     public:
-        SignRenderVisitor(SignRenderer& rendererInstance,
+        SignRenderVisitor(const Rasterizer* rasterizer,
                 const FontSet* fontSet,unsigned int frame) :
-            rendererInstance(rendererInstance), resultTree(nullptr),
+            rasterizer(rasterizer), resultTree(nullptr),
             resultBitmap(nullptr), frame(frame), fontSet(fontSet) {
         }
 
@@ -92,13 +93,10 @@ private:
     };
 
 
-    void signImageToBitmap(Bitmap* dest, SignImage* source,
-            Display::Type sourceType,
-            unsigned int x, unsigned int y);
-
 public:
     SignRenderer();
-    Bitmap* render(const Sign *s, const FontSet* fontSet, unsigned int frame);
+    Bitmap* render(const Rasterizer* rasterizer,
+            const Sign *s, const FontSet* fontSet, unsigned int frame);
 
     virtual ~SignRenderer();
 };

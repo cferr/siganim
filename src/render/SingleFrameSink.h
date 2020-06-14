@@ -14,43 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNWIDGET_H_
-#define SRC_SIGNWIDGET_H_
+#ifndef RENDER_SINGLEFRAMESINK_H_
+#define RENDER_SINGLEFRAMESINK_H_
 
-#include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include <QObject>
 #include "../font/FontSet.h"
 #include "../sign/Sign.h"
-#include "../sign/Observer.h"
-#include "../render/ObservableSink.h"
-#include "../render/Rasterizer.h"
+#include "Bitmap.h"
+#include "Rasterizer.h"
 
-class SignWidget: public QWidget, public Observer {
-    Q_OBJECT
-protected:
-    Sign *sign;
-    ObservableSink* sink;
-
-private:
-    QImage *image;
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-
+class SingleFrameSink {
+    const FontSet* fontSet;
+    const Rasterizer* rasterizer;
 public:
-    SignWidget(Sign* sign, const FontSet* fontSet,
-            const Rasterizer* rasterizer, QWidget *parent = nullptr);
-    virtual ~SignWidget();
-
-    Sign* getSign();
-    void setSign(Sign* sign, FontSet* fontSet);
-
-    void signChangedEvent();
-    void observe(const Observable* sender);
+    SingleFrameSink(const FontSet* fontSet, const Rasterizer* rasterizer);
+    virtual ~SingleFrameSink() {
+    }
 
     void setRasterizer(const Rasterizer* rasterizer);
+
+    Bitmap* render(const Sign* s, unsigned int frame);
 };
 
-#endif /* SRC_SIGNWIDGET_H_ */
+#endif /* RENDER_SINGLEFRAMESINK_H_ */

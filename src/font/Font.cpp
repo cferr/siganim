@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <vector>
 #include "Font.h"
 
 Font::Font(const std::string& family, const std::string& style) :
@@ -61,4 +62,11 @@ bool Font::removeCharacter(Character* character) {
 
 unsigned int Font::getNbCharacters() {
     return this->chars.size();
+}
+
+std::vector<UChar32> Font::listCharCodes() const {
+    std::vector<UChar32> ret;
+    for(auto i = this->chars.begin(); i != chars.end(); ++i)
+        ret.push_back((*i).first);
+    return ret;
 }

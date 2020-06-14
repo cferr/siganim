@@ -17,6 +17,7 @@
 #include <unicode/unistr.h>
 #include <QString>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "PageText.h"
 #include "../../sign/SignColor.h"
 
@@ -26,27 +27,19 @@ PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     icu::UnicodeString* text = treeNode->getText();
     this->textLine->setText(
             QString::fromUtf16(text->getBuffer(), text->length()));
-    this->halignLeft = new QPushButton("Left");
-    this->halignCenter = new QPushButton("Center");
-    this->halignRight = new QPushButton("Right");
-    this->halignJustify = new QPushButton("Justify");
-    this->pickColor = new QPushButton("Color");
+
+    this->halignLeft = new QPushButton("Left", this);
+    this->halignCenter = new QPushButton("Center", this);
+    this->halignRight = new QPushButton("Right", this);
+    this->halignJustify = new QPushButton("Justify", this);
+    this->pickColor = new QPushButton("Color", this);
     this->colorPicker = new QColorDialog(this);
     this->fontFamilyCombo = new QComboBox(this);
     this->fontFamilyCombo->setEditable(true);
     this->fontStyleCombo = new QComboBox(this);
     this->fontStyleCombo->setEditable(true);
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(this->textLine);
-    layout->addWidget(this->fontFamilyCombo);
-    layout->addWidget(this->fontStyleCombo);
-    layout->addWidget(this->halignLeft);
-    layout->addWidget(this->halignCenter);
-    layout->addWidget(this->halignRight);
-    layout->addWidget(this->halignJustify);
-    layout->addWidget(this->pickColor);
-    this->setLayout(layout);
+    this->valignCombo = new QComboBox(this);
+    this->valignCombo->setEditable(false);
 
     // Populate font list
     std::vector<Font*> fonts = this->fontSet->getFonts();
@@ -58,6 +51,43 @@ PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     this->fontFamilyCombo->setCurrentText(
             QString::fromStdString(this->treeNode->getFontFamily()));
     this->populateFontStyles(this->treeNode->getFontFamily());
+
+    // Important: keep the same order as the enumerable.
+    this->valignCombo->addItem("Biggest letter aligned top, others top",
+            Text::VALIGN_TOP_TOP);
+    this->valignCombo->addItem("Biggest letter aligned top, others center",
+            Text::VALIGN_TOP_CENTER);
+    this->valignCombo->addItem("Biggest letter aligned top, others bottom",
+            Text::VALIGN_TOP_BOTTOM);
+    this->valignCombo->addItem("Biggest letter aligned center, others top",
+            Text::VALIGN_CENTER_TOP);
+    this->valignCombo->addItem("Biggest letter aligned center, others center",
+            Text::VALIGN_CENTER_CENTER);
+    this->valignCombo->addItem("Biggest letter aligned center, others bottom",
+            Text::VALIGN_CENTER_BOTTOM);
+    this->valignCombo->addItem("Biggest letter aligned bottom, others top",
+            Text::VALIGN_BOTTOM_TOP);
+    this->valignCombo->addItem("Biggest letter aligned bottom, others center",
+            Text::VALIGN_BOTTOM_CENTER);
+    this->valignCombo->addItem("Biggest letter aligned bottom, others bottom",
+            Text::VALIGN_BOTTOM_BOTTOM);
+
+    this->valignCombo->setCurrentIndex(this->treeNode->getVAlign());
+
+    QHBoxLayout* alignBox = new QHBoxLayout();
+    alignBox->addWidget(this->halignLeft);
+    alignBox->addWidget(this->halignCenter);
+    alignBox->addWidget(this->halignRight);
+    alignBox->addWidget(this->halignJustify);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(this->textLine);
+    layout->addWidget(this->fontFamilyCombo);
+    layout->addWidget(this->fontStyleCombo);
+    layout->addWidget(this->valignCombo);
+    layout->addLayout(alignBox);
+    layout->addWidget(this->pickColor);
+    this->setLayout(layout);
 
     this->textLine->connect(this->textLine,
             &QLineEdit::textChanged,
@@ -99,6 +129,12 @@ PageText::PageText(Text* treeNode, const FontSet* fontSet) :
             &QComboBox::currentTextChanged,
             this,
             &PageText::setFontStyle);
+
+    this->valignCombo->connect(this->valignCombo,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(setVAlign(int)));
+
 }
 
 void PageText::updateText(const QString& text) {
@@ -158,5 +194,10 @@ void PageText::setColor(const QColor& color) {
     this->treeNode->setForegroundColor(
             SignColor(SignColor::ON,
                     color.red(), color.green(), color.blue()));
+}
+
+void PageText::setVAlign(int align) {
+    // This is where the order matters.
+    this->treeNode->setVAlign((enum Text::VerticalAlignment)align);
 }
 

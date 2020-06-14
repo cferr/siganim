@@ -31,8 +31,11 @@
 #include "sign/cells/Fill.h"
 #include "render/DurationComputer.h"
 #include "render/GIFSink.h"
+#include "render/Rasterizer.h"
+#include "render/RasterizerSet.h"
 #include "font/parsers/GirouetteFontsParser.h"
 #include "font/FontSet.h"
+
 
 #ifdef GUI
 #include "ui/SiganimMainWindow.h"
@@ -98,9 +101,12 @@ int main(int argc, char *argv[]) {
             }
     );
 
+    RasterizerSet* rset = new RasterizerSet(
+            { new Rasterizer("Default") });
+
 
 #ifdef GUI
-    SiganimMainWindow m(testSign, fset);
+    SiganimMainWindow m(testSign, fset, rset);
     m.show();
     ret |= a.exec();
 #endif

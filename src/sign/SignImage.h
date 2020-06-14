@@ -46,8 +46,7 @@ public:
     unsigned int getBoxWidth() const;
     unsigned int getBoxHeight() const;
 
-    bool setPixel(const unsigned int x, const unsigned int y,
-            const SignColor& value);
+    bool setPixel(const int x, const int y, const SignColor& value);
     SignColor& getPixel(const unsigned int x, const unsigned int y) const;
     const SignColor* getPixels() const;
 

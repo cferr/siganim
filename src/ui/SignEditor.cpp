@@ -17,20 +17,41 @@
 #include "SignEditor.h"
 #include "SignTreeQtModel.h"
 
-SignEditor::SignEditor(Sign* sign, const FontSet* fontSet) : sign(sign),
-    fontSet(fontSet) {
+SignEditor::SignEditor(Sign* sign, const FontSet* fontSet,
+        const RasterizerSet* rasterizerSet, QWidget* parent) :
+    QWidget(parent), sign(sign), fontSet(fontSet),
+    rasterizerSet(rasterizerSet) {
 
     this->layout = new QGridLayout(this);
+
+    this->rasterizerCombo = new QComboBox(this);
+
+    // Populate rasterizers
+    std::vector<Rasterizer*> rasterizers =
+            this->rasterizerSet->getRasterizers();
+    for(auto i = rasterizers.begin(); i < rasterizers.end(); ++i) {
+        this->rasterizerCombo->addItem(QString::fromStdString((*i)->getName()),
+                QString::fromStdString((*i)->getName()));
+    }
+
+    // TODO add default rasterizer in SiganimDefaults...
+    if(rasterizers.empty()) {
+        this->currentRasterizer = new Rasterizer("Default");
+    } else {
+        this->currentRasterizer = *(rasterizers.begin());
+    }
 
     this->details = new SignTreeDetailsWidget(this->fontSet);
     this->tree = new SignTreeWidget(this, this->details);
 
-    this->signWidget = new SignWidget(sign, fontSet);
+    this->signWidget = new SignWidget(sign, fontSet, this->currentRasterizer);
 
-    this->layout->addWidget(this->tree, 0, 0, Qt::AlignLeft);
-    this->layout->addWidget(this->details, 0, 1, Qt::AlignLeft);
+    this->layout->addWidget(this->rasterizerCombo, 0, 1, Qt::AlignLeft);
 
-    this->layout->addWidget(this->signWidget, 1, 0, 1, 2, Qt::AlignCenter);
+    this->layout->addWidget(this->tree, 1, 0, Qt::AlignLeft);
+    this->layout->addWidget(this->details, 1, 1, Qt::AlignLeft);
+
+    this->layout->addWidget(this->signWidget, 2, 0, 1, 2, Qt::AlignCenter);
 
 
     // Set image widget as central widget
@@ -44,5 +65,16 @@ SignEditor::SignEditor(Sign* sign, const FontSet* fontSet) : sign(sign),
     this->tree->setHeaderHidden(true);
     connect(model, &SignTreeQtModel::rowsInserted,
             this->tree, &SignTreeWidget::expandTreeRows);
+}
+
+void SignEditor::setRasterizer(const QString &rasterizer) {
+    try {
+        const Rasterizer* r = this->rasterizerSet->getConst(
+                rasterizer.toStdString());
+        this->signWidget->setRasterizer(r);
+        this->currentRasterizer = r;
+    } catch(RasterizerSet::RasterizerNotFoundException& e) {
+
+    }
 }
 

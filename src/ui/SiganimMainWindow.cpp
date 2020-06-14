@@ -17,15 +17,11 @@
 #include <QAction>
 #include "SiganimMainWindow.h"
 
-SiganimMainWindow::SiganimMainWindow() :
-    SiganimMainWindow(nullptr, nullptr) {
-
-}
-
-SiganimMainWindow::SiganimMainWindow(Sign* sign, FontSet* fontSet)
+SiganimMainWindow::SiganimMainWindow(Sign* sign, FontSet* fontSet,
+        RasterizerSet* rasterizerSet)
 {
-    this->studio = new FontStudio();
-    this->editor = new SignEditor(sign, fontSet);
+    this->studio = new FontStudio(fontSet, rasterizerSet, this);
+    this->editor = new SignEditor(sign, fontSet, rasterizerSet, this);
     this->tabs = new QTabWidget();
     tabs->addTab(this->editor, "Sign Editor");
     tabs->addTab(this->studio, "Font Studio");

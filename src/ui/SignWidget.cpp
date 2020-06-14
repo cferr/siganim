@@ -19,9 +19,10 @@
 #include "SignWidget.h"
 #include "../render/SignRenderer.h"
 
-SignWidget::SignWidget(Sign* sign, const FontSet* fontSet, QWidget *parent) :
+SignWidget::SignWidget(Sign* sign, const FontSet* fontSet,
+        const Rasterizer* rasterizer, QWidget *parent) :
         QWidget(parent), sign(sign), image(nullptr) {
-    this->sink = new ObservableSink(sign, fontSet);
+    this->sink = new ObservableSink(sign, fontSet, rasterizer);
     this->sink->attach(this);
 }
 
@@ -66,3 +67,20 @@ void SignWidget::observe(const Observable *sender) {
         this->signChangedEvent();
     }
 }
+
+void SignWidget::setRasterizer(const Rasterizer *rasterizer) {
+    this->sink->setRasterizer(rasterizer);
+}
+
+
+//Sign* SignWidget::getSign() {
+//    return this->sign;
+//}
+//
+//void SignWidget::setSign(Sign* sign, FontSet* fontSet) {
+//    this->sink->detach(this);
+//    delete this->sink;
+//    this->sign = sign;
+//    this->sink = new ObservableSink(sign, fontSet);
+//    this->sink->attach(this);
+//}

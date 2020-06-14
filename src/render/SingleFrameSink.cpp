@@ -14,30 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#include "SingleFrameSink.h"
+#include "SignRenderer.h"
 
-#include <QMainWindow>
-#include <QTabWidget>
+SingleFrameSink::SingleFrameSink(const FontSet* fontSet,
+        const Rasterizer* rasterizer) : fontSet(fontSet),
+        rasterizer(rasterizer) {
 
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
+}
 
-class SiganimMainWindow: public QMainWindow {
-    Q_OBJECT
-private:
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
+void SingleFrameSink::setRasterizer(const Rasterizer *rasterizer) {
+    this->rasterizer = rasterizer;
+}
 
-public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
-    virtual ~SiganimMainWindow();
-
-};
-
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */
+Bitmap* SingleFrameSink::render(const Sign *s, unsigned int frame) {
+    SignRenderer renderer;
+    return renderer.render(this->rasterizer, s, this->fontSet, frame);
+}

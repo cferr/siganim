@@ -41,11 +41,29 @@ std::vector<Font*> FontSet::getFonts() const {
 }
 
 bool FontSet::removeFont(std::string family, std::string style) {
-    return false;
+    bool ret = false;
+    std::vector<Font*>::iterator i = this->fonts.begin();
+    while(i < this->fonts.end()) {
+        if((*i)->getFamily() == family && (*i)->getStyle() == style) {
+            delete *i;
+            i = this->fonts.erase(i);
+            ret = true;
+        } else ++i;
+    }
+    return ret;
 }
 
 bool FontSet::removeFont(Font *f) {
-    return false;
+    bool ret = false;
+    std::vector<Font*>::iterator i = this->fonts.begin();
+    while(i < this->fonts.end()) {
+        if((*i) == f) {
+            delete *i;
+            i = this->fonts.erase(i);
+            ret = true;
+        } else ++i;
+    }
+    return ret;
 }
 
 std::vector<Font*> FontSet::multiLookup(std::string family,

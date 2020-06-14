@@ -159,7 +159,9 @@ std::ostream& operator<<(std::ostream &strm, const Display &s) {
 }
 
 void Display::modified() const {
-    this->getParentSign()->modified();
+    try {
+        this->getParentSign()->modified();\
+    } catch(OrphanNodeException& e) { };
 }
 
 void Display::callbackDispatch(ConstSignTreeDispatcher *s) const {

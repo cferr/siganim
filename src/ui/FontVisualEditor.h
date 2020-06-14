@@ -14,30 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#ifndef SRC_UI_FONTVISUALEDITOR_H_
+#define SRC_UI_FONTVISUALEDITOR_H_
 
-#include <QMainWindow>
-#include <QTabWidget>
-
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
+#include <unicode/schriter.h>
+#include <string>
+#include <QMouseEvent>
+#include "SignWidget.h"
+#include "../sign/cells/Display.h"
 #include "../sign/cells/Text.h"
 
-class SiganimMainWindow: public QMainWindow {
+class FontVisualEditor : public SignWidget {
     Q_OBJECT
 private:
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
+    Display* previewDisplay;
+    Text* previewTextCell;
 
 public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
-    virtual ~SiganimMainWindow();
+    FontVisualEditor(FontSet* fontSet, const Rasterizer* rasterizer,
+            QWidget* parent = nullptr);
+    virtual ~FontVisualEditor();
 
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+
+    void setFont(const std::string fontFamily, const std::string fontStyle);
+    void setCharacter(UChar32 index);
 };
 
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */
+#endif /* SRC_UI_FONTVISUALEDITOR_H_ */

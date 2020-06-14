@@ -56,8 +56,8 @@ void Sign::accept(ConstSignTreeVisitor &visitor) const {
 }
 
 bool Sign::addDisplay(Display *display) {
-    displays.push_back(display);
     display->setParentSign(this);
+    displays.push_back(display);
     this->modified();
     this->structureChanged();
     return true;

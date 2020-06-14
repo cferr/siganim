@@ -26,6 +26,7 @@ public:
         unsigned char r;
         unsigned char g;
         unsigned char b;
+        unsigned char a;
     };
 private:
     struct pixel* pixels;
@@ -42,6 +43,8 @@ public:
     struct pixel* getPixels();
     unsigned char* toRGB32();
     std::vector<uint8_t> toRGBA8Vector();
+
+    void overlay(Bitmap* top, int x, int y);
 
     virtual ~Bitmap();
 };

@@ -14,30 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#include "CharacterListWidget.h"
 
-#include <QMainWindow>
-#include <QTabWidget>
+CharacterListWidget::CharacterListWidget(QWidget *parent) :
+    QListView(parent) {
+}
 
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
+void CharacterListWidget::currentChanged(const QModelIndex &current,
+        const QModelIndex &previous) {
+    Character* c = (Character*)current.internalPointer();
+    emit characterSelected(c);
+}
 
-class SiganimMainWindow: public QMainWindow {
-    Q_OBJECT
-private:
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
-
-public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
-    virtual ~SiganimMainWindow();
-
-};
-
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */

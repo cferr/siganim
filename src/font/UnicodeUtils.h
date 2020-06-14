@@ -14,30 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGANIMMAINWINDOW_H_
-#define SRC_SIGANIMMAINWINDOW_H_
+#ifndef SRC_FONT_UNICODEUTILS_H_
+#define SRC_FONT_UNICODEUTILS_H_
 
-#include <QMainWindow>
-#include <QTabWidget>
 
-#include "SignEditor.h"
-#include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
+#include <unicode/uchar.h>
+#include <string>
 
-class SiganimMainWindow: public QMainWindow {
-    Q_OBJECT
-private:
-    QTabWidget* tabs;
-    SignEditor* editor;
-    FontStudio* studio;
+std::string UnicodeCharName(UChar32 code);
 
-public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
-    virtual ~SiganimMainWindow();
-
-};
-
-#endif /* SRC_SIGANIMMAINWINDOW_H_ */
+#endif /* SRC_FONT_UNICODEUTILS_H_ */

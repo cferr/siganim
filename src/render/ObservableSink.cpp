@@ -19,8 +19,9 @@
 #include "SignRenderer.h"
 #include "DurationComputer.h"
 
-ObservableSink::ObservableSink(Sign* sign, const FontSet* fontSet) :
-    sign(sign), fontSet(fontSet), signCopy(nullptr),
+ObservableSink::ObservableSink(Sign* sign, const FontSet* fontSet,
+        const Rasterizer* rasterizer) :
+    sign(sign), fontSet(fontSet), signCopy(nullptr), rasterizer(rasterizer),
     continueRunning(true),
     signUpdated(false) {
 
@@ -33,6 +34,9 @@ ObservableSink::ObservableSink(Sign* sign, const FontSet* fontSet) :
 }
 
 ObservableSink::~ObservableSink() {
+    // Detach from whom we're observing...
+    this->sign->detach(this);
+    // Our observers will be detached by the Observable destructor.
     this->continueRunning = false;
     // Wait for runner to finish
     if(this->runner.joinable())
@@ -87,7 +91,8 @@ void ObservableSink::render() {
     DurationComputer c;
     unsigned int frames = c.computeTotalFrames(this->signCopy);
     for(unsigned int frame = 0; frame < frames; frame++) {
-        Bitmap* bmap = r.render(this->signCopy, this->fontSet, frame);
+        Bitmap* bmap = r.render(this->rasterizer, this->signCopy,
+                this->fontSet, frame);
         this->frames.push_back(bmap);
     }
     this->currentFrame = this->frames.begin();
@@ -104,4 +109,8 @@ void ObservableSink::observe(const Observable *sender) {
         std::lock_guard<std::mutex> guard(this->signUpdatedMutex);
         this->signUpdated = true;
     }
+}
+
+void ObservableSink::setRasterizer(const Rasterizer *rasterizer) {
+    this->rasterizer = rasterizer;
 }

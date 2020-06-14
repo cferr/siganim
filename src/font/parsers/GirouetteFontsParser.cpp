@@ -69,6 +69,10 @@ std::vector<Font*> GirouetteFontsParser::parseGirouetteXML(
                     // TODO get a single UTF-8 char out of multiple
                     // const char (bytes)
                     icu::UnicodeString ucodeName(charVal);
+                    if(ucodeName.length() != 1) {
+                        std::cout << "Non-unique character " << charVal
+                                << std::endl;
+                    }
 
                     UChar32 charCode = ucodeName.char32At(0);
                     if(charCode != 0xFFFF) {

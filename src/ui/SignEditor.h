@@ -17,12 +17,14 @@
 #ifndef SRC_UI_SIGNEDITOR_H_
 #define SRC_UI_SIGNEDITOR_H_
 
+#include <QComboBox>
 #include <QGridLayout>
 #include <QMenuBar>
 #include <QTreeWidget>
 #include <QWidget>
 
 #include "../font/FontSet.h"
+#include "../render/RasterizerSet.h"
 #include "../sign/cells/Text.h"
 #include "SignTreeDetailsWidget.h"
 #include "SignTreeWidget.h"
@@ -34,15 +36,21 @@ class SignEditor: public QWidget {
 private:
     QGridLayout* layout;
     SignWidget *signWidget;
+    QComboBox* rasterizerCombo;
     SignTreeWidget *tree;
     SignTreeDetailsWidget* details;
     Sign* sign;
     const FontSet* fontSet;
+    const RasterizerSet* rasterizerSet;
+    const Rasterizer* currentRasterizer;
 
 public:
-    SignEditor(Sign* sign, const FontSet* fontSet);
+    SignEditor(Sign* sign, const FontSet* fontSet,
+            const RasterizerSet* rasterizerSet, QWidget* parent);
     virtual ~SignEditor() {
     }
+
+    void setRasterizer(const QString& rasterizer);
 
 };
 

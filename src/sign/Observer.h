@@ -36,7 +36,9 @@ protected:
     void changed() const;
 
 public:
-    virtual ~Observable() {}
+    virtual ~Observable() {
+        this->observers.clear();
+    }
 
     void attach(Observer* observer);
     void detach(Observer* observer);

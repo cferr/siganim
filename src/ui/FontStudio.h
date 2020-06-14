@@ -17,16 +17,56 @@
 #ifndef SRC_UI_FONTSTUDIO_H_
 #define SRC_UI_FONTSTUDIO_H_
 
+#include <QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QWidget>
+#include "../font/FontSet.h"
+#include "../render/RasterizerSet.h"
+#include "FontVisualEditor.h"
+#include "FontQtModel.h"
+#include "CharacterListWidget.h"
 
 class FontStudio : public QWidget {
     Q_OBJECT
 
+private:
+    QHBoxLayout *mainLayout;
+    QLabel* welcome;
+
+    QComboBox* rasterizerCombo;
+
+    FontVisualEditor* visualEditor;
+    FontSet* fontSet;
+
+    const Rasterizer* currentRasterizer;
+    const RasterizerSet* rasterizerSet;
+
+    QComboBox* fontFamilyCombo;
+    QComboBox* fontStyleCombo;
+
+    CharacterListWidget* characterList;
+    FontQtModel* model;
+
+    Font* currentFont;
+
+    void populateFontStyles(const std::string& fontFamily);
+    void populateCharacters(const std::string& fontFamily,
+            const std::string& fontStyle);
+
 public:
-    FontStudio();
-    virtual ~FontStudio() {
-        // TODO Auto-generated destructor stub
-    }
+    FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
+            QWidget* parent);
+    virtual ~FontStudio() { }
+
+    void setFontFamily(const std::string fontFamily);
+    void setFontStyle(const std::string fontStyle);
+
+public slots:
+    void fontFamilyComboChanged(const QString& fontFamily);
+    void fontStyleComboChanged(const QString& fontStyle);
+    void setRasterizer(const QString& rasterizer);
+    void setEditedCharacter(Character* c);
 };
 
 #endif /* SRC_UI_FONTSTUDIO_H_ */

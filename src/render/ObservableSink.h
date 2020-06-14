@@ -23,6 +23,7 @@
 #include "../font/FontSet.h"
 #include "../sign/Sign.h"
 #include "../sign/Observer.h"
+#include "Rasterizer.h"
 
 class ObservableSink : public Observable, public Observer {
 private:
@@ -30,6 +31,7 @@ private:
 
     const FontSet* fontSet;
     const Sign* signCopy;
+    const Rasterizer* rasterizer;
 
     std::vector<Bitmap*> frames;
     std::vector<Bitmap*>::iterator currentFrame;
@@ -45,10 +47,13 @@ private:
     void copySign();
 
 public:
-    ObservableSink(Sign* sign, const FontSet* fontSet);
+    ObservableSink(Sign* sign, const FontSet* fontSet,
+            const Rasterizer* rasterizer);
     virtual ~ObservableSink();
 
     Bitmap* getFrame() const;
+
+    void setRasterizer(const Rasterizer* rasterizer);
 
     virtual void observe(const Observable* sender);
 

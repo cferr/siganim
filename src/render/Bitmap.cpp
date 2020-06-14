@@ -68,9 +68,30 @@ std::vector<uint8_t> Bitmap::toRGBA8Vector() {
             result.push_back((uint8_t)p.r);
             result.push_back((uint8_t)p.g);
             result.push_back((uint8_t)p.b);
-            result.push_back((uint8_t)0);
+            result.push_back((uint8_t)p.a);
         }
     }
 
     return result;
+}
+
+void Bitmap::overlay(Bitmap *top, int x, int y) {
+    int width = this->width;
+    int height = this->height;
+    int oWidth = top->width;
+    int oHeight = top->height;
+    for(int i = 0; i < oWidth; ++i) {
+        for(int j = 0; j < oHeight; ++j) {
+            if((i + x < width) && (j + y < height)) {
+                struct pixel p = this->pixels[(j + y) * width + (i + x)];
+                struct pixel q = top->pixels[j * oWidth + i];
+                p.r = ((255 - q.a) * p.r + q.a * q.r) / 255;
+                p.g = ((255 - q.a) * p.g + q.a * q.g) / 255;
+                p.b = ((255 - q.a) * p.b + q.a * q.b) / 255;
+                p.a = (p.a + q.a) / 2;
+                this->pixels[(j + y) * width + (i + x)] = p;
+           }
+        }
+    }
+
 }

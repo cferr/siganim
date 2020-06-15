@@ -36,6 +36,8 @@ private:
 
 public:
     Bitmap(unsigned int width, unsigned int height);
+    Bitmap(const Bitmap& bitmap);
+    Bitmap(const Bitmap* bitmap);
 
     unsigned int getHeight() const;
     unsigned int getWidth() const;

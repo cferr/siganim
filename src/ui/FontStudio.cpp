@@ -77,6 +77,8 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
                 QString::fromStdString(this->currentFont->getFamily()));
         this->fontStyleCombo->setCurrentText(
                 QString::fromStdString(this->currentFont->getStyle()));
+    this->visualEditor->setFont(this->currentFont->getFamily(),
+            this->currentFont->getStyle());
 
     this->model = new FontQtModel(this->currentFont,
             this->currentRasterizer, Display::DISPLAY_MONOCHROME_LED);

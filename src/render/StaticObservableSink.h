@@ -14,41 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SRC_SIGNWIDGET_H_
-#define SRC_SIGNWIDGET_H_
+#ifndef SRC_RENDER_STATICOBSERVABLESINK_H_
+#define SRC_RENDER_STATICOBSERVABLESINK_H_
 
-#include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include <QObject>
+#include <thread>
+#include <mutex>
+
 #include "../font/FontSet.h"
-#include "../render/AnimatedObservableSink.h"
 #include "../sign/Sign.h"
 #include "../sign/Observer.h"
-#include "../render/Rasterizer.h"
+#include "Rasterizer.h"
 
-class SignWidget: public QWidget, public Observer {
-    Q_OBJECT
-protected:
-    Sign *sign;
-    AnimatedObservableSink* sink;
-
+class StaticObservableSink : public Observable, public Observer {
 private:
-    QImage *image;
-    unsigned char* pixelData;
+    Sign* sign; // cannot be const as attach / detach modify it
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
+    const FontSet* fontSet;
+    const Rasterizer* rasterizer;
+
+    Bitmap* frame;
+
+    void render();
+    void run();
+    void copySign();
 
 public:
-    SignWidget(Sign* sign, const FontSet* fontSet,
-            const Rasterizer* rasterizer, QWidget *parent = nullptr);
-    virtual ~SignWidget();
+    StaticObservableSink(Sign* sign, const FontSet* fontSet,
+            const Rasterizer* rasterizer);
+    virtual ~StaticObservableSink();
 
-    void signChangedEvent();
-    void observe(const Observable* sender);
+    Bitmap* getFrame() const;
 
     void setRasterizer(const Rasterizer* rasterizer);
+
+    virtual void observe(const Observable* sender);
+
 };
 
-#endif /* SRC_SIGNWIDGET_H_ */
+#endif /* RENDER_STATICOBSERVABLESINK_H_ */

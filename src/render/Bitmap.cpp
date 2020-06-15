@@ -16,6 +16,7 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include <cstring>
 #include "Bitmap.h"
 
 Bitmap::Bitmap(unsigned int width, unsigned int height) : width(width),
@@ -94,4 +95,20 @@ void Bitmap::overlay(Bitmap *top, int x, int y) {
         }
     }
 
+}
+
+Bitmap::Bitmap(const Bitmap &bitmap) {
+    this->height = bitmap.height;
+    this->width = bitmap.width;
+    this->pixels = (struct pixel*)malloc(height * width * sizeof(pixel));
+    memcpy(this->pixels, (const struct pixel*)bitmap.pixels,
+            height * width * sizeof(pixel));
+}
+
+Bitmap::Bitmap(const Bitmap *bitmap) {
+    this->height = bitmap->height;
+    this->width = bitmap->width;
+    this->pixels = (struct pixel*)malloc(height * width * sizeof(pixel));
+    memcpy(this->pixels, (const struct pixel*)bitmap->pixels,
+            height * width * sizeof(pixel));
 }

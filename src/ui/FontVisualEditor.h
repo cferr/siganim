@@ -20,15 +20,26 @@
 #include <unicode/schriter.h>
 #include <string>
 #include <QMouseEvent>
+#include <QWidget>
 #include "SignWidget.h"
 #include "../sign/cells/Display.h"
 #include "../sign/cells/Text.h"
+#include "../render/StaticObservableSink.h"
 
-class FontVisualEditor : public SignWidget {
+class FontVisualEditor : public QWidget, public Observer {
     Q_OBJECT
 private:
+    Sign* sign;
     Display* previewDisplay;
     Text* previewTextCell;
+
+    StaticObservableSink* sink;
+
+    QImage* image;
+    unsigned char* pixelData;
+
+protected:
+    void paintEvent(QPaintEvent* event) override;
 
 public:
     FontVisualEditor(FontSet* fontSet, const Rasterizer* rasterizer,
@@ -41,6 +52,11 @@ public:
 
     void setFont(const std::string fontFamily, const std::string fontStyle);
     void setCharacter(UChar32 index);
+
+    void signChangedEvent();
+    void observe(const Observable* sender);
+
+    void setRasterizer(const Rasterizer* rasterizer);
 };
 
 #endif /* SRC_UI_FONTVISUALEDITOR_H_ */

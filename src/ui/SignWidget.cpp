@@ -21,8 +21,8 @@
 
 SignWidget::SignWidget(Sign* sign, const FontSet* fontSet,
         const Rasterizer* rasterizer, QWidget *parent) :
-        QWidget(parent), sign(sign), image(nullptr) {
-    this->sink = new ObservableSink(sign, fontSet, rasterizer);
+        QWidget(parent), sign(sign), image(nullptr), pixelData(nullptr) {
+    this->sink = new AnimatedObservableSink(sign, fontSet, rasterizer);
     this->sink->attach(this);
 }
 
@@ -45,16 +45,17 @@ void SignWidget::signChangedEvent() {
     // Repaint ourselves according to that sign.
     if(sign != nullptr) {
         Bitmap* result = this->sink->getFrame();
-        unsigned char* img = result->toRGB32();
+        if(this->pixelData != nullptr)
+            free(this->pixelData);
+        this->pixelData = result->toRGB32();
         if(this->image != nullptr)
             delete this->image;
-        this->image = new QImage(img, result->getWidth(),
+        this->image = new QImage(this->pixelData, result->getWidth(),
                 result->getHeight(), QImage::Format_RGB32);
         this->setMinimumHeight(result->getHeight());
         this->setMinimumWidth(result->getWidth());
         this->setMaximumHeight(result->getHeight());
         this->setMaximumWidth(result->getWidth());
-        free(img);
         this->update();
     } else {
         this->setFixedHeight(0);
@@ -71,16 +72,3 @@ void SignWidget::observe(const Observable *sender) {
 void SignWidget::setRasterizer(const Rasterizer *rasterizer) {
     this->sink->setRasterizer(rasterizer);
 }
-
-
-//Sign* SignWidget::getSign() {
-//    return this->sign;
-//}
-//
-//void SignWidget::setSign(Sign* sign, FontSet* fontSet) {
-//    this->sink->detach(this);
-//    delete this->sink;
-//    this->sign = sign;
-//    this->sink = new ObservableSink(sign, fontSet);
-//    this->sink->attach(this);
-//}

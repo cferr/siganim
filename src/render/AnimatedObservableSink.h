@@ -25,7 +25,7 @@
 #include "../sign/Observer.h"
 #include "Rasterizer.h"
 
-class ObservableSink : public Observable, public Observer {
+class AnimatedObservableSink : public Observable, public Observer {
 private:
     Sign* sign; // cannot be const as attach / detach modify it
 
@@ -47,9 +47,9 @@ private:
     void copySign();
 
 public:
-    ObservableSink(Sign* sign, const FontSet* fontSet,
+    AnimatedObservableSink(Sign* sign, const FontSet* fontSet,
             const Rasterizer* rasterizer);
-    virtual ~ObservableSink();
+    virtual ~AnimatedObservableSink();
 
     Bitmap* getFrame() const;
 

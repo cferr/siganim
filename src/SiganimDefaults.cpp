@@ -27,8 +27,7 @@ SignColor SiganimDefaults::defaultMonoLEDFG =
 SignColor SiganimDefaults::defaultRGBLEDBG =
         SignColor(SignColor::ON, 0, 0, 0);
 SignColor SiganimDefaults::defaultRGBLEDFG =
-        SignColor(SignColor::OFF, 255,
-        255, 255);
+        SignColor(SignColor::OFF, 255, 255, 255);
 
 SiganimDefaults::SiganimDefaults() {
 }

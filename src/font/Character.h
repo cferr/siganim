@@ -39,9 +39,13 @@ public:
 
     // TODO character borders
     void setBit(unsigned int x, unsigned int y, enum Bit value);
+    enum Bit getBit(unsigned int x, unsigned int y);
+    void toggleBit(unsigned int x, unsigned int y);
 
     unsigned int getHeight() const;
+    void setHeight(unsigned int height);
     unsigned int getWidth() const;
+    void setWidth(unsigned int width);
 
     UChar32 getUTF8Code();
 };

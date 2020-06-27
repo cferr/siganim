@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
     );
 
     RasterizerSet* rset = new RasterizerSet(
-            { new Rasterizer("Default") });
+            { new Rasterizer("Default", 5) });
 
 
 #ifdef GUI

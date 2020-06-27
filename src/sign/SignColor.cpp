@@ -10,9 +10,9 @@ SignColor::SignColor(enum Semantic type) :
 }
 
 SignColor::SignColor(enum Semantic semantic, const unsigned char r,
-        const unsigned char g, const unsigned char b) :
+        const unsigned char g, const unsigned char b, const unsigned char a) :
     semantic(semantic), isCustom(true) {
-    this->value = { r, g, b };
+    this->value = { r, g, b, a };
 }
 
 SignColor::SignColor(const SignColor &that) {
@@ -29,7 +29,7 @@ bool SignColor::hasRGBValue() const {
     return this->isCustom;
 }
 
-struct SignColor::RGB SignColor::getValue() const {
+struct SignColor::RGBA SignColor::getValue() const {
     if(this->isCustom)
         return this->value;
     else

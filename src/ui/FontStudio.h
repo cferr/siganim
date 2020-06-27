@@ -18,8 +18,9 @@
 #define SRC_UI_FONTSTUDIO_H_
 
 #include <QComboBox>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
+#include <QSpinBox>
 #include <QWidget>
 #include "../font/FontSet.h"
 #include "../render/RasterizerSet.h"
@@ -31,19 +32,26 @@ class FontStudio : public QWidget {
     Q_OBJECT
 
 private:
-    QHBoxLayout *mainLayout;
+    QGridLayout *mainLayout;
     QLabel* welcome;
 
     QComboBox* rasterizerCombo;
 
+    // TODO clean up this list of attributes and move some to an char editor
+    // class (which will also have height/width spinners)
+    Character* currentCharacter;
+    const Rasterizer* editorsRasterizer;
     FontVisualEditor* visualEditor;
     FontSet* fontSet;
 
-    const Rasterizer* currentRasterizer;
+    const Rasterizer* modelRasterizer;
     const RasterizerSet* rasterizerSet;
 
     QComboBox* fontFamilyCombo;
     QComboBox* fontStyleCombo;
+
+    QSpinBox* heightSpinner;
+    QSpinBox* widthSpinner;
 
     CharacterListWidget* characterList;
     FontQtModel* model;
@@ -67,6 +75,8 @@ public slots:
     void fontStyleComboChanged(const QString& fontStyle);
     void setRasterizer(const QString& rasterizer);
     void setEditedCharacter(Character* c);
+    void setCharacterHeight(int height);
+    void setCharacterWidth(int width);
 };
 
 #endif /* SRC_UI_FONTSTUDIO_H_ */

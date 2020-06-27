@@ -16,6 +16,7 @@
 
 #include "Character.h"
 #include <cstring>
+#include <stdexcept>
 
 Character::Character(UChar32 UTF8Code, unsigned int width, unsigned int height)
     : UTF8Code(UTF8Code), width(width), height(height), map(NULL) {
@@ -53,4 +54,57 @@ void Character::setBit(unsigned int x, unsigned int y, enum Bit value) {
 
 UChar32 Character::getUTF8Code() {
     return this->UTF8Code;
+}
+
+void Character::setHeight(unsigned int height) {
+    unsigned int prevHeight = this->height;
+    this->height = height;
+
+    enum Bit* newBitmap = (enum Bit*)calloc(height * this->width,
+            sizeof(enum Bit));
+    // Update bit map
+    for(unsigned int i = 0; i < this->width; ++i) {
+        for(unsigned int j = 0; j < std::min(height, prevHeight); ++j) {
+            newBitmap[j*this->width+i] = this->map[j*this->width+i];
+        }
+    }
+
+    free(this->map);
+    this->map = newBitmap;
+}
+
+void Character::setWidth(unsigned int width) {
+    unsigned int prevWidth = this->width;
+    this->width = width;
+
+    enum Bit* newBitmap = (enum Bit*)calloc(this->height * width,
+            sizeof(enum Bit));
+    // Update bit map
+    for(unsigned int i = 0; i < std::min(width, prevWidth); ++i) {
+        for(unsigned int j = 0; j < this->height; ++j) {
+            newBitmap[j*this->width+i] = this->map[j*prevWidth+i];
+        }
+    }
+
+    free(this->map);
+    this->map = newBitmap;
+}
+
+enum Character::Bit Character::getBit(unsigned int x, unsigned int y) {
+    if(x < this->width && y < this->height) {
+        return this->map[y*this->width+x];
+    } else throw std::out_of_range("getBit");
+}
+
+void Character::toggleBit(unsigned int x, unsigned int y) {
+    if(x < this->width && y < this->height) {
+        switch(this->map[y*this->width+x]) {
+        case Bit::ON:
+            this->map[y*this->width+x] = Bit::OFF;
+            break;
+        case Bit::OFF:
+            this->map[y*this->width+x] = Bit::ON;
+            break;
+        }
+    }
 }

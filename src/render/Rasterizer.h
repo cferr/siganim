@@ -25,10 +25,11 @@ class Rasterizer {
     std::string name;
     Bitmap* pixelOverlay;
     bool hasPixelOverlay;
+    unsigned int factor;
 
 public:
-    Rasterizer(std::string name);
-    Rasterizer(std::string name, Bitmap* pixelOverlay);
+    Rasterizer(std::string name, unsigned int factor);
+    Rasterizer(std::string name, Bitmap* pixelOverlay, unsigned int factor);
     virtual ~Rasterizer() {
     }
 

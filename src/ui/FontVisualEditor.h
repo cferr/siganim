@@ -25,6 +25,8 @@
 #include "../sign/cells/Display.h"
 #include "../sign/cells/Text.h"
 #include "../render/StaticObservableSink.h"
+#include "../font/Character.h"
+#include "../font/Font.h"
 
 class FontVisualEditor : public QWidget, public Observer {
     Q_OBJECT
@@ -32,6 +34,11 @@ private:
     Sign* sign;
     Display* previewDisplay;
     Text* previewTextCell;
+    FontSet* fontSet;
+
+    Font* font;
+    Character* currentCharacter;
+    Character::Bit currentBit;
 
     StaticObservableSink* sink;
 
@@ -42,7 +49,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 public:
-    FontVisualEditor(FontSet* fontSet, const Rasterizer* rasterizer,
+    FontVisualEditor(const Rasterizer* rasterizer,
             QWidget* parent = nullptr);
     virtual ~FontVisualEditor();
 
@@ -50,13 +57,15 @@ public:
     void mouseMoveEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
 
-    void setFont(const std::string fontFamily, const std::string fontStyle);
-    void setCharacter(UChar32 index);
+    void setFont(Font* font);
+    void setCharacter(Character* c);
 
     void signChangedEvent();
     void observe(const Observable* sender);
 
     void setRasterizer(const Rasterizer* rasterizer);
+
+    void refresh();
 };
 
 #endif /* SRC_UI_FONTVISUALEDITOR_H_ */

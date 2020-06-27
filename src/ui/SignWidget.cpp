@@ -29,6 +29,7 @@ SignWidget::SignWidget(Sign* sign, const FontSet* fontSet,
 SignWidget::~SignWidget() {
     if(this->image != nullptr)
         delete this->image;
+    this->sink->detach(this);
     if(this->sink != nullptr)
         delete this->sink;
 }

@@ -24,8 +24,8 @@
 
 FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
         QWidget* parent) : QWidget(parent), fontSet(fontSet),
-        rasterizerSet(rasterizerSet) {
-    this->mainLayout = new QHBoxLayout(this);
+        rasterizerSet(rasterizerSet), currentCharacter(nullptr) {
+    this->mainLayout = new QGridLayout(this);
     this->welcome = new QLabel("Welcome to Siganim Font Studio.", this);
     this->rasterizerCombo = new QComboBox(this);
 
@@ -37,33 +37,34 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
                 QString::fromStdString((*i)->getName()));
     }
 
-    // TODO add default rasterizer in SiganimDefaults...
-    if(rasterizers.empty()) {
-        this->currentRasterizer = new Rasterizer("Default");
-    } else {
-        this->currentRasterizer = *(rasterizers.begin());
-    }
-
-    this->visualEditor = new FontVisualEditor(fontSet,
-            this->currentRasterizer, this);
+    this->editorsRasterizer = new Rasterizer("Default", 10);
+    this->visualEditor = new FontVisualEditor(this->editorsRasterizer,
+            this);
 
     this->characterList = new CharacterListWidget(this);
 
-    QVBoxLayout* rightPanelLayout = new QVBoxLayout();
-    QHBoxLayout* combosLayout = new QHBoxLayout();
+    QHBoxLayout* familyStyleLayout = new QHBoxLayout();
     this->fontFamilyCombo = new QComboBox(this);
     this->fontFamilyCombo->setEditable(true);
     this->fontStyleCombo = new QComboBox(this);
     this->fontStyleCombo->setEditable(true);
+    familyStyleLayout->addWidget(this->fontFamilyCombo);
+    familyStyleLayout->addWidget(this->fontStyleCombo);
 
-    combosLayout->addWidget(this->fontFamilyCombo);
-    combosLayout->addWidget(this->fontStyleCombo);
-    rightPanelLayout->addWidget(this->welcome);
-    rightPanelLayout->addWidget(this->rasterizerCombo);
-    rightPanelLayout->addLayout(combosLayout);
-    rightPanelLayout->addWidget(this->characterList);
-    this->mainLayout->addWidget(this->visualEditor, 1);
-    this->mainLayout->addLayout(rightPanelLayout, 1);
+    QGridLayout* editorLayout = new QGridLayout();
+    this->heightSpinner = new QSpinBox(this);
+    this->widthSpinner = new QSpinBox(this);
+    editorLayout->addWidget(this->visualEditor, 0, 0, 1, 2, Qt::AlignCenter);
+    editorLayout->addWidget(this->widthSpinner, 1, 0);
+    editorLayout->addWidget(this->heightSpinner, 2, 0);
+
+    this->mainLayout->addWidget(this->welcome, 0, 1);
+    this->mainLayout->addWidget(this->rasterizerCombo, 1, 1);
+    this->mainLayout->addLayout(familyStyleLayout, 2, 1);
+    this->mainLayout->addWidget(this->characterList, 3, 1);
+    this->mainLayout->addLayout(editorLayout, 0, 0, 4, 1,
+            Qt::AlignCenter);
+    this->mainLayout->setColumnMinimumWidth(0, 200);
     this->setLayout(this->mainLayout);
 
     std::vector<Font*> fonts = this->fontSet->getFonts();
@@ -73,15 +74,20 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
     }
     // Select the first available family.
     this->currentFont = *(fonts.begin());
-    this->fontFamilyCombo->setCurrentText(
-                QString::fromStdString(this->currentFont->getFamily()));
-        this->fontStyleCombo->setCurrentText(
-                QString::fromStdString(this->currentFont->getStyle()));
-    this->visualEditor->setFont(this->currentFont->getFamily(),
-            this->currentFont->getStyle());
+    this->fontFamilyCombo->setCurrentIndex(0);
+//    this->fontStyleCombo->setCurrentIndex(0);
+    this->populateFontStyles(this->currentFont->getFamily());
+    this->visualEditor->setFont(this->currentFont);
 
+    // TODO add default rasterizer in SiganimDefaults...
+    if(rasterizers.empty()) {
+        this->modelRasterizer = new Rasterizer("Default", 5);
+    } else {
+        this->modelRasterizer = *(rasterizers.begin());
+    }
     this->model = new FontQtModel(this->currentFont,
-            this->currentRasterizer, Display::DISPLAY_MONOCHROME_LED);
+            this->modelRasterizer, Display::DISPLAY_MONOCHROME_LED);
+    this->model->setFont(this->currentFont);
     this->characterList->setModel(this->model);
     this->characterList->setUniformItemSizes(true);
     this->characterList->setItemAlignment(Qt::AlignCenter);
@@ -104,7 +110,14 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
             &CharacterListWidget::characterSelected,
             this,
             &FontStudio::setEditedCharacter);
-
+    connect(this->heightSpinner,
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(setCharacterHeight(int)));
+    connect(this->widthSpinner,
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(setCharacterWidth(int)));
 }
 
 void FontStudio::populateFontStyles(const std::string &fontFamily) {
@@ -118,25 +131,19 @@ void FontStudio::populateFontStyles(const std::string &fontFamily) {
     }
 }
 
-void FontStudio::populateCharacters(const std::string& fontFamily,
-        const std::string& fontStyle) {
-    try {
-       Font* font = this->fontSet->lookup(fontFamily, fontStyle);
-       this->model->setFont(font);
-    } catch(FontSet::FontNotFoundException& e) {
-
-    }
-}
-
 void FontStudio::setFontFamily(const std::string fontFamily) {
     this->populateFontStyles(fontFamily);
 }
 
 void FontStudio::setFontStyle(const std::string fontStyle) {
-    this->populateCharacters(this->fontFamilyCombo->currentText()
-            .toStdString(), fontStyle);
-    this->visualEditor->setFont(this->fontFamilyCombo->currentText()
-            .toStdString(), fontStyle);
+    std::string fontFamily = this->fontFamilyCombo->currentText().toStdString();
+     try {
+       this->currentFont = this->fontSet->lookup(fontFamily, fontStyle);
+       this->model->setFont(this->currentFont);
+       this->visualEditor->setFont(this->currentFont);
+    } catch(FontSet::FontNotFoundException& e) {
+
+    }
 }
 
 void FontStudio::fontFamilyComboChanged(const QString &fontFamily) {
@@ -152,12 +159,29 @@ void FontStudio::setRasterizer(const QString &rasterizer) {
         const Rasterizer* r = this->rasterizerSet->getConst(
                 rasterizer.toStdString());
         this->visualEditor->setRasterizer(r);
-        this->currentRasterizer = r;
+        this->modelRasterizer = r;
     } catch(RasterizerSet::RasterizerNotFoundException& e) {
 
     }
 }
 
 void FontStudio::setEditedCharacter(Character* c) {
-    this->visualEditor->setCharacter(c->getUTF8Code());
+    this->currentCharacter = c;
+    this->visualEditor->setCharacter(c);
+    this->heightSpinner->setValue(c->getHeight());
+    this->widthSpinner->setValue(c->getWidth());
+}
+
+void FontStudio::setCharacterHeight(int height) {
+    if(this->currentCharacter != nullptr) {
+        this->currentCharacter->setHeight((unsigned int)height);
+        this->visualEditor->refresh();
+    }
+}
+
+void FontStudio::setCharacterWidth(int width) {
+    if(this->currentCharacter != nullptr) {
+        this->currentCharacter->setWidth((unsigned int)width);
+        this->visualEditor->refresh();
+    }
 }

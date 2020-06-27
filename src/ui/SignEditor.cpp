@@ -36,7 +36,7 @@ SignEditor::SignEditor(Sign* sign, const FontSet* fontSet,
 
     // TODO add default rasterizer in SiganimDefaults...
     if(rasterizers.empty()) {
-        this->currentRasterizer = new Rasterizer("Default");
+        this->currentRasterizer = new Rasterizer("Default", 5);
     } else {
         this->currentRasterizer = *(rasterizers.begin());
     }

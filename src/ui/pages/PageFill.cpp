@@ -41,7 +41,7 @@ void PageFill::selectColor() {
     SignColor currentColor = treeNode->getColor();
     QColor qtColor(0, 0, 0, 0);
     try {
-        SignColor::RGB val = currentColor.getValue();
+        SignColor::RGBA val = currentColor.getValue();
         qtColor.setRgb(val.r, val.g, val.b, 0);
     } catch(SignColor::NoRGBValueException& e) {
 

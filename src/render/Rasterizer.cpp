@@ -17,13 +17,15 @@
 #include "Rasterizer.h"
 #include "../SiganimDefaults.h"
 
-Rasterizer::Rasterizer(std::string name) : name(name),
-    pixelOverlay(nullptr), hasPixelOverlay(false) {
+Rasterizer::Rasterizer(std::string name, unsigned int factor) : name(name),
+    pixelOverlay(nullptr), hasPixelOverlay(false), factor(factor) {
 
 }
 
-Rasterizer::Rasterizer(std::string name, Bitmap *pixelOverlay) :
-    name(name), pixelOverlay(pixelOverlay), hasPixelOverlay(true) {
+Rasterizer::Rasterizer(std::string name, Bitmap *pixelOverlay,
+        unsigned int factor) :
+    name(name), pixelOverlay(pixelOverlay), hasPixelOverlay(true),
+    factor(factor) {
 
 }
 
@@ -40,8 +42,8 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
 
     const unsigned int dimgWidth = dest->getWidth();
 
-    struct SignColor::RGB defaultRGBOn;
-    struct SignColor::RGB defaultRGBOff;
+    struct SignColor::RGBA defaultRGBOn;
+    struct SignColor::RGBA defaultRGBOff;
 
     switch(sourceType) {
     case Display::DISPLAY_FLIPDISC:
@@ -61,7 +63,7 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
 
     for(unsigned int i = 0; i < simgHeight; ++i) {
         for(unsigned int j = 0; j < simgWidth; ++j) {
-            struct SignColor::RGB p;
+            struct SignColor::RGBA p;
             if(sourceType == Display::DISPLAY_RGB_LED) {
                 try {
                     p = simgPixels[i*simgWidth+j].getValue();
@@ -73,12 +75,13 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
                 p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
                     defaultRGBOff;
             }
-            for(unsigned int ii = 0; ii < 5; ++ii) {
-                for(unsigned int jj = 0; jj < 5; ++jj) {
+            for(unsigned int ii = 0; ii < this->factor; ++ii) {
+                for(unsigned int jj = 0; jj < this->factor; ++jj) {
                     // Assuming no transparency.
                     // TODO add alpha channel (along with Image Fill)
-                    imgPixels[(5*(i+y)+ii)*dimgWidth+5*(j+x)+jj] = {
-                            p.r, p.g, p.b, 255
+                    imgPixels[(this->factor*(i+y)+ii)*dimgWidth
+                              + this->factor*(j+x)+jj] = {
+                            p.r, p.g, p.b, p.a
                     };
                 }
             }
@@ -88,7 +91,8 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
 
 Bitmap* Rasterizer::rasterize(SignImage* source, Display::Type sourceType)
     const {
-    Bitmap* ret = new Bitmap(5 * source->getWidth(), 5 * source->getHeight());
+    Bitmap* ret = new Bitmap(this->factor * source->getWidth(),
+            this->factor * source->getHeight());
     this->rasterizeAdd(ret, source, sourceType, 0, 0);
     return ret;
 }

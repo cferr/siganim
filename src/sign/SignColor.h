@@ -32,10 +32,11 @@ public:
         }
     };
 
-    struct RGB {
+    struct RGBA {
         unsigned char r;
         unsigned char g;
         unsigned char b;
+        unsigned char a;
     };
     enum Semantic {
         ON, OFF
@@ -45,7 +46,7 @@ private:
 
     enum Semantic semantic;
     bool isCustom;
-    struct RGB value;
+    struct RGBA value;
 
 public:
     SignColor(const SignColor& that);
@@ -53,7 +54,7 @@ public:
 
     SignColor(enum Semantic type);
     SignColor(enum Semantic type, const unsigned char r, const unsigned char g,
-            const unsigned char b);
+            const unsigned char b, const unsigned char a = 255);
 
     static SignColor on();
     static SignColor off();
@@ -63,7 +64,7 @@ public:
 
     SignColor Or(const SignColor& that) const;
 
-    struct RGB getValue() const;
+    struct RGBA getValue() const;
 
     std::ostream& serialize(std::ostream &strm) const;
 

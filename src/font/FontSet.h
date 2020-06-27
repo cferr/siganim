@@ -55,6 +55,7 @@ public:
 
     void addFont(Font* font);
     void addFonts(std::vector<Font*> fonts);
+    void clear();
     bool removeFont(std::string family, std::string style);
     bool removeFont(Font* f);
     std::vector<Font*> getFonts() const;

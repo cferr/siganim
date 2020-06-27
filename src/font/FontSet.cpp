@@ -95,3 +95,7 @@ Font* FontSet::lookup(std::string family, std::string style) const {
     }
     throw FontNotFoundException(this, family, style);
 }
+
+void FontSet::clear() {
+    this->fonts.clear();
+}

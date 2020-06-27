@@ -16,8 +16,8 @@
 
 #include "FontVisualEditor.h"
 
-FontVisualEditor::FontVisualEditor(FontSet *fontSet,
-        const Rasterizer* rasterizer, QWidget *parent) : QWidget(parent),
+FontVisualEditor::FontVisualEditor(const Rasterizer* rasterizer,
+        QWidget *parent) : QWidget(parent), currentBit(Character::Bit::OFF),
         image(nullptr), pixelData(nullptr) {
     this->sign = new Sign();
     this->previewTextCell = new Text();
@@ -25,7 +25,11 @@ FontVisualEditor::FontVisualEditor(FontSet *fontSet,
     this->previewDisplay->setRootCell(this->previewTextCell);
     this->sign->addDisplay(this->previewDisplay);
 
-    this->sink = new StaticObservableSink(this->sign, fontSet, rasterizer);
+    this->fontSet = new FontSet();
+    this->font = nullptr;
+    this->currentCharacter = nullptr;
+    this->sink = new StaticObservableSink(this->sign, this->fontSet,
+            rasterizer);
     this->sink->attach(this);
 
 }
@@ -41,11 +45,29 @@ FontVisualEditor::~FontVisualEditor() {
 void FontVisualEditor::mousePressEvent(QMouseEvent *event) {
     std::cout << "Mouse pressed: " << event->x() << ", " << event->y()
             << std::endl;
+    unsigned x = event->x() / 10;
+    unsigned y = event->y() / 10;
+
+    enum Character::Bit b = this->currentCharacter->getBit(x, y);
+    switch(b) {
+    case Character::Bit::OFF:
+        this->currentBit = Character::Bit::ON;
+        break;
+    case Character::Bit::ON:
+        this->currentBit = Character::Bit::OFF;
+        break;
+    }
+    this->currentCharacter->toggleBit(x, y);
+    this->refresh();
 }
 
 void FontVisualEditor::mouseMoveEvent(QMouseEvent *event) {
     std::cout << "Mouse moved: " << event->x() << ", " << event->y()
             << std::endl;
+    unsigned x = event->x() / 10;
+    unsigned y = event->y() / 10;
+    this->currentCharacter->setBit(x, y, this->currentBit);
+    this->refresh();
 }
 
 void FontVisualEditor::mouseReleaseEvent(QMouseEvent *event) {
@@ -53,16 +75,28 @@ void FontVisualEditor::mouseReleaseEvent(QMouseEvent *event) {
             << std::endl;
 }
 
-void FontVisualEditor::setFont(const std::string fontFamily,
-        const std::string fontStyle) {
+void FontVisualEditor::setFont(Font* font) {
+    this->fontSet->clear();
+    this->fontSet->addFont(font);
+    this->font = font;
+    std::string fontFamily = font->getFamily();
+    std::string fontStyle = font->getStyle();
     this->previewTextCell->setFontFamily(fontFamily);
     this->previewTextCell->setFontStyle(fontStyle);
+    this->setCharacter(this->currentCharacter);
 }
 
-void FontVisualEditor::setCharacter(UChar32 index) {
-    UChar32 l_index = index;
-    this->previewTextCell->setText(
-            icu::UnicodeString::fromUTF32(&l_index, 1));
+void FontVisualEditor::setCharacter(Character* c) {
+    if(c != nullptr) {
+        this->currentCharacter = c;
+        UChar32 l_index = c->getUTF8Code();
+        this->previewTextCell->setText(
+                icu::UnicodeString::fromUTF32(&l_index, 1));
+        unsigned int width = c->getWidth();
+        unsigned int height = c->getHeight();
+        this->previewDisplay->setWidth(width);
+        this->previewDisplay->setHeight(height);
+    }
 }
 
 void FontVisualEditor::paintEvent(QPaintEvent *event) {
@@ -97,4 +131,15 @@ void FontVisualEditor::observe(const Observable *sender) {
 
 void FontVisualEditor::setRasterizer(const Rasterizer *rasterizer) {
     this->sink->setRasterizer(rasterizer);
+}
+
+void FontVisualEditor::refresh() {
+    // TODO this feels a bit hack-ish.
+    // Fonts should be observed and trigger this by
+    // themselves without UI assistance.
+    this->sign->modified();
+    unsigned int width = this->currentCharacter->getWidth();
+    unsigned int height = this->currentCharacter->getHeight();
+    this->previewDisplay->setWidth(width);
+    this->previewDisplay->setHeight(height);
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <cstdlib>
 #include <QColor>
 #include <QIcon>
 #include <QPixmap>
@@ -28,7 +29,12 @@
 FontQtModel::FontQtModel(Font* font, const Rasterizer* rasterizer,
         enum Display::Type displayType) : font(font),
         rasterizer(rasterizer), displayType(displayType) {
+    this->singleFontSet.addFont(font);
+}
 
+FontQtModel::~FontQtModel() {
+    // Fonts in here don't belong to us. Clear them out.
+    this->singleFontSet.clear();
 }
 
 QModelIndex FontQtModel::index(int row, int column,
@@ -57,7 +63,9 @@ int FontQtModel::columnCount(const QModelIndex &parent) const {
 
 void FontQtModel::setFont(Font *font) {
     this->beginResetModel();
+    this->singleFontSet.removeFont(this->font);
     this->font = font;
+    this->singleFontSet.addFont(this->font);
     this->endResetModel();
 }
 
@@ -76,7 +84,6 @@ QVariant FontQtModel::data(const QModelIndex &index,
     if(role == Qt::DisplayRole) {
         return QString::fromStdString(UnicodeCharName(c->getUTF8Code()));
     } else if(role == Qt::DecorationRole) {
-        FontSet* tempFset = new FontSet({ this->font });
         Sign* tempSign = new Sign({
                 new Display(c->getWidth(), c->getHeight(),
                         this->displayType,
@@ -87,16 +94,21 @@ QVariant FontQtModel::data(const QModelIndex &index,
                                 icu::UnicodeString::fromUTF32(&cval, 1))
                 )
         });
-        SingleFrameSink* sf = new SingleFrameSink(tempFset, this->rasterizer);
+        SingleFrameSink* sf = new SingleFrameSink(&this->singleFontSet,
+                this->rasterizer);
         Bitmap* renderedChar = sf->render(tempSign, 0);
-        QImage img(renderedChar->toRGB32(), renderedChar->getWidth(),
+        unsigned char* bmap = renderedChar->toRGB32();
+        QImage img(bmap, renderedChar->getWidth(),
                 renderedChar->getHeight(), QImage::Format_RGB32);
         QPixmap resizedPmap = QPixmap::fromImage(img.scaled(32, 32,
                 Qt::KeepAspectRatio));
-        delete tempFset;
         delete tempSign;
+        delete sf;
+        delete renderedChar;
+        free(bmap);
         return QIcon(resizedPmap);
     } else {
         return QVariant(QVariant::Invalid);
     };
 }
+

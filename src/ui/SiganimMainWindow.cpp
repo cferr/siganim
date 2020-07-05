@@ -38,7 +38,7 @@ SiganimMainWindow::SiganimMainWindow(Sign* sign, FontSet* fontSet,
 }
 
 SiganimMainWindow::~SiganimMainWindow() {
-
+    delete this->tabs; // deletes editor and studio
 }
 
 

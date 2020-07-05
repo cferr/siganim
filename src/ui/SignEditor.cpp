@@ -67,6 +67,14 @@ SignEditor::SignEditor(Sign* sign, const FontSet* fontSet,
             this->tree, &SignTreeWidget::expandTreeRows);
 }
 
+SignEditor::~SignEditor() {
+    delete this->layout;
+    delete this->signWidget;
+    delete this->rasterizerCombo;
+    delete this->tree;
+    delete this->details;
+}
+
 void SignEditor::setRasterizer(const QString &rasterizer) {
     try {
         const Rasterizer* r = this->rasterizerSet->getConst(
@@ -77,4 +85,5 @@ void SignEditor::setRasterizer(const QString &rasterizer) {
 
     }
 }
+
 

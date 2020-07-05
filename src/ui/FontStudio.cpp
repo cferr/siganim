@@ -87,7 +87,7 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
     }
     this->model = new FontQtModel(this->currentFont,
             this->modelRasterizer, Display::DISPLAY_MONOCHROME_LED);
-    this->model->setFont(this->currentFont);
+    // this->model->setFont(this->currentFont);
     this->characterList->setModel(this->model);
     this->characterList->setUniformItemSizes(true);
     this->characterList->setItemAlignment(Qt::AlignCenter);
@@ -118,6 +118,20 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
             SIGNAL(valueChanged(int)),
             this,
             SLOT(setCharacterWidth(int)));
+}
+
+FontStudio::~FontStudio() {
+    // Delete all our objects
+    delete this->mainLayout;
+    delete this->welcome;
+    delete this->rasterizerCombo;
+    delete this->visualEditor;
+    delete this->fontFamilyCombo;
+    delete this->fontStyleCombo;
+    delete this->heightSpinner;
+    delete this->widthSpinner;
+    delete this->characterList;
+    delete this->model;
 }
 
 void FontStudio::populateFontStyles(const std::string &fontFamily) {

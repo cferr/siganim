@@ -25,6 +25,8 @@ FontSet::FontSet(std::initializer_list<Font*> fonts) {
 }
 
 FontSet::~FontSet() {
+    for(auto i = fonts.begin(); i < fonts.end(); ++i)
+        delete *i;
 }
 
 void FontSet::addFont(Font *font) {
@@ -58,7 +60,7 @@ bool FontSet::removeFont(Font *f) {
     std::vector<Font*>::iterator i = this->fonts.begin();
     while(i < this->fonts.end()) {
         if((*i) == f) {
-            delete *i;
+//            delete *i;
             i = this->fonts.erase(i);
             ret = true;
         } else ++i;

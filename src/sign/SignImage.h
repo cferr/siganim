@@ -37,6 +37,8 @@ public:
     SignImage(unsigned int width, unsigned int height,
             unsigned int boxWidth, unsigned int boxHeight,
             const SignColor& fill);
+    SignImage(const SignImage& s);
+    SignImage(const SignImage* s);
 
     virtual ~SignImage();
 

@@ -43,6 +43,23 @@ SignImage::SignImage(unsigned int width, unsigned int height,
 
 }
 
+SignImage::SignImage(const SignImage &s) : SignImage(s.width, s.height,
+        s.boxWidth, s.boxHeight, s.background) {
+    this->pixels = (SignColor*)malloc(this->height * this->width *
+                sizeof(SignColor));
+    memcpy(this->pixels, s.pixels, this->height * this->width *
+                sizeof(SignColor));
+}
+
+SignImage::SignImage(const SignImage* s) : SignImage(s->width, s->height,
+        s->boxWidth, s->boxHeight, s->background) {
+    this->pixels = (SignColor*)malloc(this->height * this->width *
+                sizeof(SignColor));
+    memcpy(this->pixels, s->pixels, this->height * this->width *
+                sizeof(SignColor));
+}
+
+
 SignImage::~SignImage() {
     free(this->pixels);
 }
@@ -113,3 +130,4 @@ SignImage* SignImage::cropToBox() const {
 const SignColor SignImage::getBackgroundColor() const {
     return this->background;
 }
+

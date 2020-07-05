@@ -48,10 +48,16 @@ Bitmap* SignRenderer::render(const Rasterizer* rasterizer, const Sign *s,
     // Render by visiting
     s->accept(visitor);
 
-    return visitor.getBitmap();
+    Bitmap* ret = visitor.getBitmap();
+    return ret;
+}
+
+SignRenderer::SignRenderVisitor::~SignRenderVisitor() {
+    delete this->resultTree;
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
+    assert(this->resultTree == nullptr);
     std::vector<Display*> displays = s.getDisplays();
     // compute total width / height
 //    unsigned int totalWidth = 0;
@@ -77,9 +83,11 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
             bitmaps.push_back(bmap);
             totalWidth += bmap->getWidth();
             maxHeight = std::max(maxHeight, bmap->getHeight());
-
+            delete displayImage;
         } catch(std::exception& e) {
             // Don't go any further with this display, but don't fail.
+            std::cout << "Exception caught on rendering Sign" << std::endl;
+            assert(this->resultTree == nullptr);
         }
     }
 
@@ -88,19 +96,25 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
     for(auto i = bitmaps.begin(); i < bitmaps.end(); ++i) {
         this->resultBitmap->overlay(*i, x, 0);
         x += (*i)->getWidth();
+        delete *i;
     }
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Display &s) {
+    assert(this->resultTree == nullptr);
     SignImage* result = new SignImage(s.getWidth(), s.getHeight(),
             s.getWidth(), s.getHeight());
     try {
         (s.getRootCell())->accept(*this);
-        SignImage* rootCellImage = this->resultTree->compose()->cropToBox();
-        result->merge(rootCellImage, 0, 0);
+        SignImage* rootCellImage = this->resultTree->compose();
+        SignImage* rootCellCropped = rootCellImage->cropToBox();
+        result->merge(rootCellCropped, 0, 0);
         delete this->resultTree;
+        delete rootCellImage;
+        delete rootCellCropped;
     } catch(std::exception& e) {
-
+        std::cout << "Exception caught on rendering Display" << std::endl;
+        assert(this->resultTree == nullptr);
     }
 
     this->resultTree = new SignImageTree(result);
@@ -108,33 +122,41 @@ void SignRenderer::SignRenderVisitor::visit(const Display &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Split &s) {
+    assert(this->resultTree == nullptr);
     SignImage* composite = new SignImage(s.getWidth(), s.getHeight(),
             s.getWidth(), s.getHeight());
 
     try {
         s.getTopOrLeftChild()->accept(*this);
-        SignImage* upper = this->resultTree->compose()->cropToBox();
-        composite->merge(upper, 0, 0);
+        SignImage* upper = this->resultTree->compose();
+        SignImage* upperCropped = upper->cropToBox();
+        composite->merge(upperCropped, 0, 0);
 
         delete this->resultTree;
+        this->resultTree = nullptr;
+        delete upper;
+        delete upperCropped;
     } catch(std::exception& e) {
-
+        std::cout << "Exception caught on rendering Split 1" << std::endl;
+        assert(this->resultTree == nullptr);
     }
+
     try {
         s.getBottomOrRightChild()->accept(*this);
 
-        SignImage* lower = this->resultTree->compose()->cropToBox();
-        const SignColor* lowerPixels = lower->getPixels();
+        SignImage* lower = this->resultTree->compose();
+        SignImage* lowerCropped = lower->cropToBox();
+        const SignColor* lowerPixels = lowerCropped->getPixels();
 
         unsigned int boxWidth = s.getWidth();
         unsigned int boxHeight = s.getHeight();
 
         switch(s.getSplitDirection()) {
         case Split::SPLIT_HORIZONTAL:
-            composite->merge(lower, 0, s.getSplitPos());
+            composite->merge(lowerCropped, 0, s.getSplitPos());
             break;
         case Split::SPLIT_VERTICAL:
-            composite->merge(lower, s.getSplitPos(), 0);
+            composite->merge(lowerCropped, s.getSplitPos(), 0);
             break;
         case Split::SPLIT_NW_SE_DIAGONAL:
             for(unsigned int x = 0; x < boxWidth; ++x) {
@@ -154,14 +176,20 @@ void SignRenderer::SignRenderVisitor::visit(const Split &s) {
             }
             break;
         }
+        delete this->resultTree;
+        this->resultTree = nullptr;
+        delete lower;
+        delete lowerCropped;
     } catch(std::exception& e) {
-
+        std::cout << "Exception caught on rendering Split 2" << std::endl;
+        assert(this->resultTree == nullptr);
     }
     this->resultTree = new SignImageTree(composite);
 
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Text &s) {
+    assert(this->resultTree == nullptr);
     uint32_t cellHeight = s.getHeight();
     uint32_t cellWidth = s.getWidth();
 
@@ -295,6 +323,8 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
         }
         this->resultTree = new SignImageTree(textRender);
     } catch(FontSet::FontNotFoundException& e) {
+        std::cout << "Exception caught on rendering Text" << std::endl;
+        assert(this->resultTree == nullptr);
         // Return an empty image of the right height and width
         this->resultTree = new SignImageTree(
                 new SignImage(s.getWidth(), s.getHeight(),
@@ -303,6 +333,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
+    assert(this->resultTree == nullptr);
     try {
         // Render the child
         s.getSubject()->accept(*this);
@@ -334,13 +365,19 @@ void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
 
         delete this->resultTree;
         this->resultTree = new SignImageTree(animRender);
+
+        delete subjectImage;
     } catch(std::exception& e) {
+        std::cout << "Exception caught on rendering Marquee" << std::endl;
+        assert(this->resultTree == nullptr);
+
         this->resultTree = new SignImageTree(new SignImage(s.getWidth(),
                 s.getHeight(), s.getWidth(), s.getHeight()));
     }
 }
 
 void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
+    assert(this->resultTree == nullptr);
     try {
         s.getSubject()->accept(*this);
         unsigned int framesOn = s.getFramesOn();
@@ -353,6 +390,9 @@ void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
             this->resultTree = new SignImageTree(empty);
         }
     } catch(std::exception& e) {
+        std::cout << "Exception caught on rendering Blink" << std::endl;
+        assert(this->resultTree == nullptr);
+
         SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
                 s.getWidth(), s.getHeight());
         this->resultTree = new SignImageTree(empty);
@@ -360,23 +400,36 @@ void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
+    assert(this->resultTree == nullptr);
     std::vector<struct SignImageTree::SignImageTreeChild>* childrenImg
          = new std::vector<struct SignImageTree::SignImageTreeChild>();
 
     try {
         s.getBackground()->accept(*this);
         childrenImg->push_back({this->resultTree, 0, 0});
-    } catch(std::exception& e) {}
+        // Do not delete the result tree yet
+        this->resultTree = nullptr;
+    } catch(std::exception& e) {
+        std::cout << "Exception caught on rendering Compose 1" << std::endl;
+        assert(this->resultTree == nullptr);
+    }
+
+
     try {
         s.getForeground()->accept(*this);
         childrenImg->push_back({this->resultTree, 0, 0});
-    } catch(std::exception& e) {}
+        this->resultTree = nullptr;
+    } catch(std::exception& e) {
+        std::cout << "Exception caught on rendering Compose 2" << std::endl;
+        assert(this->resultTree == nullptr);
+    }
 
     this->resultTree = new SignImageTree(s.getWidth(), s.getHeight(),
             childrenImg);
 }
 
 void SignRenderer::SignRenderVisitor::visit(const Fill &s) {
+    assert(this->resultTree == nullptr);
     SignImage *animRender = new SignImage(s.getWidth(), s.getHeight(),
             s.getWidth(), s.getHeight(), s.getColor());
     this->resultTree = new SignImageTree(animRender);
@@ -417,11 +470,15 @@ SignImage* SignRenderer::SignImageTree::compose() {
         for(auto i = this->children->begin();
                 i < this->children->end(); ++i) {
             struct SignImageTree::SignImageTreeChild childNode = *i;
-            SignImage* childImg = childNode.child->compose()->cropToBox();
+            SignImage* childImg = childNode.child->compose();
+            SignImage* childImgCropped = childImg->cropToBox();
             retImg->merge(childImg, childNode.x, childNode.y);
+            delete childImg;
+            delete childImgCropped;
         }
         return retImg;
     } else {
-        return this->image;
+        return new SignImage(this->image);
     }
 }
+

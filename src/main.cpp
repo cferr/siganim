@@ -63,8 +63,8 @@ int main(int argc, char *argv[]) {
             new Split(Split::SPLIT_SW_NE_DIAGONAL, 0,
                     new Split(Split::SPLIT_NW_SE_DIAGONAL, 0,
                         new Fill(SignColor(SignColor::OFF, 7, 42, 200)),
-                        //new Fill(SignColor(SignColor::OFF, 255, 198, 0))
-                        nullptr
+                        new Fill(SignColor(SignColor::OFF, 255, 198, 0))
+                        //nullptr
                     ),
                     new BlinkAnimation(
                         new Split(Split::SPLIT_NW_SE_DIAGONAL, 0,
@@ -113,6 +113,7 @@ int main(int argc, char *argv[]) {
 
     delete fset;
     delete testSign; // also deletes modifiableText
+    delete rset;
 
     return ret;
 }

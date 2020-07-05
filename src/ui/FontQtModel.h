@@ -21,6 +21,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include "../font/Font.h"
+#include "../font/FontSet.h"
 #include "../render/Rasterizer.h"
 #include "../sign/cells/Display.h"
 
@@ -29,13 +30,14 @@ class FontQtModel : public QAbstractItemModel {
 
 private:
     Font* font;
+    FontSet singleFontSet;
     const Rasterizer* rasterizer;
     enum Display::Type displayType;
 
 public:
     FontQtModel(Font* font, const Rasterizer* rasterizer,
             enum Display::Type displayType);
-    virtual ~FontQtModel() { }
+    virtual ~FontQtModel();
 
     void setFont(Font* font);
     void setRasterizer(Rasterizer* rasterizer);

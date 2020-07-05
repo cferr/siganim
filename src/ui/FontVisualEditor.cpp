@@ -38,6 +38,10 @@ FontVisualEditor::~FontVisualEditor() {
     this->sink->detach(this);
     delete this->sink;
     delete this->sign;
+    if(this->pixelData != nullptr)
+        free(this->pixelData);
+    if(this->image != nullptr)
+        delete this->image;
 }
 
 // TODO implement these functions to modify the current character

@@ -21,7 +21,7 @@
 PageDisplay::PageDisplay(Display* treeNode) : treeNode(treeNode) {
     QVBoxLayout* layout = new QVBoxLayout(this);
     QWidget* radioWidget_displayType = new QWidget(this);
-    QHBoxLayout* radioLayout_displayType = new QHBoxLayout(this);
+    QHBoxLayout* radioLayout_displayType = new QHBoxLayout();
 
     this->widthSpinner = new QSpinBox(this);
     this->widthSpinner->setMinimum(0);

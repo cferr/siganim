@@ -16,6 +16,7 @@
 
 #include <vector>
 #include "Font.h"
+#include "Character.h"
 
 Font::Font(const std::string& family, const std::string& style) :
     family(family), style(style) {
@@ -29,8 +30,16 @@ Font::Font(const std::string& family, const std::string& style,
         this->chars.insert(std::make_pair((*i)->getUTF8Code(), *i));
 }
 
-Font::~Font() {
+Font::Font(const Font &f) : Font(f.family, f.style) {
+    // Deep copy
+    for(auto i = f.chars.begin(); i != f.chars.end(); ++i)
+        this->chars.insert(std::make_pair((*i).first,
+                new Character(*((*i).second))));
+}
 
+Font::~Font() {
+    for(auto i = this->chars.begin(); i != this->chars.end(); ++i)
+        delete (*i).second;
 }
 
 std::string Font::getFamily() const {
@@ -70,3 +79,5 @@ std::vector<UChar32> Font::listCharCodes() const {
         ret.push_back((*i).first);
     return ret;
 }
+
+

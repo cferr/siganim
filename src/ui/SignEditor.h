@@ -47,8 +47,7 @@ private:
 public:
     SignEditor(Sign* sign, const FontSet* fontSet,
             const RasterizerSet* rasterizerSet, QWidget* parent);
-    virtual ~SignEditor() {
-    }
+    virtual ~SignEditor();
 
     void setRasterizer(const QString& rasterizer);
 

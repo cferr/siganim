@@ -59,13 +59,13 @@ private:
     Font* currentFont;
 
     void populateFontStyles(const std::string& fontFamily);
-    void populateCharacters(const std::string& fontFamily,
-            const std::string& fontStyle);
+//    void populateCharacters(const std::string& fontFamily,
+//            const std::string& fontStyle);
 
 public:
     FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
             QWidget* parent);
-    virtual ~FontStudio() { }
+    virtual ~FontStudio();
 
     void setFontFamily(const std::string fontFamily);
     void setFontStyle(const std::string fontStyle);

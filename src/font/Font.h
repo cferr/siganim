@@ -54,6 +54,7 @@ public:
     Font(const std::string& family, const std::string& style = "Regular");
     Font(const std::string& family, const std::string& style,
             std::initializer_list<Character*> chars);
+    Font(const Font& f);
     virtual ~Font();
 
     std::string getFamily() const;

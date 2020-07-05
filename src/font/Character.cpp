@@ -29,9 +29,13 @@ Character::Character(UChar32 UTF8Code, unsigned int width, unsigned int height,
     memcpy(this->map, map, width * height * sizeof(enum Bit));
 }
 
+Character::Character(const Character &c) : Character(c.UTF8Code, c.width,
+        c.height, c.map) {
+}
+
 
 Character::~Character() {
-
+    free(this->map);
 }
 
 unsigned int Character::getHeight() const {

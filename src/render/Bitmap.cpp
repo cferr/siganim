@@ -25,7 +25,7 @@ Bitmap::Bitmap(unsigned int width, unsigned int height) : width(width),
 }
 
 Bitmap::~Bitmap() {
-
+    free(this->pixels);
 }
 
 unsigned int Bitmap::getHeight() const {

@@ -87,6 +87,8 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
             }
         }
     }
+
+    delete sourceCropped;
 }
 
 Bitmap* Rasterizer::rasterize(SignImage* source, Display::Type sourceType)

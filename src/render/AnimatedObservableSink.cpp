@@ -45,6 +45,9 @@ AnimatedObservableSink::~AnimatedObservableSink() {
     // Delete frames
     for(auto i = this->frames.begin(); i < this->frames.end(); ++i)
         delete *i;
+    this->frames.clear();
+
+    delete this->signCopy;
 }
 
 void AnimatedObservableSink::run() {
@@ -88,15 +91,17 @@ void AnimatedObservableSink::render() {
     for(auto i = this->frames.begin(); i < this->frames.end(); ++i)
         delete *i;
     this->frames.clear();
-    SignRenderer r;
+    SignRenderer* r = new SignRenderer();
     DurationComputer c;
     unsigned int frames = c.computeTotalFrames(this->signCopy);
     for(unsigned int frame = 0; frame < frames; frame++) {
-        Bitmap* bmap = r.render(this->rasterizer, this->signCopy,
+        Bitmap* bmap = r->render(this->rasterizer, this->signCopy,
                 this->fontSet, frame);
         this->frames.push_back(bmap);
     }
     this->currentFrame = this->frames.begin();
+
+    delete r;
 }
 
 

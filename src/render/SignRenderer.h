@@ -52,7 +52,7 @@ private:
         SignImageTree(unsigned int width, unsigned int height,
                 std::vector<struct SignImageTreeChild>* children);
         SignImageTree(SignImage* image);
-        ~SignImageTree();
+        virtual ~SignImageTree();
 
         SignImage* compose();
     };
@@ -75,8 +75,7 @@ private:
             resultBitmap(nullptr), frame(frame), fontSet(fontSet) {
         }
 
-        virtual ~SignRenderVisitor() {
-        }
+        virtual ~SignRenderVisitor();
 
         Bitmap* getBitmap() {
             return this->resultBitmap;

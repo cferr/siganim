@@ -33,6 +33,7 @@ public:
     Character(UChar32 UTF8Code, unsigned int width, unsigned int height);
     Character(UChar32 UTF8Code, unsigned int width, unsigned int height,
             const enum Bit* map);
+    Character(const Character& c);
     virtual ~Character();
 
     const enum Bit* getMap();

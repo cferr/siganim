@@ -80,3 +80,9 @@ std::vector<Rasterizer*> RasterizerSet::getRasterizers() const {
         ret.push_back((*i).second);
     return ret;
 }
+
+RasterizerSet::~RasterizerSet() {
+    for(auto i = this->rasterizers.begin(); i != this->rasterizers.end();
+                ++i)
+        delete (*i).second;
+}

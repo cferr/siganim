@@ -42,6 +42,8 @@ FontVisualEditor::~FontVisualEditor() {
         free(this->pixelData);
     if(this->image != nullptr)
         delete this->image;
+    this->fontSet->clear();
+    delete this->fontSet;
 }
 
 // TODO implement these functions to modify the current character

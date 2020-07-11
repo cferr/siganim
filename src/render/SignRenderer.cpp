@@ -330,6 +330,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
                 new SignImage(s.getWidth(), s.getHeight(),
                         s.getWidth(), s.getHeight()));
     }
+    delete text;
 }
 
 void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {

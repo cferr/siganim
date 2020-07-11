@@ -50,8 +50,7 @@ public:
     RasterizerSet();
     RasterizerSet(std::vector<Rasterizer*> rasterizers);
     RasterizerSet(std::initializer_list<Rasterizer*> rasterizers);
-    virtual ~RasterizerSet() {
-    }
+    virtual ~RasterizerSet();
 
     void addRasterizer(Rasterizer* rasterizer);
     bool removeRasterizer(Rasterizer* rasterizer);

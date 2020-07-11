@@ -32,6 +32,8 @@ SignWidget::~SignWidget() {
         delete this->sink;
     if(this->image != nullptr)
         delete this->image;
+    if(this->pixelData != nullptr)
+        free(this->pixelData);
 }
 
 void SignWidget::paintEvent(QPaintEvent *event) {

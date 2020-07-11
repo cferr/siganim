@@ -132,6 +132,9 @@ FontStudio::~FontStudio() {
     delete this->widthSpinner;
     delete this->characterList;
     delete this->model;
+
+    // Temporary.
+    delete this->editorsRasterizer;
 }
 
 void FontStudio::populateFontStyles(const std::string &fontFamily) {

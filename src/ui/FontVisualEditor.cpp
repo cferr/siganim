@@ -49,8 +49,6 @@ FontVisualEditor::~FontVisualEditor() {
 // TODO implement these functions to modify the current character
 
 void FontVisualEditor::mousePressEvent(QMouseEvent *event) {
-    std::cout << "Mouse pressed: " << event->x() << ", " << event->y()
-            << std::endl;
     unsigned x = event->x() / 10;
     unsigned y = event->y() / 10;
 
@@ -68,8 +66,6 @@ void FontVisualEditor::mousePressEvent(QMouseEvent *event) {
 }
 
 void FontVisualEditor::mouseMoveEvent(QMouseEvent *event) {
-    std::cout << "Mouse moved: " << event->x() << ", " << event->y()
-            << std::endl;
     unsigned x = event->x() / 10;
     unsigned y = event->y() / 10;
     this->currentCharacter->setBit(x, y, this->currentBit);
@@ -77,8 +73,6 @@ void FontVisualEditor::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void FontVisualEditor::mouseReleaseEvent(QMouseEvent *event) {
-    std::cout << "Mouse released: " << event->x() << ", " << event->y()
-            << std::endl;
 }
 
 void FontVisualEditor::setFont(Font* font) {

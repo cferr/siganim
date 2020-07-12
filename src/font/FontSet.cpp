@@ -101,3 +101,11 @@ Font* FontSet::lookup(std::string family, std::string style) const {
 void FontSet::clear() {
     this->fonts.clear();
 }
+
+json_object* FontSet::toJSON() const {
+    json_object* ret = json_object_new_array();
+    for(auto i = this->fonts.begin(); i < this->fonts.end(); ++i)
+        json_object_array_add(ret, (*i)->toJSON());
+
+    return ret;
+}

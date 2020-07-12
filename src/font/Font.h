@@ -22,8 +22,9 @@
 #include <iostream>
 #include <unicode/schriter.h>
 #include "Character.h"
+#include "../Serializable.h"
 
-class Font {
+class Font : public Serializable {
 public:
     class CharNotFoundException : public std::exception
     {
@@ -66,6 +67,8 @@ public:
     bool removeCharacter(Character* character);
     unsigned int getNbCharacters();
     std::vector<UChar32> listCharCodes() const;
+
+    virtual json_object* toJSON() const;
 };
 
 #endif /* SRC_FONT_H_ */

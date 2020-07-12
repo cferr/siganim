@@ -80,4 +80,17 @@ std::vector<UChar32> Font::listCharCodes() const {
     return ret;
 }
 
+json_object* Font::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "family", json_object_new_string(
+            family.c_str()));
+    json_object_object_add(ret, "style", json_object_new_string(style.c_str()));
 
+    json_object* json_chars = json_object_new_array();
+    for(auto i = this->chars.begin(); i != chars.end(); ++i)
+        json_object_array_add(json_chars, (*i).second->toJSON());
+
+    json_object_object_add(ret, "chars", json_chars);
+
+    return ret;
+}

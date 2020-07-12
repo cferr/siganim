@@ -18,8 +18,9 @@
 #define SRC_FONT_CHARACTER_H_
 
 #include <unicode/schriter.h>
+#include "../Serializable.h"
 
-class Character {
+class Character : public Serializable {
 public:
     enum Bit { OFF, ON };
 
@@ -49,6 +50,8 @@ public:
     void setWidth(unsigned int width);
 
     UChar32 getUTF8Code();
+
+    virtual json_object* toJSON() const;
 };
 
 #endif /* SRC_FONT_CHARACTER_H_ */

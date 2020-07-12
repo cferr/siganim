@@ -14,9 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "Character.h"
 #include <cstring>
 #include <stdexcept>
+extern "C" {
+#include "../../base64.c/base64.h"
+}
+#include "Character.h"
 
 Character::Character(UChar32 UTF8Code, unsigned int width, unsigned int height)
     : UTF8Code(UTF8Code), width(width), height(height), map(NULL) {
@@ -111,4 +114,28 @@ void Character::toggleBit(unsigned int x, unsigned int y) {
             break;
         }
     }
+}
+
+
+json_object* Character::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "width", json_object_new_int(width));
+    json_object_object_add(ret, "height", json_object_new_int(height));
+    json_object_object_add(ret, "UTF8Code", json_object_new_int(UTF8Code));
+
+    unsigned int nbChars = (this->height * this->width
+            * sizeof(enum Bit)) / sizeof(unsigned char);
+
+    unsigned char* in = (unsigned char*)this->map;
+    unsigned int b64size = b64e_size(nbChars);
+
+    unsigned char* b64out = (unsigned char*)calloc(1 + b64size,
+            sizeof(unsigned char));
+
+    unsigned int b64len = b64_encode(in, nbChars, b64out);
+    json_object_object_add(ret, "map",
+            json_object_new_string((char*)b64out));
+
+    free(b64out);
+    return ret;
 }

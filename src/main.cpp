@@ -35,7 +35,7 @@
 #include "render/RasterizerSet.h"
 #include "font/parsers/GirouetteFontsParser.h"
 #include "font/FontSet.h"
-
+#include "SiganimFileHandler.h"
 
 #ifdef GUI
 #include "ui/SiganimMainWindow.h"
@@ -47,11 +47,11 @@ int main(int argc, char *argv[]) {
 #endif
     int ret = 0;
 
-    FontSet* fset = new FontSet();
-    // Test import font.
-    std::vector<Font*> girouetteFonts = GirouetteFontsParser::parseGirouetteXML(
-                "./font.xml");
-    fset->addFonts(girouetteFonts);
+    // Global fonts
+    // TODO make its location editable
+    SiganimFileHandler fontFile("fonts.json");
+    FontSet* fset = fontFile.getFontSet();
+
     Text* modifiableText = new Text("Test font 12x7", "",
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
@@ -111,7 +111,8 @@ int main(int argc, char *argv[]) {
     ret |= a.exec();
 #endif
 
-    delete fset;
+    fontFile.save();
+
     delete testSign; // also deletes modifiableText
     delete rset;
 

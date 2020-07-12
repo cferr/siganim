@@ -4,3 +4,6 @@
 [submodule "gif-h"]
 	path = gif-h
 	url = https://github.com/charlietangora/gif-h
+[submodule "base64.c"]
+	path = base64.c
+	url = https://github.com/joedf/base64.c

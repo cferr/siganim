@@ -19,8 +19,9 @@
 
 #include <vector>
 #include "Font.h"
+#include "../Serializable.h"
 
-class FontSet {
+class FontSet : public Serializable {
 public:
     class FontNotFoundException : public std::exception
     {
@@ -63,6 +64,8 @@ public:
     std::vector<Font*> multiLookup(std::string family,
             std::string style = "") const;
     Font* lookup(std::string family, std::string style = "") const;
+
+    virtual json_object* toJSON() const;
 };
 
 #endif /* SRC_FONT_FONTSET_H_ */

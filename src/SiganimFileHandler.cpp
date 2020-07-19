@@ -18,8 +18,9 @@
 #include "SiganimFileHandler.h"
 #include "font/parsers/SiganimJSONFontsParser.h"
 
-SiganimFileHandler::SiganimFileHandler() {
+SiganimFileHandler::SiganimFileHandler() : sign(nullptr) {
     this->fonts = new FontSet();
+    this->rasterizers = new RasterizerSet();
 }
 
 SiganimFileHandler::SiganimFileHandler(const char *location) :
@@ -36,6 +37,7 @@ SiganimFileHandler::SiganimFileHandler(const std::string &location) :
 
 SiganimFileHandler::~SiganimFileHandler() {
     delete this->fonts;
+    delete this->rasterizers;
 }
 
 void SiganimFileHandler::setLocation(const std::string &location) {
@@ -46,23 +48,12 @@ std::string SiganimFileHandler::getLocation() const {
     return this->location;
 }
 
-Sign* SiganimFileHandler::getSign(unsigned int number) const {
-    return this->signs.at(number);
+Sign* SiganimFileHandler::getSign() const {
+    return this->sign;
 }
 
-void SiganimFileHandler::addSign(Sign *s) {
-    this->signs.push_back(s);
-}
-
-void SiganimFileHandler::removeSign(unsigned int number) {
-    // TODO
-}
-
-void SiganimFileHandler::removeSign(Sign *s) {
-    for(auto i = this->signs.begin(); i < this->signs.end(); ++i)
-        if(*i == s) {
-            i = this->signs.erase(i);
-        }
+void SiganimFileHandler::setSign(Sign* s) {
+    this->sign = s;
 }
 
 FontSet* SiganimFileHandler::getFontSet() const {
@@ -105,4 +96,8 @@ bool SiganimFileHandler::save() {
     if(save_status != 0) {
         return false;
     } else return true;
+}
+
+RasterizerSet* SiganimFileHandler::getRasterizerSet() const {
+    return this->rasterizers;
 }

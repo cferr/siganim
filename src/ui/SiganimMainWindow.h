@@ -22,9 +22,7 @@
 
 #include "SignEditor.h"
 #include "FontStudio.h"
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
+#include "SiganimUICore.h"
 
 class SiganimMainWindow: public QMainWindow {
     Q_OBJECT
@@ -33,10 +31,13 @@ private:
     SignEditor* editor;
     FontStudio* studio;
 
+    SiganimUICore* uiCore;
+
 public:
-    SiganimMainWindow(Sign* sign, FontSet* fontSet,
-            RasterizerSet* rasterizerSet);
+    SiganimMainWindow(SiganimUICore* uiCore);
     virtual ~SiganimMainWindow();
+
+    SignEditor* getEditor() const;
 
 };
 

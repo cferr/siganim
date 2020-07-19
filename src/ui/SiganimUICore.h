@@ -14,31 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef RENDER_SINGLEFRAMESINK_H_
-#define RENDER_SINGLEFRAMESINK_H_
+#ifndef UI_SIGANIMUICORE_H_
+#define UI_SIGANIMUICORE_H_
 
-#include "../font/FontSet.h"
-#include "../sign/Sign.h"
-#include "Bitmap.h"
-#include "Rasterizer.h"
+#include <QObject>
+#include "../SiganimCore.h"
 
-class SingleFrameSink {
-    const FontSet* fontSet;
-    const Rasterizer* rasterizer;
-    unsigned int scaleFactor;
+class SiganimMainWindow;
+
+class SiganimUICore : public QObject {
+    Q_OBJECT
+
+    SiganimMainWindow* mainWindow;
+    SiganimCore* core;
 
 public:
-    SingleFrameSink(const FontSet* fontSet, const Rasterizer* rasterizer,
-            unsigned int scaleFactor = 1);
-    virtual ~SingleFrameSink() {
-    }
+    SiganimUICore(SiganimCore* core);
+    virtual ~SiganimUICore();
 
-    void setScaleFactor(unsigned int scaleFactor);
-    unsigned int getScaleFactor() const;
+    void showUI();
+    void saveSignToGIF();
 
-    void setRasterizer(const Rasterizer* rasterizer);
-
-    Bitmap* render(const Sign* s, unsigned int frame);
+    SiganimCore* getCore() const;
 };
 
-#endif /* RENDER_SINGLEFRAMESINK_H_ */
+#endif /* UI_SIGANIMUICORE_H_ */

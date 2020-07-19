@@ -18,6 +18,7 @@
 #define SRC_SIGANIMDEFAULTS_H_
 
 #include "sign/SignColor.h"
+#include "render/Rasterizer.h"
 
 class SiganimDefaults {
 public:
@@ -29,6 +30,7 @@ public:
     static SignColor defaultMonoLEDFG;
     static SignColor defaultRGBLEDBG;
     static SignColor defaultRGBLEDFG;
+    static Rasterizer defaultRasterizer;
 
     virtual ~SiganimDefaults() {
     }

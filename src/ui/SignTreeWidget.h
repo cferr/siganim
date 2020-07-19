@@ -29,8 +29,7 @@ private:
 public:
     SignTreeWidget(QWidget* parent,
             SignTreeDetailsWidget* detailsWidget);
-    virtual ~SignTreeWidget() {
-    }
+    virtual ~SignTreeWidget();
 
     void contextMenuEvent(QContextMenuEvent* event);
     virtual void currentChanged(const QModelIndex &current,

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "CharacterListWidget.h"
+#include "FontQtModel.h"
 
 CharacterListWidget::CharacterListWidget(QWidget *parent) :
     QListView(parent) {
@@ -22,7 +23,10 @@ CharacterListWidget::CharacterListWidget(QWidget *parent) :
 
 void CharacterListWidget::currentChanged(const QModelIndex &current,
         const QModelIndex &previous) {
-    Character* c = (Character*)current.internalPointer();
-    emit characterSelected(c);
+    struct FontQtModel::CharacterOption* c =
+            (FontQtModel::CharacterOption*)current.internalPointer();
+    if(c != nullptr && c->hasCharacter) {
+        emit characterSelected(c->character);
+    }
 }
 

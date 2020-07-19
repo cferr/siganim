@@ -42,16 +42,21 @@ private:
     bool signUpdated;
     std::mutex signUpdatedMutex;
 
+    unsigned int scaleFactor;
+
     void render();
     void run();
     void copySign();
 
 public:
     AnimatedObservableSink(Sign* sign, const FontSet* fontSet,
-            const Rasterizer* rasterizer);
+            const Rasterizer* rasterizer, unsigned int scaleFactor = 1);
     virtual ~AnimatedObservableSink();
 
     Bitmap* getFrame() const;
+
+    void setScaleFactor(unsigned int scaleFactor);
+    unsigned int getScaleFactor() const;
 
     void setRasterizer(const Rasterizer* rasterizer);
 

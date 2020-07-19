@@ -72,6 +72,12 @@ const Rasterizer* RasterizerSet::getConst(const std::string& name) const {
     } else throw RasterizerNotFoundException(this, name);
 }
 
+void RasterizerSet::addRasterizers(const std::vector<Rasterizer*> rasterizers) {
+    for(auto i = rasterizers.begin(); i < rasterizers.end(); ++i)  {
+        this->rasterizers.insert(std::pair<std::string, Rasterizer*>(
+                (*i)->getName(), new Rasterizer(*(*i))));
+    }
+}
 
 std::vector<Rasterizer*> RasterizerSet::getRasterizers() const {
     std::vector<Rasterizer*> ret;

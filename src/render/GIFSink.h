@@ -26,11 +26,15 @@ private:
     const Sign* sign;
     const FontSet* fontSet;
     const Rasterizer* rasterizer;
+    unsigned int scaleFactor;
 
 public:
     GIFSink(const Sign* sign, const FontSet* fontSet,
-            const Rasterizer* rasterizer);
+            const Rasterizer* rasterizer, unsigned int scaleFactor);
     virtual ~GIFSink();
+
+    void setScaleFactor(unsigned int scaleFactor);
+    unsigned int getScaleFactor();
 
     void render(const char* fileName);
 

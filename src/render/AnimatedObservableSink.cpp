@@ -20,11 +20,11 @@
 #include "SignRenderer.h"
 #include "DurationComputer.h"
 
-AnimatedObservableSink::AnimatedObservableSink(Sign* sign, const FontSet* fontSet,
-        const Rasterizer* rasterizer) :
+AnimatedObservableSink::AnimatedObservableSink(Sign* sign,
+        const FontSet* fontSet, const Rasterizer* rasterizer,
+        unsigned int scaleFactor) :
     sign(sign), fontSet(fontSet), signCopy(nullptr), rasterizer(rasterizer),
-    continueRunning(true),
-    signUpdated(false) {
+    continueRunning(true), signUpdated(false), scaleFactor(scaleFactor) {
 
     this->copySign();
     this->runner = std::thread(&AnimatedObservableSink::run, this);
@@ -96,7 +96,7 @@ void AnimatedObservableSink::render() {
     unsigned int frames = c.computeTotalFrames(this->signCopy);
     for(unsigned int frame = 0; frame < frames; frame++) {
         Bitmap* bmap = r->render(this->rasterizer, this->signCopy,
-                this->fontSet, frame);
+                this->fontSet, frame, this->scaleFactor);
         this->frames.push_back(bmap);
     }
     this->currentFrame = this->frames.begin();
@@ -119,4 +119,12 @@ void AnimatedObservableSink::observe(const Observable *sender) {
 
 void AnimatedObservableSink::setRasterizer(const Rasterizer *rasterizer) {
     this->rasterizer = rasterizer;
+}
+
+void AnimatedObservableSink::setScaleFactor(unsigned int scaleFactor) {
+    this->scaleFactor = scaleFactor;
+}
+
+unsigned int AnimatedObservableSink::getScaleFactor() const {
+    return this->scaleFactor;
 }

@@ -18,9 +18,17 @@
 #include "SignRenderer.h"
 
 SingleFrameSink::SingleFrameSink(const FontSet* fontSet,
-        const Rasterizer* rasterizer) : fontSet(fontSet),
-        rasterizer(rasterizer) {
+        const Rasterizer* rasterizer, unsigned int scaleFactor) :
+        fontSet(fontSet), rasterizer(rasterizer), scaleFactor(scaleFactor) {
 
+}
+
+void SingleFrameSink::setScaleFactor(unsigned int scaleFactor) {
+    this->scaleFactor = scaleFactor;
+}
+
+unsigned int SingleFrameSink::getScaleFactor() const {
+    return this->scaleFactor;
 }
 
 void SingleFrameSink::setRasterizer(const Rasterizer *rasterizer) {
@@ -29,5 +37,6 @@ void SingleFrameSink::setRasterizer(const Rasterizer *rasterizer) {
 
 Bitmap* SingleFrameSink::render(const Sign *s, unsigned int frame) {
     SignRenderer renderer;
-    return renderer.render(this->rasterizer, s, this->fontSet, frame);
+    return renderer.render(this->rasterizer, s, this->fontSet, frame,
+            scaleFactor);
 }

@@ -97,3 +97,6 @@ void SignTreeWidget::expandTreeRows(const QModelIndex &parent, int first,
     this->expand(parent);
     this->setCurrentIndex(parent);
 }
+
+SignTreeWidget::~SignTreeWidget() {
+}

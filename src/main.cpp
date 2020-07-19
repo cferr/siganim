@@ -38,7 +38,7 @@
 #include "SiganimFileHandler.h"
 
 #ifdef GUI
-#include "ui/SiganimMainWindow.h"
+#include "ui/SiganimUICore.h"
 #endif
 
 int main(int argc, char *argv[]) {
@@ -47,12 +47,12 @@ int main(int argc, char *argv[]) {
 #endif
     int ret = 0;
 
-    // Global fonts
-    // TODO make its location editable
-    SiganimFileHandler fontFile("fonts.json");
-    FontSet* fset = fontFile.getFontSet();
+    // Core containing database
+    SiganimCore core("fonts.json");
 
-    Text* modifiableText = new Text("Test font 12x7", "",
+    // Define a sample sign
+
+    Text* modifiableText = new Text("Siganim 12x7", "",
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
             "UNION STN");
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
                         5, 5
                     )
             ),
-            new Text("Test font 19x12", "",
+            new Text("Siganim 19x12", "",
             Text::HALIGN_CENTER,
             Text::VALIGN_CENTER_BOTTOM,
             "17", SignColor(SignColor::ON, 30, 150, 252))
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
                         new Split(Split::SPLIT_HORIZONTAL, 12,
                             modifiableText,
                             new MarqueeAnimation(
-                                new Text("Test font 7x4", "",
+                                new Text("Siganim 7x4", "",
                                     Text::HALIGN_CENTER,
                                     Text::VALIGN_CENTER_BOTTOM,
                                     "VIA 17TH & 18TH STREETS"
@@ -101,20 +101,20 @@ int main(int argc, char *argv[]) {
             }
     );
 
-    RasterizerSet* rset = new RasterizerSet(
-            { new Rasterizer("Default", 5) });
+    core.setSign(testSign); // takes ownership of sign
+
+    //core.getRasterizerSet()->addRasterizer(new Rasterizer("Default", 5, 5));
 
 
 #ifdef GUI
-    SiganimMainWindow m(testSign, fset, rset);
-    m.show();
+//    SiganimMainWindow m(&core);
+//    m.show();
+    SiganimUICore uiCore(&core);
+    uiCore.showUI();
     ret |= a.exec();
 #endif
 
-    fontFile.save();
-
-    delete testSign; // also deletes modifiableText
-    delete rset;
+//    delete testSign; // also deletes modifiableText
 
     return ret;
 }

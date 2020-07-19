@@ -33,6 +33,14 @@ SignTreeQtModel::SignTreeQtModel(SignTree *tree) : tree(tree),
     }
 }
 
+SignTreeQtModel::~SignTreeQtModel() {
+    for(auto i = this->allChainNodes.begin(); i < this->allChainNodes.end();
+            ++i) {
+        delete *i;
+    }
+
+}
+
 SignTreeQtModel::Chain::Chain(IRPointer* ptr, Chain* parent, Chain* previous,
         Chain* next) : parent(parent), firstChild(nullptr), previous(previous),
                 next(next), signModelPtr(ptr) {
@@ -62,6 +70,8 @@ SignTreeQtModel::Chain::~Chain() {
         if(this->getParent()->getFirstChild() == this)
             this->getParent()->setFirstChild(this->next);
     } catch(EndOfChainException& e) { }
+
+    delete this->signModelPtr;
 
 }
 
@@ -576,4 +586,10 @@ Sign::DisplayBuilder* SignTreeQtModel::IRPointer::getDisplayBuilder() {
     else throw NoSuchItemException();
 }
 
+SignTreeQtModel::IRPointer::~IRPointer() {
+    if(this->type == DISPLAY_BUILDER)
+        delete this->displayBuilder;
+    if(this->type == SIGN_CELL_BUILDER)
+        delete this->signCellBuilder;
+}
 

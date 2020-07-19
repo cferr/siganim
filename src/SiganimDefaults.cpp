@@ -28,6 +28,8 @@ SignColor SiganimDefaults::defaultRGBLEDBG =
         SignColor(SignColor::ON, 0, 0, 0);
 SignColor SiganimDefaults::defaultRGBLEDFG =
         SignColor(SignColor::OFF, 255, 255, 255);
+Rasterizer SiganimDefaults::defaultRasterizer =
+        Rasterizer("Default", 5, 5);
 
 SiganimDefaults::SiganimDefaults() {
 }

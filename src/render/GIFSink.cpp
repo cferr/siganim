@@ -20,18 +20,27 @@
 #include "DurationComputer.h"
 
 GIFSink::GIFSink(const Sign* sign, const FontSet* fontSet,
-        const Rasterizer* rasterizer) : sign(sign),
-    fontSet(fontSet), rasterizer(rasterizer) {
+        const Rasterizer* rasterizer, unsigned int scaleFactor) : sign(sign),
+    fontSet(fontSet), rasterizer(rasterizer), scaleFactor(scaleFactor) {
 }
 
 GIFSink::~GIFSink() {
 
 }
 
+void GIFSink::setScaleFactor(unsigned int scaleFactor) {
+    this->scaleFactor = scaleFactor;
+}
+
+unsigned int GIFSink::getScaleFactor() {
+    return this->scaleFactor;
+}
+
 void GIFSink::render(const char* fileName) {
     SignRenderer r;
 
-    Bitmap* bmap = r.render(this->rasterizer, this->sign, this->fontSet, 0);
+    Bitmap* bmap = r.render(this->rasterizer, this->sign, this->fontSet,
+            0, this->scaleFactor);
     unsigned int width = bmap->getWidth();
     unsigned int height = bmap->getHeight();
 
@@ -44,7 +53,8 @@ void GIFSink::render(const char* fileName) {
     GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
 
     for(unsigned int frame = 1; frame < frames; frame++) {
-        bmap = r.render(this->rasterizer, this->sign, this->fontSet, frame);
+        bmap = r.render(this->rasterizer, this->sign, this->fontSet, frame,
+                this->scaleFactor);
         GifWriteFrame(&g, bmap->toRGBA8Vector().data(), width, height, delay);
     }
 

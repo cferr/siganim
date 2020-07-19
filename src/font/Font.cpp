@@ -80,6 +80,14 @@ std::vector<UChar32> Font::listCharCodes() const {
     return ret;
 }
 
+void Font::setFamily(const std::string &family) {
+    this->family = family;
+}
+
+void Font::setStyle(const std::string &style) {
+    this->style = style;
+}
+
 json_object* Font::toJSON() const {
     json_object* ret = json_object_new_object();
     json_object_object_add(ret, "family", json_object_new_string(

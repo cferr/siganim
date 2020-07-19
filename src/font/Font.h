@@ -58,6 +58,8 @@ public:
     Font(const Font& f);
     virtual ~Font();
 
+    void setFamily(const std::string& family);
+    void setStyle(const std::string& style);
     std::string getFamily() const;
     std::string getStyle() const;
 

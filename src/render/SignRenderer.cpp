@@ -39,12 +39,12 @@ SignRenderer::~SignRenderer() {
 }
 
 Bitmap* SignRenderer::render(const Rasterizer* rasterizer, const Sign *s,
-        const FontSet* fontSet, unsigned int frame) {
+        const FontSet* fontSet, unsigned int frame, unsigned int scaleFactor) {
     // If this condition is not met, the renderer may work anyway.
     // It shouldn't (call on null pointer)
     assert(rasterizer != nullptr);
     // Prepare s, if need be.
-    SignRenderVisitor visitor(rasterizer, fontSet, frame);
+    SignRenderVisitor visitor(rasterizer, fontSet, frame, scaleFactor);
     // Render by visiting
     s->accept(visitor);
 
@@ -79,14 +79,14 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
             // set bitmap
             SignImage* displayImage = this->resultTree->compose();
             Bitmap* bmap = this->rasterizer->rasterize(displayImage,
-                    (*i)->getDisplayType());
+                    (*i)->getDisplayType(), this->scaleFactor);
             bitmaps.push_back(bmap);
             totalWidth += bmap->getWidth();
             maxHeight = std::max(maxHeight, bmap->getHeight());
             delete displayImage;
         } catch(std::exception& e) {
             // Don't go any further with this display, but don't fail.
-            std::cout << "Exception caught on rendering Sign" << std::endl;
+//            std::cout << "Exception caught on rendering Sign" << std::endl;
             assert(this->resultTree == nullptr);
         }
     }
@@ -113,7 +113,7 @@ void SignRenderer::SignRenderVisitor::visit(const Display &s) {
         delete rootCellImage;
         delete rootCellCropped;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Display" << std::endl;
+//        std::cout << "Exception caught on rendering Display" << std::endl;
         assert(this->resultTree == nullptr);
     }
 
@@ -137,7 +137,7 @@ void SignRenderer::SignRenderVisitor::visit(const Split &s) {
         delete upper;
         delete upperCropped;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Split 1" << std::endl;
+//        std::cout << "Exception caught on rendering Split 1" << std::endl;
         assert(this->resultTree == nullptr);
     }
 
@@ -181,7 +181,7 @@ void SignRenderer::SignRenderVisitor::visit(const Split &s) {
         delete lower;
         delete lowerCropped;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Split 2" << std::endl;
+//        std::cout << "Exception caught on rendering Split 2" << std::endl;
         assert(this->resultTree == nullptr);
     }
     this->resultTree = new SignImageTree(composite);
@@ -323,7 +323,7 @@ void SignRenderer::SignRenderVisitor::visit(const Text &s) {
         }
         this->resultTree = new SignImageTree(textRender);
     } catch(FontSet::FontNotFoundException& e) {
-        std::cout << "Exception caught on rendering Text" << std::endl;
+//        std::cout << "Exception caught on rendering Text" << std::endl;
         assert(this->resultTree == nullptr);
         // Return an empty image of the right height and width
         this->resultTree = new SignImageTree(
@@ -369,7 +369,7 @@ void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
 
         delete subjectImage;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Marquee" << std::endl;
+//        std::cout << "Exception caught on rendering Marquee" << std::endl;
         assert(this->resultTree == nullptr);
 
         this->resultTree = new SignImageTree(new SignImage(s.getWidth(),
@@ -391,7 +391,7 @@ void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
             this->resultTree = new SignImageTree(empty);
         }
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Blink" << std::endl;
+//        std::cout << "Exception caught on rendering Blink" << std::endl;
         assert(this->resultTree == nullptr);
 
         SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
@@ -411,7 +411,7 @@ void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
         // Do not delete the result tree yet
         this->resultTree = nullptr;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Compose 1" << std::endl;
+//        std::cout << "Exception caught on rendering Compose 1" << std::endl;
         assert(this->resultTree == nullptr);
     }
 
@@ -421,7 +421,7 @@ void SignRenderer::SignRenderVisitor::visit(const Compose &s) {
         childrenImg->push_back({this->resultTree, 0, 0});
         this->resultTree = nullptr;
     } catch(std::exception& e) {
-        std::cout << "Exception caught on rendering Compose 2" << std::endl;
+//        std::cout << "Exception caught on rendering Compose 2" << std::endl;
         assert(this->resultTree == nullptr);
     }
 

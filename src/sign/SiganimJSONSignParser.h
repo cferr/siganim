@@ -14,31 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef RENDER_SINGLEFRAMESINK_H_
-#define RENDER_SINGLEFRAMESINK_H_
+#ifndef SIGN_SIGANIMJSONSIGNPARSER_H_
+#define SIGN_SIGANIMJSONSIGNPARSER_H_
 
-#include "../font/FontSet.h"
-#include "../sign/Sign.h"
-#include "Bitmap.h"
-#include "Rasterizer.h"
+#include <json-c/json.h>
+#include "Sign.h"
 
-class SingleFrameSink {
-    const FontSet* fontSet;
-    const Rasterizer* rasterizer;
-    unsigned int scaleFactor;
-
+class SiganimJSONSignParser {
 public:
-    SingleFrameSink(const FontSet* fontSet, const Rasterizer* rasterizer,
-            unsigned int scaleFactor = 1);
-    virtual ~SingleFrameSink() {
-    }
+    virtual ~SiganimJSONSignParser() {};
 
-    void setScaleFactor(unsigned int scaleFactor);
-    unsigned int getScaleFactor() const;
-
-    void setRasterizer(const Rasterizer* rasterizer);
-
-    Bitmap* render(const Sign* s, unsigned int frame);
+    static Sign* parseJSON(json_object* obj);
 };
 
-#endif /* RENDER_SINGLEFRAMESINK_H_ */
+#endif /* SIGN_SIGANIMJSONSIGNPARSER_H_ */

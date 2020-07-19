@@ -18,8 +18,9 @@
 #include "SignRenderer.h"
 
 StaticObservableSink::StaticObservableSink(Sign* sign, const FontSet* fontSet,
-        const Rasterizer* rasterizer) :
-    sign(sign), fontSet(fontSet), rasterizer(rasterizer), frame(nullptr) {
+        const Rasterizer* rasterizer, unsigned int scaleFactor) :
+    sign(sign), fontSet(fontSet), rasterizer(rasterizer), frame(nullptr),
+    scaleFactor(scaleFactor) {
 
     if(this->sign != nullptr) {
         this->render();
@@ -38,12 +39,20 @@ void StaticObservableSink::render() {
         delete this->frame;
     SignRenderer r;
     this->frame = r.render(this->rasterizer, this->sign,
-            this->fontSet, 0);
+            this->fontSet, 0, this->scaleFactor);
     this->changed();
 }
 
 Bitmap* StaticObservableSink::getFrame() const {
     return this->frame;
+}
+
+void StaticObservableSink::setScaleFactor(unsigned int scaleFactor) {
+    this->scaleFactor = scaleFactor;
+}
+
+unsigned int StaticObservableSink::getScaleFactor() const {
+    return this->scaleFactor;
 }
 
 void StaticObservableSink::observe(const Observable *sender) {

@@ -17,20 +17,30 @@
 #include "Rasterizer.h"
 #include "../SiganimDefaults.h"
 
-Rasterizer::Rasterizer(std::string name, unsigned int factor) : name(name),
-    pixelOverlay(nullptr), hasPixelOverlay(false), factor(factor) {
+Rasterizer::Rasterizer(const Rasterizer &rasterizer) :
+    Rasterizer(rasterizer.name, rasterizer.pixelOverlay, rasterizer.width,
+            rasterizer.height) {
+}
 
+Rasterizer::Rasterizer(std::string name, unsigned int width,
+        unsigned int height) :
+        name(name), width(width), height(height) {
+    this->pixelOverlay = new Bitmap(width, height); // calloc'd -> transparent
 }
 
 Rasterizer::Rasterizer(std::string name, Bitmap *pixelOverlay,
-        unsigned int factor) :
-    name(name), pixelOverlay(pixelOverlay), hasPixelOverlay(true),
-    factor(factor) {
+        unsigned int width, unsigned int height) :
+    name(name), width(width), height(height) {
+    this->pixelOverlay = new Bitmap(*pixelOverlay);
+}
 
+Rasterizer::~Rasterizer() {
+    delete this->pixelOverlay;
 }
 
 void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
-        Display::Type sourceType, unsigned int x, unsigned int y) const {
+        Display::Type sourceType, unsigned int x, unsigned int y,
+        unsigned int scaleFactor) const {
     // Crop the result into its own box, in case it hasn't been done before.
     SignImage* sourceCropped = source->cropToBox();
 
@@ -60,6 +70,7 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
         break;
     }
 
+    struct Bitmap::pixel* overlayPixels = this->pixelOverlay->getPixels();
 
     for(unsigned int i = 0; i < simgHeight; ++i) {
         for(unsigned int j = 0; j < simgWidth; ++j) {
@@ -75,14 +86,25 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
                 p = simgPixels[i*simgWidth+j].getSemantic()?defaultRGBOn:
                     defaultRGBOff;
             }
-            for(unsigned int ii = 0; ii < this->factor; ++ii) {
-                for(unsigned int jj = 0; jj < this->factor; ++jj) {
-                    // Assuming no transparency.
-                    // TODO add alpha channel (along with Image Fill)
-                    imgPixels[(this->factor*(i+y)+ii)*dimgWidth
-                              + this->factor*(j+x)+jj] = {
-                            p.r, p.g, p.b, p.a
-                    };
+            unsigned int H = this->height * scaleFactor;
+            unsigned int W = this->width * scaleFactor;
+            for(unsigned int ii = 0; ii < this->height; ++ii) {
+                for(unsigned int jj = 0; jj < this->width; ++jj) {
+                    struct Bitmap::pixel q = overlayPixels[ii*this->width+jj];
+                    for(unsigned int iii = 0; iii < scaleFactor; ++iii) {
+                        for(unsigned int jjj = 0; jjj < scaleFactor; ++jjj) {
+                            imgPixels[(H*(i+y)+ii*scaleFactor+iii)*dimgWidth
+                                  + W*(j+x)+jj*scaleFactor+jjj] = {
+                                (unsigned char)(((int)p.r * (255 - (int)q.a)
+                                        + (int)q.r * 255) / 255),
+                                (unsigned char)(((int)p.g * (255 - (int)q.a)
+                                        + (int)q.g * 255) / 255),
+                                (unsigned char)(((int)p.b * (255 - (int)q.a)
+                                        + (int)q.b * 255) / 255),
+                                p.a
+                            };
+                        }
+                    }
                 }
             }
         }
@@ -91,11 +113,11 @@ void Rasterizer::rasterizeAdd(Bitmap* dest, SignImage* source,
     delete sourceCropped;
 }
 
-Bitmap* Rasterizer::rasterize(SignImage* source, Display::Type sourceType)
-    const {
-    Bitmap* ret = new Bitmap(this->factor * source->getWidth(),
-            this->factor * source->getHeight());
-    this->rasterizeAdd(ret, source, sourceType, 0, 0);
+Bitmap* Rasterizer::rasterize(SignImage* source, Display::Type sourceType,
+        unsigned int scaleFactor) const {
+    Bitmap* ret = new Bitmap(scaleFactor * this->width * source->getWidth(),
+            scaleFactor * this->height * source->getHeight());
+    this->rasterizeAdd(ret, source, sourceType, 0, 0, scaleFactor);
     return ret;
 }
 

@@ -29,7 +29,7 @@ FontVisualEditor::FontVisualEditor(const Rasterizer* rasterizer,
     this->font = nullptr;
     this->currentCharacter = nullptr;
     this->sink = new StaticObservableSink(this->sign, this->fontSet,
-            rasterizer);
+            rasterizer, 2);
     this->sink->attach(this);
 
 }

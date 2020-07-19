@@ -20,15 +20,18 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QMenuBar>
+#include <QPushButton>
 #include <QTreeWidget>
 #include <QWidget>
 
 #include "../font/FontSet.h"
 #include "../render/RasterizerSet.h"
 #include "../sign/cells/Text.h"
+#include "SignTreeQtModel.h"
 #include "SignTreeDetailsWidget.h"
 #include "SignTreeWidget.h"
 #include "SignWidget.h"
+#include "SiganimUICore.h"
 
 class SignEditor: public QWidget {
     Q_OBJECT
@@ -37,19 +40,26 @@ private:
     QGridLayout* layout;
     SignWidget *signWidget;
     QComboBox* rasterizerCombo;
+    QPushButton* saveToGIFButton;
     SignTreeWidget *tree;
     SignTreeDetailsWidget* details;
+    SignTreeQtModel* model;
     Sign* sign;
     const FontSet* fontSet;
     const RasterizerSet* rasterizerSet;
     const Rasterizer* currentRasterizer;
 
+    void populateRasterizers();
+
 public:
-    SignEditor(Sign* sign, const FontSet* fontSet,
-            const RasterizerSet* rasterizerSet, QWidget* parent);
+    SignEditor(SiganimUICore* uiCore, QWidget* parent);
     virtual ~SignEditor();
 
     void setRasterizer(const QString& rasterizer);
+
+    void getRasterizer();
+
+    const Rasterizer* getCurrentRasterizer() const;
 
 };
 

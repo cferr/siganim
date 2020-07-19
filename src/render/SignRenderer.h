@@ -67,12 +67,15 @@ private:
         Bitmap* resultBitmap;
         unsigned int frame;
         const FontSet* fontSet;
+        unsigned int scaleFactor;
 
     public:
         SignRenderVisitor(const Rasterizer* rasterizer,
-                const FontSet* fontSet,unsigned int frame) :
+                const FontSet* fontSet, unsigned int frame,
+                unsigned int scaleFactor) :
             rasterizer(rasterizer), resultTree(nullptr),
-            resultBitmap(nullptr), frame(frame), fontSet(fontSet) {
+            resultBitmap(nullptr), frame(frame), fontSet(fontSet),
+            scaleFactor(scaleFactor) {
         }
 
         virtual ~SignRenderVisitor();
@@ -95,7 +98,8 @@ private:
 public:
     SignRenderer();
     Bitmap* render(const Rasterizer* rasterizer,
-            const Sign *s, const FontSet* fontSet, unsigned int frame);
+            const Sign *s, const FontSet* fontSet, unsigned int frame,
+            unsigned int scaleFactor);
 
     virtual ~SignRenderer();
 };

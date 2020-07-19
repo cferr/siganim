@@ -14,41 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SIGANIMFILEHANDLER_H_
-#define SIGANIMFILEHANDLER_H_
+#ifndef SIGANIMCORE_H_
+#define SIGANIMCORE_H_
 
 #include <vector>
-#include "font/FontSet.h"
+#include "SiganimDefaults.h"
+#include "SiganimFileHandler.h"
 #include "sign/Sign.h"
+#include "font/FontSet.h"
 #include "render/RasterizerSet.h"
 
-class SiganimFileHandler {
-private:
-    std::string location;
+class SiganimCore {
+    SiganimDefaults* defaults;
+    Sign* sign;
     FontSet* fonts;
     RasterizerSet* rasterizers;
-    // Each file can have at most one sign.
-    Sign* sign;
-
-    void parseInputFile();
+    SiganimFileHandler* currentSignFile;
+    SiganimFileHandler* currentDatabase;
 
 public:
-    SiganimFileHandler();
-    SiganimFileHandler(const char* location);
-    SiganimFileHandler(const std::string& location);
-    virtual ~SiganimFileHandler();
+    SiganimCore(const std::string& databaseLocation);
 
-    void setLocation(const std::string& location);
-    std::string getLocation() const;
+    void setCurrentSignFile(const std::string& location = "");
+    void saveSignsToFile();
+    void saveDatabase();
+    void exportDatabaseToFile(const std::string& location);
+
+    SiganimDefaults* getDefaults() const;
 
     Sign* getSign() const;
     void setSign(Sign* s);
-
     FontSet* getFontSet() const;
     RasterizerSet* getRasterizerSet() const;
 
-    bool save();
-
+    virtual ~SiganimCore();
 };
 
-#endif /* SIGANIMFILEHANDLER_H_ */
+#endif /* SIGANIMCORE_H_ */

@@ -53,6 +53,7 @@ public:
     virtual ~RasterizerSet();
 
     void addRasterizer(Rasterizer* rasterizer);
+    void addRasterizers(const std::vector<Rasterizer*> rasterizers);
     bool removeRasterizer(Rasterizer* rasterizer);
     bool removeRasterizer(const std::string& name);
 

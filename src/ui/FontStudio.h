@@ -20,6 +20,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
 #include "../font/FontSet.h"
@@ -27,11 +28,14 @@
 #include "FontVisualEditor.h"
 #include "FontQtModel.h"
 #include "CharacterListWidget.h"
+#include "SiganimUICore.h"
 
 class FontStudio : public QWidget {
     Q_OBJECT
 
 private:
+    SiganimUICore* uiCore;
+
     QGridLayout *mainLayout;
     QLabel* welcome;
 
@@ -50,21 +54,26 @@ private:
     QComboBox* fontFamilyCombo;
     QComboBox* fontStyleCombo;
 
+    QComboBox* UnicodeBlockCombo;
+
     QSpinBox* heightSpinner;
     QSpinBox* widthSpinner;
+
+    QPushButton* renameFontButton;
+    QPushButton* changeStyleButton;
 
     CharacterListWidget* characterList;
     FontQtModel* model;
 
     Font* currentFont;
 
+    void populateFontFamilies();
     void populateFontStyles(const std::string& fontFamily);
-//    void populateCharacters(const std::string& fontFamily,
-//            const std::string& fontStyle);
+    void populateUnicodeBlocks();
+    void populateRasterizers();
 
 public:
-    FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
-            QWidget* parent);
+    FontStudio(SiganimUICore* core, QWidget* parent);
     virtual ~FontStudio();
 
     void setFontFamily(const std::string fontFamily);
@@ -73,10 +82,13 @@ public:
 public slots:
     void fontFamilyComboChanged(const QString& fontFamily);
     void fontStyleComboChanged(const QString& fontStyle);
+    void unicodeBlockChanged(const int block);
     void setRasterizer(const QString& rasterizer);
     void setEditedCharacter(Character* c);
     void setCharacterHeight(int height);
     void setCharacterWidth(int width);
+    void promptRenameFont();
+    void promptChangeStyle();
 };
 
 #endif /* SRC_UI_FONTSTUDIO_H_ */

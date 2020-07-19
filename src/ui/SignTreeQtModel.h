@@ -67,7 +67,7 @@ public:
             this->type = DISPLAY_BUILDER;
             this->label = QString(label);
         }
-        virtual ~IRPointer() { }
+        virtual ~IRPointer();
         SignTree* getTree();
         SignCell::Builder* getSignCellBuilder();
         Sign::DisplayBuilder* getDisplayBuilder();
@@ -158,7 +158,7 @@ private:
 
 public:
     SignTreeQtModel(SignTree* tree);
-    virtual ~SignTreeQtModel() { }
+    virtual ~SignTreeQtModel();
 
     virtual QModelIndex index(int row, int column,
                               const QModelIndex &parent = QModelIndex()) const;

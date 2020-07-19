@@ -16,28 +16,26 @@
 
 #include <iostream>
 #include <unicode/uchar.h>
+#include <QInputDialog>
 #include <QString>
 #include <QVBoxLayout>
 #include "FontStudio.h"
 #include "../font/Character.h"
 #include "../font/UnicodeUtils.h"
 
-FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
-        QWidget* parent) : QWidget(parent), fontSet(fontSet),
-        rasterizerSet(rasterizerSet), currentCharacter(nullptr) {
+FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
+    QWidget(parent), uiCore(uiCore), currentCharacter(nullptr) {
+    this->rasterizerSet = uiCore->getCore()->getRasterizerSet();
+    assert(!this->rasterizerSet->getRasterizers().empty());
+
+    this->fontSet = uiCore->getCore()->getFontSet();
+
     this->mainLayout = new QGridLayout(this);
     this->welcome = new QLabel("Welcome to Siganim Font Studio.", this);
     this->rasterizerCombo = new QComboBox(this);
 
-    // Populate rasterizers
-    std::vector<Rasterizer*> rasterizers =
-            this->rasterizerSet->getRasterizers();
-    for(auto i = rasterizers.begin(); i < rasterizers.end(); ++i) {
-        this->rasterizerCombo->addItem(QString::fromStdString((*i)->getName()),
-                QString::fromStdString((*i)->getName()));
-    }
-
-    this->editorsRasterizer = new Rasterizer("Default", 10);
+    this->editorsRasterizer = (const Rasterizer*)
+        *(this->rasterizerSet->getRasterizers().begin());
     this->visualEditor = new FontVisualEditor(this->editorsRasterizer,
             this);
 
@@ -48,8 +46,16 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
     this->fontFamilyCombo->setEditable(true);
     this->fontStyleCombo = new QComboBox(this);
     this->fontStyleCombo->setEditable(true);
+
+    this->UnicodeBlockCombo = new QComboBox(this);
+
+    this->renameFontButton = new QPushButton(QString("Rename..."), this);
+    this->changeStyleButton = new QPushButton(QString("Change..."), this);
+
     familyStyleLayout->addWidget(this->fontFamilyCombo);
+    familyStyleLayout->addWidget(this->renameFontButton);
     familyStyleLayout->addWidget(this->fontStyleCombo);
+    familyStyleLayout->addWidget(this->changeStyleButton);
 
     QGridLayout* editorLayout = new QGridLayout();
     this->heightSpinner = new QSpinBox(this);
@@ -61,38 +67,27 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
     this->mainLayout->addWidget(this->welcome, 0, 1);
     this->mainLayout->addWidget(this->rasterizerCombo, 1, 1);
     this->mainLayout->addLayout(familyStyleLayout, 2, 1);
-    this->mainLayout->addWidget(this->characterList, 3, 1);
-    this->mainLayout->addLayout(editorLayout, 0, 0, 4, 1,
+    this->mainLayout->addWidget(this->UnicodeBlockCombo, 3, 1);
+    this->mainLayout->addWidget(this->characterList, 4, 1);
+    this->mainLayout->addLayout(editorLayout, 0, 0, 5, 1,
             Qt::AlignCenter);
     this->mainLayout->setColumnMinimumWidth(0, 200);
     this->setLayout(this->mainLayout);
 
-    std::vector<Font*> fonts = this->fontSet->getFonts();
-    for(auto i = fonts.begin(); i < fonts.end(); ++i) {
-        QString family = QString::fromStdString((*i)->getFamily());
-        this->fontFamilyCombo->addItem(family, family);
-    }
-    // Select the first available family.
-    this->currentFont = *(fonts.begin());
-    this->fontFamilyCombo->setCurrentIndex(0);
-//    this->fontStyleCombo->setCurrentIndex(0);
-    this->populateFontStyles(this->currentFont->getFamily());
-    this->visualEditor->setFont(this->currentFont);
+    this->modelRasterizer = (const Rasterizer*)
+        *(this->rasterizerSet->getRasterizers().begin());
+    this->currentFont = nullptr;
 
-    // TODO add default rasterizer in SiganimDefaults...
-    if(rasterizers.empty()) {
-        this->modelRasterizer = new Rasterizer("Default", 5);
-    } else {
-        this->modelRasterizer = *(rasterizers.begin());
-    }
-    this->model = new FontQtModel(this->currentFont,
+    // FIXME what to do if there are no fonts? Disable UI?
+    this->model = new FontQtModel(nullptr,
             this->modelRasterizer, Display::DISPLAY_MONOCHROME_LED);
-    // this->model->setFont(this->currentFont);
+
     this->characterList->setModel(this->model);
-    this->characterList->setUniformItemSizes(true);
-    this->characterList->setItemAlignment(Qt::AlignCenter);
-    this->characterList->setViewMode(QListView::IconMode);
+//    this->characterList->setUniformItemSizes(true);
+//    this->characterList->setItemAlignment(Qt::AlignCenter);
+//    this->characterList->setViewMode(QListView::IconMode);
     this->characterList->setResizeMode(QListView::ResizeMode::Adjust);
+    this->characterList->setWordWrap(true);
 
     connect(this->fontFamilyCombo,
             &QComboBox::currentTextChanged,
@@ -118,6 +113,23 @@ FontStudio::FontStudio(FontSet* fontSet, const RasterizerSet* rasterizerSet,
             SIGNAL(valueChanged(int)),
             this,
             SLOT(setCharacterWidth(int)));
+    connect(this->renameFontButton,
+            &QPushButton::pressed,
+            this,
+            &FontStudio::promptRenameFont);
+    connect(this->changeStyleButton,
+            &QPushButton::pressed,
+            this,
+            &FontStudio::promptChangeStyle);
+    connect(this->UnicodeBlockCombo,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(unicodeBlockChanged(int)));
+
+
+    this->populateFontFamilies();
+    this->populateUnicodeBlocks();
+    this->populateRasterizers();
 }
 
 FontStudio::~FontStudio() {
@@ -132,9 +144,27 @@ FontStudio::~FontStudio() {
     delete this->widthSpinner;
     delete this->characterList;
     delete this->model;
+}
 
-    // Temporary.
-    delete this->editorsRasterizer;
+void FontStudio::populateFontFamilies() {
+    this->fontFamilyCombo->clear();
+
+    std::vector<Font*> fonts = this->fontSet->getFonts();
+    for(auto i = fonts.begin(); i < fonts.end(); ++i) {
+        QString family = QString::fromStdString((*i)->getFamily());
+        this->fontFamilyCombo->addItem(family, family);
+    }
+}
+
+void FontStudio::populateRasterizers() {
+    this->rasterizerCombo->clear();
+    // Populate rasterizers
+    std::vector<Rasterizer*> rasterizers =
+            this->rasterizerSet->getRasterizers();
+    for(auto i = rasterizers.begin(); i < rasterizers.end(); ++i) {
+        this->rasterizerCombo->addItem(QString::fromStdString((*i)->getName()),
+                QString::fromStdString((*i)->getName()));
+    }
 }
 
 void FontStudio::populateFontStyles(const std::string &fontFamily) {
@@ -201,4 +231,47 @@ void FontStudio::setCharacterWidth(int width) {
         this->currentCharacter->setWidth((unsigned int)width);
         this->visualEditor->refresh();
     }
+}
+
+void FontStudio::promptRenameFont() {
+    bool validated = false;
+    QString newName = QInputDialog::getText(this,
+            QString("Enter new font name"), QString("Enter new font name"),
+            QLineEdit::EchoMode::Normal,
+            QString::fromStdString(this->currentFont->getFamily()),
+            &validated);
+    if(validated && !newName.isEmpty()) {
+        this->currentFont->setFamily(newName.toStdString());
+        this->populateFontFamilies();
+        this->fontFamilyCombo->setCurrentText(newName);
+    }
+}
+
+void FontStudio::promptChangeStyle() {
+    bool validated = false;
+    QString newName = QInputDialog::getText(this,
+            QString("Enter new font style"), QString("Enter new font style"),
+            QLineEdit::EchoMode::Normal,
+            QString::fromStdString(this->currentFont->getStyle()),
+            &validated);
+    if(validated && !newName.isEmpty()) {
+        this->currentFont->setStyle(newName.toStdString());
+        this->populateFontStyles(this->currentFont->getFamily());
+        this->fontStyleCombo->setCurrentText(newName);
+    }
+}
+
+void FontStudio::populateUnicodeBlocks() {
+    this->UnicodeBlockCombo->clear();
+    this->UnicodeBlockCombo->addItem(QString("Characters in this font"),
+                    0u);
+    for(unsigned int block = 1; block < NB_UNICODE_BLOCKS; ++block) {
+        this->UnicodeBlockCombo->addItem(QString::fromStdString(
+                UnicodeBlockName(block)), block);
+    }
+
+}
+
+void FontStudio::unicodeBlockChanged(const int block) {
+    this->model->setBlockNumber(block);
 }

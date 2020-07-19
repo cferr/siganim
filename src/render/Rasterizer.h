@@ -24,20 +24,24 @@
 class Rasterizer {
     std::string name;
     Bitmap* pixelOverlay;
-    bool hasPixelOverlay;
-    unsigned int factor;
+    unsigned int width;
+    unsigned int height;
 
 public:
-    Rasterizer(std::string name, unsigned int factor);
-    Rasterizer(std::string name, Bitmap* pixelOverlay, unsigned int factor);
-    virtual ~Rasterizer() {
-    }
+    Rasterizer(const Rasterizer& rasterizer);
+    Rasterizer(std::string name, unsigned int width,
+            unsigned int height);
+    Rasterizer(std::string name, Bitmap* pixelOverlay, unsigned int width,
+            unsigned int height);
+    virtual ~Rasterizer();
 
     std::string getName() const;
 
     void rasterizeAdd(Bitmap* dest, SignImage* source,
-            Display::Type sourceType, unsigned int x, unsigned int y) const;
-    Bitmap* rasterize(SignImage* source, Display::Type sourceType) const;
+            Display::Type sourceType, unsigned int x, unsigned int y,
+            unsigned int scaleFactor) const;
+    Bitmap* rasterize(SignImage* source, Display::Type sourceType,
+            unsigned int scaleFactor) const;
 };
 
 #endif /* RENDER_RASTERIZER_H_ */

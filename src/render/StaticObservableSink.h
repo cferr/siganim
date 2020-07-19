@@ -34,18 +34,21 @@ private:
 
     Bitmap* frame;
 
+    unsigned int scaleFactor;
+
     void render();
-    void run();
-    void copySign();
 
 public:
     StaticObservableSink(Sign* sign, const FontSet* fontSet,
-            const Rasterizer* rasterizer);
+            const Rasterizer* rasterizer, unsigned int scaleFactor = 1);
     virtual ~StaticObservableSink();
 
     Bitmap* getFrame() const;
 
     void setRasterizer(const Rasterizer* rasterizer);
+
+    void setScaleFactor(unsigned int scaleFactor);
+    unsigned int getScaleFactor() const;
 
     virtual void observe(const Observable* sender);
 

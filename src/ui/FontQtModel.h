@@ -27,12 +27,18 @@
 
 class FontQtModel : public QAbstractItemModel {
     Q_OBJECT
-
+public:
+    struct CharacterOption {
+        bool hasCharacter;
+        UChar32 code;
+        Character* character;
+    };
 private:
     Font* font;
     FontSet singleFontSet;
     const Rasterizer* rasterizer;
     enum Display::Type displayType;
+    unsigned int blockNumber;
 
 public:
     FontQtModel(Font* font, const Rasterizer* rasterizer,
@@ -42,6 +48,7 @@ public:
     void setFont(Font* font);
     void setRasterizer(Rasterizer* rasterizer);
     void setDisplayType(enum Display::Type displayType);
+    void setBlockNumber(unsigned int blockNumber);
 
     virtual QModelIndex index(int row, int column,
                               const QModelIndex &parent = QModelIndex()) const;

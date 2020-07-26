@@ -36,6 +36,7 @@ FontQtModel::FontQtModel(Font* font, const Rasterizer* rasterizer,
 FontQtModel::~FontQtModel() {
     // Fonts in here don't belong to us. Clear them out.
     this->singleFontSet.clear();
+    this->clearOptions();
 }
 
 QModelIndex FontQtModel::index(int row, int column,
@@ -43,27 +44,13 @@ QModelIndex FontQtModel::index(int row, int column,
     if(this->font == nullptr)
        return QModelIndex();
 
-    std::vector<UChar32> codes = this->font->listCharCodes();
     if(!parent.isValid() && column == 0) {
-        struct CharacterOption* option =
-                (struct CharacterOption*)malloc(sizeof(struct CharacterOption));
-        if(this->blockNumber == 0) {
-            option->character = this->font->get(codes.at(row));
-            option->code = codes.at(row);
-            option->hasCharacter = true;
-        } else {
-//            UChar32 code = (unsigned int)row +
-//                                    UnicodeBlockStart(this->blockNumber);
-            UChar32 code = UnicodeNthPrintableChar(this->blockNumber, row);
-            option->code = code;
-            try {
-                option->character = this->font->get(code);
-                option->hasCharacter = true;
-            } catch(Font::CharNotFoundException& e) {
-                option->character = nullptr;
-                option->hasCharacter = false;
-            }
+        std::map<int, struct CharacterOption*>::const_iterator
+            option_iterator = this->charOptions.find(row);
+        if(option_iterator == this->charOptions.end()) {
+            throw std::runtime_error("charOptions");
         }
+        struct CharacterOption* option = option_iterator->second;
         return this->createIndex(row, column, option);
     } else return QModelIndex();
 }
@@ -103,6 +90,8 @@ void FontQtModel::setFont(Font *font) {
     this->font = font;
     if(font != nullptr)
         this->singleFontSet.addFont(this->font);
+    this->clearOptions();
+    this->rebuildOptions();
     this->endResetModel();
 }
 
@@ -112,6 +101,47 @@ void FontQtModel::setRasterizer(Rasterizer *rasterizer) {
 
 void FontQtModel::setDisplayType(enum Display::Type displayType) {
     this->displayType = displayType;
+}
+
+void FontQtModel::rebuildOptions() {
+    if(this->font != nullptr) {
+        if(this->blockNumber == 0) {
+            std::vector<UChar32> codes = this->font->listCharCodes();
+            for(unsigned int i = 0; i < this->font->getNbCharacters(); ++i) {
+                Character* c = this->font->get(codes.at(i));
+                struct CharacterOption* option = (struct CharacterOption*)
+                                        malloc(sizeof(struct CharacterOption));
+                option->code = codes.at(i);
+                option->hasCharacter = true;
+                option->character = c;
+                this->charOptions.insert(
+                        std::pair<int, struct CharacterOption*>(i, option));
+            }
+        } else {
+            UChar32 currentChar = UnicodeBlockStart(blockNumber);
+            UChar32 lastChar = currentChar +
+                    UnicodeBlockPointCount(blockNumber);
+            int row = 0;
+            while(currentChar < lastChar) {
+                if(u_isgraph(currentChar)) {
+                    struct CharacterOption* option = (struct CharacterOption*)
+                            malloc(sizeof(struct CharacterOption));
+                    option->code = currentChar;
+                    try {
+                        Character* c = this->font->get(currentChar);
+                        option->character = c;
+                        option->hasCharacter = true;
+                    } catch(Font::CharNotFoundException& e) {
+                        option->hasCharacter = false;
+                    }
+                    this->charOptions.insert(
+                            std::pair<int, struct CharacterOption*>(row, option));
+                    ++row;
+                }
+                currentChar++;
+            }
+        }
+    }
 }
 
 QVariant FontQtModel::data(const QModelIndex &index,
@@ -161,5 +191,14 @@ QVariant FontQtModel::data(const QModelIndex &index,
 void FontQtModel::setBlockNumber(unsigned int blockNumber) {
     this->beginResetModel();
     this->blockNumber = blockNumber;
+    this->clearOptions();
+    this->rebuildOptions();
     this->endResetModel();
+}
+
+void FontQtModel::clearOptions() {
+    for(auto i = this->charOptions.begin(); i != this->charOptions.end(); ++i) {
+        free(i->second);
+    }
+    this->charOptions.clear();
 }

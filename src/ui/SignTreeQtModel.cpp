@@ -71,6 +71,12 @@ SignTreeQtModel::Chain::~Chain() {
             this->getParent()->setFirstChild(this->next);
     } catch(EndOfChainException& e) { }
 
+    try {
+        this->getFirstChild()->setParent(nullptr);
+    } catch(EndOfChainException& e) {
+
+    }
+
     delete this->signModelPtr;
 
 }
@@ -107,6 +113,9 @@ SignTreeQtModel::Chain*
 void SignTreeQtModel::Chain::setParent(
         Chain *parent) {
     this->parent = parent;
+    try {
+        this->getNext()->setParent(parent);
+    } catch(EndOfChainException& e) { }
 }
 
 SignTreeQtModel::Chain*

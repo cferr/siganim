@@ -18,6 +18,7 @@
 #ifndef SRC_UI_FONTQTMODEL_H_
 #define SRC_UI_FONTQTMODEL_H_
 
+#include <map>
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include "../font/Font.h"
@@ -39,6 +40,10 @@ private:
     const Rasterizer* rasterizer;
     enum Display::Type displayType;
     unsigned int blockNumber;
+
+    std::map<int, struct CharacterOption*> charOptions;
+    void clearOptions();
+    void rebuildOptions();
 
 public:
     FontQtModel(Font* font, const Rasterizer* rasterizer,

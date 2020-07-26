@@ -27,7 +27,7 @@ PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     icu::UnicodeString* text = treeNode->getText();
     this->textLine->setText(
             QString::fromUtf16(text->getBuffer(), text->length()));
-
+    delete text;
     this->halignLeft = new QPushButton("Left", this);
     this->halignCenter = new QPushButton("Center", this);
     this->halignRight = new QPushButton("Right", this);

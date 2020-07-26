@@ -47,10 +47,15 @@ void SiganimCore::setCurrentSignFile(const std::string &location) {
     } else {
         this->currentSignFile = new SiganimFileHandler(location);
     }
+    if(this->currentSignFile->getSign() != nullptr) {
+        delete this->sign;
+        this->sign = this->currentSignFile->getSign();
+    }
 }
 
 void SiganimCore::saveSignsToFile() {
-
+    this->currentSignFile->setSign(this->sign);
+    this->currentSignFile->save();
 }
 
 void SiganimCore::saveDatabase() {

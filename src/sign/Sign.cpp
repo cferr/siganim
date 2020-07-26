@@ -139,3 +139,12 @@ void Sign::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
     for(auto display : this->displays)
         display->detachStructureObserver(observer);
 }
+
+json_object* Sign::toJSON() const {
+    json_object* ret = json_object_new_array();
+    for(auto i = this->displays.begin(); i < this->displays.end(); ++i) {
+        json_object* display_obj = (*i)->toJSON();
+        json_object_array_add(ret, display_obj);
+    }
+    return ret;
+}

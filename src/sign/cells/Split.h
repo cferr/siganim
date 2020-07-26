@@ -93,6 +93,7 @@ public:
     void deleteChild(SignTree* child);
 
     virtual std::ostream& serialize(std::ostream &strm) const;
+    json_object* toJSON() const;
 
     void deepDetachStructureObserver(SignTreeStructureObserver* observer);
 };

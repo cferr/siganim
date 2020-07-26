@@ -19,6 +19,7 @@
 
 #include <vector>
 #include "SignTreeVisitor.h"
+#include "../Serializable.h"
 
 // All classes part of the tree
 class Sign;
@@ -73,7 +74,7 @@ public:
 
 };
 
-class SignTree {
+class SignTree : public Serializable {
     std::vector<SignTreeStructureObserver*> structureObservers;
 
 protected:

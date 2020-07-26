@@ -84,3 +84,33 @@ void MarqueeAnimation::callbackDispatch(ConstSignTreeDispatcher *s) const {
 void MarqueeAnimation::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
+
+json_object* MarqueeAnimation::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type",
+            json_object_new_string("MarqueeAnimation"));
+    json_object_object_add(ret, "durationFrames",
+            json_object_new_int(this->durationFrames));
+    json_object_object_add(ret, "space",
+                json_object_new_int(this->space));
+
+    std::string directionStr;
+    switch(this->direction) {
+    case MarqueeAnimation::Direction::LEFT:
+        directionStr = "left";
+        break;
+    case MarqueeAnimation::Direction::RIGHT:
+        directionStr = "right";
+        break;
+    }
+    json_object_object_add(ret, "direction",
+            json_object_new_string(directionStr.c_str()));
+
+    try {
+        json_object_object_add(ret, "subject", this->getSubject()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    return ret;
+}

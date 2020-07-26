@@ -80,3 +80,21 @@ void BlinkAnimation::callbackDispatch(ConstSignTreeDispatcher *s) const {
 void BlinkAnimation::callbackDispatch(SignTreeDispatcher *s) {
     s->dispatchCallback(*this);
 }
+
+json_object* BlinkAnimation::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type",
+            json_object_new_string("BlinkAnimation"));
+    json_object_object_add(ret, "framesOn",
+            json_object_new_int(this->framesOn));
+    json_object_object_add(ret, "framesOff",
+                json_object_new_int(this->framesOff));
+    try {
+        json_object_object_add(ret, "subject", this->getSubject()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    return ret;
+
+}

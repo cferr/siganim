@@ -86,3 +86,11 @@ std::ostream& operator <<(std::ostream &strm, const Fill &s) {
 void Fill::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
     this->detachStructureObserver(observer);
 }
+
+json_object* Fill::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type", json_object_new_string("Fill"));
+    json_object_object_add(ret, "color", this->color.toJSON());
+
+    return ret;
+}

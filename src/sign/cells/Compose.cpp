@@ -199,3 +199,23 @@ void Compose::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
         this->getForeground()->deepDetachStructureObserver(observer);
     } catch(NoSuchChildException& e) { }
 }
+
+json_object* Compose::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type", json_object_new_string("Compose"));
+
+    try {
+        json_object_object_add(ret, "background",
+                this->getBackground()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+    try {
+        json_object_object_add(ret, "foreground",
+                this->getForeground()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    return ret;
+}

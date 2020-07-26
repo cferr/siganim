@@ -42,10 +42,18 @@ std::ostream& operator <<(std::ostream &strm, const SignColor &s) {
 }
 
 std::ostream& SignColor::serialize(std::ostream &strm) const {
-    return strm << "Color { semantic = " <<
-            ((this->semantic == Semantic::ON)?"on":"off") <<
-            ", " <<
-            ((this->isCustom)?"RGB()":"") << " }";
+    strm << "Color { semantic = " <<
+            ((this->semantic == Semantic::ON)?"on":"off");
+    if(this->isCustom)
+        strm <<
+            ", RGBA(" << this->value.r << ", "
+            << this->value.g << ", "
+            << this->value.b << ", "
+            << this->value.a  <<  ")";
+
+    strm << " }";
+
+    return strm;
 }
 
 // Non-commutative OR ! This has priority over that.
@@ -71,4 +79,30 @@ SignColor SignColor::on() {
 SignColor SignColor::off() {
     SignColor c(SignColor::OFF);
     return c;
+}
+
+json_object* SignColor::toJSON() const {
+    json_object* ret = json_object_new_object();
+    std::string semanticStr;
+    switch(this->semantic) {
+    case SignColor::Semantic::ON:
+        semanticStr = "on";
+        break;
+    case SignColor::Semantic::OFF:
+        semanticStr = "off";
+        break;
+    }
+    json_object_object_add(ret, "semantic",
+            json_object_new_string(semanticStr.c_str()));
+
+    if(this->isCustom) {
+        uint32_t rgba = (((uint32_t)this->value.r) << 24)
+                | (((uint32_t)this->value.g) << 16)
+                | (((uint32_t)this->value.b) << 8)
+                | (((uint32_t)this->value.a));
+        json_object_object_add(ret, "rgba",
+                    json_object_new_int(rgba));
+    }
+
+    return ret;
 }

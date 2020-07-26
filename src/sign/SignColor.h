@@ -18,8 +18,9 @@
 #define SRC_SIGNCOLOR_H_
 
 #include <iostream>
+#include "../Serializable.h"
 
-class SignColor {
+class SignColor : public Serializable {
 public:
     class NoRGBValueException : public std::exception
     {
@@ -67,6 +68,7 @@ public:
     struct RGBA getValue() const;
 
     std::ostream& serialize(std::ostream &strm) const;
+    json_object* toJSON() const;
 
 };
 

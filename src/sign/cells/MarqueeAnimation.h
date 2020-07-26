@@ -55,6 +55,7 @@ public:
     unsigned int getSpace() const;
 
     virtual std::ostream& serialize(std::ostream &strm) const;
+    json_object* toJSON() const;
 
 };
 

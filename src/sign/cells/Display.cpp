@@ -196,3 +196,33 @@ void Display::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
         this->getRootCell()->deepDetachStructureObserver(observer);
     } catch(NoSuchChildException& e) { }
 }
+
+json_object* Display::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type", json_object_new_string("Display"));
+    json_object_object_add(ret, "width", json_object_new_int(this->width));
+    json_object_object_add(ret, "height", json_object_new_int(this->height));
+
+    std::string displayTypeStr;
+    switch(this->displayType) {
+    case Display::Type::DISPLAY_FLIPDISC:
+        displayTypeStr = "flipdisc";
+        break;
+    case Display::Type::DISPLAY_MONOCHROME_LED:
+        displayTypeStr = "monochrome_led";
+        break;
+    case Display::Type::DISPLAY_RGB_LED:
+        displayTypeStr = "rgb_led";
+        break;
+    }
+    json_object_object_add(ret, "displayType",
+            json_object_new_string(displayTypeStr.c_str()));
+
+    try {
+        json_object_object_add(ret, "rootCell", this->getRootCell()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    return ret;
+}

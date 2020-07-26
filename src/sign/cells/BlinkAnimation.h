@@ -50,6 +50,7 @@ public:
     virtual void callbackDispatch(SignTreeDispatcher* s);
 
     virtual std::ostream& serialize(std::ostream &strm) const;
+    json_object* toJSON() const;
 
 };
 

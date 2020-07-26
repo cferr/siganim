@@ -277,3 +277,43 @@ void Split::deepDetachStructureObserver(SignTreeStructureObserver *observer) {
         this->getBottomOrRightChild()->deepDetachStructureObserver(observer);
     } catch(NoSuchChildException& e) { }
 }
+
+json_object* Split::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type", json_object_new_string("Split"));
+    json_object_object_add(ret, "splitPos",
+            json_object_new_int(this->splitPos));
+
+    std::string splitDirectionStr;
+    switch(this->splitDirection) {
+    case Split::SplitDirection::SPLIT_HORIZONTAL:
+        splitDirectionStr = "horizontal";
+        break;
+    case Split::SplitDirection::SPLIT_VERTICAL:
+        splitDirectionStr = "vertical";
+        break;
+    case Split::SplitDirection::SPLIT_NW_SE_DIAGONAL:
+        splitDirectionStr = "nw_se_diagonal";
+        break;
+    case Split::SplitDirection::SPLIT_SW_NE_DIAGONAL:
+        splitDirectionStr = "sw_ne_diagonal";
+        break;
+    }
+    json_object_object_add(ret, "splitDirection",
+            json_object_new_string(splitDirectionStr.c_str()));
+
+    try {
+        json_object_object_add(ret, "topOrLeftChild",
+                this->getTopOrLeftChild()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+    try {
+        json_object_object_add(ret, "bottomOrRightChild",
+                this->getBottomOrRightChild()->toJSON());
+    } catch(NoSuchChildException& e) {
+
+    }
+
+    return ret;
+}

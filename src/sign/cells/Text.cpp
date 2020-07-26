@@ -159,3 +159,73 @@ void Text::setFontStyle(const std::string &fontStyle) {
     this->fontStyle = std::string(fontStyle);
     this->modified();
 }
+
+json_object* Text::toJSON() const {
+    json_object* ret = json_object_new_object();
+    json_object_object_add(ret, "type", json_object_new_string("Text"));
+
+    json_object_object_add(ret, "color", this->foreground.toJSON());
+
+    std::string textStr;
+    textStr = this->text->toUTF8String(textStr);
+    json_object_object_add(ret, "text",
+            json_object_new_string(textStr.c_str()));
+
+    json_object_object_add(ret, "fontFamily",
+            json_object_new_string(this->fontFamily.c_str()));
+    json_object_object_add(ret, "fontStyle",
+            json_object_new_string(this->fontStyle.c_str()));
+
+    std::string hAlignStr;
+    switch(this->hAlign) {
+    case Text::HorizontalAlignment::HALIGN_LEFT:
+        hAlignStr = "left";
+        break;
+    case Text::HorizontalAlignment::HALIGN_CENTER:
+        hAlignStr = "center";
+        break;
+    case Text::HorizontalAlignment::HALIGN_RIGHT:
+        hAlignStr = "right";
+        break;
+    case Text::HorizontalAlignment::HALIGN_JUSTIFY:
+        hAlignStr = "justify";
+        break;
+    }
+    json_object_object_add(ret, "hAlign",
+            json_object_new_string(hAlignStr.c_str()));
+
+    std::string vAlignStr;
+    switch(this->vAlign) {
+    case Text::VerticalAlignment::VALIGN_TOP_TOP:
+        vAlignStr = "top_top";
+        break;
+    case Text::VerticalAlignment::VALIGN_TOP_CENTER:
+        vAlignStr = "top_center";
+        break;
+    case Text::VerticalAlignment::VALIGN_TOP_BOTTOM:
+        vAlignStr = "top_bottom";
+        break;
+    case Text::VerticalAlignment::VALIGN_CENTER_TOP:
+        vAlignStr = "center_top";
+        break;
+    case Text::VerticalAlignment::VALIGN_CENTER_CENTER:
+        vAlignStr = "center_center";
+        break;
+    case Text::VerticalAlignment::VALIGN_CENTER_BOTTOM:
+        vAlignStr = "center_bottom";
+        break;
+    case Text::VerticalAlignment::VALIGN_BOTTOM_TOP:
+        vAlignStr = "bottom_top";
+        break;
+    case Text::VerticalAlignment::VALIGN_BOTTOM_CENTER:
+        vAlignStr = "bottom_center";
+        break;
+    case Text::VerticalAlignment::VALIGN_BOTTOM_BOTTOM:
+        vAlignStr = "bottom_bottom";
+        break;
+    }
+    json_object_object_add(ret, "vAlign",
+            json_object_new_string(vAlignStr.c_str()));
+
+    return ret;
+}

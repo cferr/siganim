@@ -17,6 +17,7 @@
 #include <json-c/json.h>
 #include "SiganimFileHandler.h"
 #include "font/parsers/SiganimJSONFontsParser.h"
+#include "sign/SiganimJSONSignParser.h"
 
 SiganimFileHandler::SiganimFileHandler() : sign(nullptr) {
     this->fonts = new FontSet();
@@ -76,6 +77,12 @@ void SiganimFileHandler::parseInputFile() {
                 }
 
                 // TODO: parse sign
+                json_object* json_sign =
+                        json_object_object_get(document, "sign");
+                if(json_sign != nullptr) {
+                    this->sign =
+                            SiganimJSONSignParser::parseJSON(json_sign);
+                }
             }
 
             json_object_put(document);
@@ -85,9 +92,10 @@ void SiganimFileHandler::parseInputFile() {
 
 bool SiganimFileHandler::save() {
     json_object* document = json_object_new_object();
-    json_object_object_add(document, "fonts", this->fonts->toJSON());
-
-    // TODO add signs
+    if(!this->fonts->getFonts().empty())
+        json_object_object_add(document, "fonts", this->fonts->toJSON());
+    if(this->sign != nullptr)
+        json_object_object_add(document, "sign", this->sign->toJSON());
 
     int save_status = json_object_to_file_ext(this->location.c_str(), document,
             JSON_C_TO_STRING_PRETTY);

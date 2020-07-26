@@ -20,8 +20,8 @@
 #include <QMainWindow>
 #include <QTabWidget>
 
-#include "SignEditor.h"
-#include "FontStudio.h"
+#include "signeditor/SignEditor.h"
+#include "fontstudio/FontStudio.h"
 #include "SiganimUICore.h"
 
 class SiganimMainWindow: public QMainWindow {

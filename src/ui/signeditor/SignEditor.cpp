@@ -18,8 +18,8 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include "SignEditor.h"
-#include "../render/GIFSink.h"
-#include "../SiganimCore.h"
+#include "../../render/GIFSink.h"
+#include "../../SiganimCore.h"
 
 SignEditor::SignEditor(SiganimUICore* uiCore, QWidget* parent) :
     QWidget(parent), sign(uiCore->getCore()->getSign()),

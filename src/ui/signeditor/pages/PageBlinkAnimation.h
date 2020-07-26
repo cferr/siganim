@@ -14,27 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef UI_PAGES_PAGEFILL_H_
-#define UI_PAGES_PAGEFILL_H_
 
-#include <QColorDialog>
-#include <QPushButton>
+#ifndef UI_PAGES_PAGEBLINKANIMATION_H_
+#define UI_PAGES_PAGEBLINKANIMATION_H_
+
+#include <QSpinBox>
 #include <QWidget>
-#include "../../sign/cells/Fill.h"
+#include "../../../sign/cells/BlinkAnimation.h"
 
-class PageFill : public QWidget {
+class PageBlinkAnimation : public QWidget {
     Q_OBJECT
 private:
-    Fill* treeNode;
-    QColorDialog* colorPicker;
-    QPushButton* pickColor;
+    BlinkAnimation* treeNode;
+    QSpinBox* onFramesSpinner;
+    QSpinBox* offFramesSpinner;
 
 public:
-    PageFill(Fill* treeNode);
-    virtual ~PageFill() { }
+    PageBlinkAnimation(BlinkAnimation* treeNode);
+    virtual ~PageBlinkAnimation() { }
 
-    void selectColor();
-    void setColor(const QColor& color);
+public slots:
+    void setFramesOn(int frames);
+    void setFramesOff(int frames);
 };
 
-#endif /* UI_PAGES_PAGEFILL_H_ */
+#endif /* UI_PAGES_PAGEBLINKANIMATION_H_ */

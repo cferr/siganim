@@ -14,33 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef UI_PAGES_PAGEFILL_H_
+#define UI_PAGES_PAGEFILL_H_
 
-#ifndef UI_PAGES_PAGEMARQUEEANIMATION_H_
-#define UI_PAGES_PAGEMARQUEEANIMATION_H_
-
-#include <QRadioButton>
-#include <QSpinBox>
+#include <QColorDialog>
+#include <QPushButton>
 #include <QWidget>
-#include "../../sign/cells/MarqueeAnimation.h"
+#include "../../../sign/cells/Fill.h"
 
-class PageMarqueeAnimation : public QWidget {
+class PageFill : public QWidget {
     Q_OBJECT
 private:
-    MarqueeAnimation* treeNode;
-    QRadioButton* direction_LEFT;
-    QRadioButton* direction_RIGHT;
-    QSpinBox* spaceSpinner;
-    QSpinBox* durationSpinner;
+    Fill* treeNode;
+    QColorDialog* colorPicker;
+    QPushButton* pickColor;
 
 public:
-    PageMarqueeAnimation(MarqueeAnimation* treeNode);
-    virtual ~PageMarqueeAnimation() { }
+    PageFill(Fill* treeNode);
+    virtual ~PageFill() { }
 
-public slots:
-    void setSpace(int space);
-    void setDurationFrames(int frames);
-    void setDirection_LEFT(bool set);
-    void setDirection_RIGHT(bool set);
+    void selectColor();
+    void setColor(const QColor& color);
 };
 
-#endif /* UI_PAGES_PAGEMARQUEEANIMATION_H_ */
+#endif /* UI_PAGES_PAGEFILL_H_ */

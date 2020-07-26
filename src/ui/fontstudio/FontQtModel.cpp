@@ -21,10 +21,10 @@
 #include <QString>
 #include <QVariant>
 #include "FontQtModel.h"
-#include "../font/UnicodeUtils.h"
-#include "../render/SingleFrameSink.h"
-#include "../sign/cells/Text.h"
-#include "../sign/Sign.h"
+#include "../../font/UnicodeUtils.h"
+#include "../../render/SingleFrameSink.h"
+#include "../../sign/cells/Text.h"
+#include "../../sign/Sign.h"
 
 FontQtModel::FontQtModel(Font* font, const Rasterizer* rasterizer,
         enum Display::Type displayType) : font(font),

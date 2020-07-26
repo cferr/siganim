@@ -15,27 +15,35 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#ifndef UI_PAGES_PAGEBLINKANIMATION_H_
-#define UI_PAGES_PAGEBLINKANIMATION_H_
+#ifndef UI_PAGES_PAGESPLIT_H_
+#define UI_PAGES_PAGESPLIT_H_
 
 #include <QSpinBox>
+#include <QRadioButton>
 #include <QWidget>
-#include "../../sign/cells/BlinkAnimation.h"
+#include "../../../sign/cells/Split.h"
 
-class PageBlinkAnimation : public QWidget {
+class PageSplit : public QWidget {
     Q_OBJECT
+
 private:
-    BlinkAnimation* treeNode;
-    QSpinBox* onFramesSpinner;
-    QSpinBox* offFramesSpinner;
+    Split* treeNode;
+    QSpinBox* posSpinner;
+    QRadioButton* radioDirHorizontal;
+    QRadioButton* radioDirVertical;
+    QRadioButton* radioDirDiagonalSWNE;
+    QRadioButton* radioDirDiagonalNWSE;
 
 public:
-    PageBlinkAnimation(BlinkAnimation* treeNode);
-    virtual ~PageBlinkAnimation() { }
+    PageSplit(Split* treeNode);
+    virtual ~PageSplit() { }
 
 public slots:
-    void setFramesOn(int frames);
-    void setFramesOff(int frames);
+    void setDirHorizontal(bool set);
+    void setDirVertical(bool set);
+    void setDirDiagonalSWNE(bool set);
+    void setDirDiagonalNWSE(bool set);
+    void setSplitPos(int pos);
 };
 
-#endif /* UI_PAGES_PAGEBLINKANIMATION_H_ */
+#endif /* UI_PAGES_PAGESPLIT_H_ */

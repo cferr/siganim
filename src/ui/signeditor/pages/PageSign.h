@@ -15,35 +15,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#ifndef UI_PAGES_PAGESPLIT_H_
-#define UI_PAGES_PAGESPLIT_H_
+#ifndef UI_PAGES_PAGESIGN_H_
+#define UI_PAGES_PAGESIGN_H_
 
-#include <QSpinBox>
-#include <QRadioButton>
+#include <QLabel>
+#include <QVBoxLayout>
 #include <QWidget>
-#include "../../sign/cells/Split.h"
+#include "../../../sign/Sign.h"
 
-class PageSplit : public QWidget {
+class PageSign: public QWidget {
     Q_OBJECT
 
 private:
-    Split* treeNode;
-    QSpinBox* posSpinner;
-    QRadioButton* radioDirHorizontal;
-    QRadioButton* radioDirVertical;
-    QRadioButton* radioDirDiagonalSWNE;
-    QRadioButton* radioDirDiagonalNWSE;
+    Sign* treeNode;
+    QLabel* indicator;
 
 public:
-    PageSplit(Split* treeNode);
-    virtual ~PageSplit() { }
-
-public slots:
-    void setDirHorizontal(bool set);
-    void setDirVertical(bool set);
-    void setDirDiagonalSWNE(bool set);
-    void setDirDiagonalNWSE(bool set);
-    void setSplitPos(int pos);
+    PageSign(Sign* treeNode);
+    virtual ~PageSign() { }
 };
 
-#endif /* UI_PAGES_PAGESPLIT_H_ */
+#endif /* UI_PAGES_PAGESIGN_H_ */

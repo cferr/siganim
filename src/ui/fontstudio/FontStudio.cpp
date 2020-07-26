@@ -20,8 +20,8 @@
 #include <QString>
 #include <QVBoxLayout>
 #include "FontStudio.h"
-#include "../font/Character.h"
-#include "../font/UnicodeUtils.h"
+#include "../../font/Character.h"
+#include "../../font/UnicodeUtils.h"
 
 FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
     QWidget(parent), uiCore(uiCore), currentCharacter(nullptr) {

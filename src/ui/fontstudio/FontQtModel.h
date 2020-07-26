@@ -21,10 +21,10 @@
 #include <map>
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include "../font/Font.h"
-#include "../font/FontSet.h"
-#include "../render/Rasterizer.h"
-#include "../sign/cells/Display.h"
+#include "../../font/Font.h"
+#include "../../font/FontSet.h"
+#include "../../render/Rasterizer.h"
+#include "../../sign/cells/Display.h"
 
 class FontQtModel : public QAbstractItemModel {
     Q_OBJECT

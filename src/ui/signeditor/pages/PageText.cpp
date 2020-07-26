@@ -19,7 +19,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "PageText.h"
-#include "../../sign/SignColor.h"
+#include "../../../sign/SignColor.h"
 
 PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     treeNode(treeNode), fontSet(fontSet) {

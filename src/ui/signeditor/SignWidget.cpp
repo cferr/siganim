@@ -17,7 +17,7 @@
 #include <QRect>
 #include <QPaintEvent>
 #include "SignWidget.h"
-#include "../render/SignRenderer.h"
+#include "../../render/SignRenderer.h"
 
 SignWidget::SignWidget(Sign* sign, const FontSet* fontSet,
         const Rasterizer* rasterizer, QWidget *parent) :

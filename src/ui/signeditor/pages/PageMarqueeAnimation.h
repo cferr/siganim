@@ -15,22 +15,32 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#ifndef UI_PAGES_PAGECOMPOSE_H_
-#define UI_PAGES_PAGECOMPOSE_H_
+#ifndef UI_PAGES_PAGEMARQUEEANIMATION_H_
+#define UI_PAGES_PAGEMARQUEEANIMATION_H_
 
-#include <QLabel>
+#include <QRadioButton>
+#include <QSpinBox>
 #include <QWidget>
-#include "../../sign/cells/Compose.h"
+#include "../../../sign/cells/MarqueeAnimation.h"
 
-class PageCompose : public QWidget {
+class PageMarqueeAnimation : public QWidget {
     Q_OBJECT
 private:
-    Compose* treeNode;
-    QLabel* indicator;
+    MarqueeAnimation* treeNode;
+    QRadioButton* direction_LEFT;
+    QRadioButton* direction_RIGHT;
+    QSpinBox* spaceSpinner;
+    QSpinBox* durationSpinner;
 
 public:
-    PageCompose(Compose* treeNode);
-    virtual ~PageCompose() { }
+    PageMarqueeAnimation(MarqueeAnimation* treeNode);
+    virtual ~PageMarqueeAnimation() { }
+
+public slots:
+    void setSpace(int space);
+    void setDurationFrames(int frames);
+    void setDirection_LEFT(bool set);
+    void setDirection_RIGHT(bool set);
 };
 
-#endif /* UI_PAGES_PAGECOMPOSE_H_ */
+#endif /* UI_PAGES_PAGEMARQUEEANIMATION_H_ */

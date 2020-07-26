@@ -15,24 +15,34 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#ifndef UI_PAGES_PAGESIGN_H_
-#define UI_PAGES_PAGESIGN_H_
+#ifndef UI_PAGES_PAGEDISPLAY_H_
+#define UI_PAGES_PAGEDISPLAY_H_
 
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QRadioButton>
+#include <QSpinBox>
 #include <QWidget>
-#include "../../sign/Sign.h"
+#include "../../../sign/cells/Display.h"
 
-class PageSign: public QWidget {
+class PageDisplay : public QWidget {
     Q_OBJECT
-
 private:
-    Sign* treeNode;
-    QLabel* indicator;
+    Display* treeNode;
+    QSpinBox* heightSpinner;
+    QSpinBox* widthSpinner;
+    QRadioButton* displayType_DISPLAY_RGB_LED;
+    QRadioButton* displayType_DISPLAY_MONOCHROME_LED;
+    QRadioButton* displayType_DISPLAY_FLIPDISC;
 
 public:
-    PageSign(Sign* treeNode);
-    virtual ~PageSign() { }
+    PageDisplay(Display* treeNode);
+    virtual ~PageDisplay() { }
+
+public slots:
+    void setHeight(int height);
+    void setWidth(int width);
+    void setDisplayType_DISPLAY_RGB_LED(bool set);
+    void setDisplayType_DISPLAY_MONOCHROME_LED(bool set);
+    void setDisplayType_DISPLAY_FLIPDISC(bool set);
 };
 
-#endif /* UI_PAGES_PAGESIGN_H_ */
+#endif /* UI_PAGES_PAGEDISPLAY_H_ */

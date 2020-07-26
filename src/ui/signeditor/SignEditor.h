@@ -24,14 +24,14 @@
 #include <QTreeWidget>
 #include <QWidget>
 
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
-#include "../sign/cells/Text.h"
+#include "../../font/FontSet.h"
+#include "../../render/RasterizerSet.h"
+#include "../../sign/cells/Text.h"
 #include "SignTreeQtModel.h"
 #include "SignTreeDetailsWidget.h"
 #include "SignTreeWidget.h"
 #include "SignWidget.h"
-#include "SiganimUICore.h"
+#include "../SiganimUICore.h"
 
 class SignEditor: public QWidget {
     Q_OBJECT

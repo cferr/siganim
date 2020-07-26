@@ -19,8 +19,8 @@
 
 #include <QMenu>
 #include <QObject>
-#include "../sign/Sign.h"
-#include "../sign/SignCell.h"
+#include "../../sign/Sign.h"
+#include "../../sign/SignCell.h"
 
 class SignTreeContextMenuProvider : public QObject {
     Q_OBJECT

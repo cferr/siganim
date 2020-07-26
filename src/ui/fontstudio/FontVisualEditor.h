@@ -21,12 +21,12 @@
 #include <string>
 #include <QMouseEvent>
 #include <QWidget>
-#include "SignWidget.h"
-#include "../sign/cells/Display.h"
-#include "../sign/cells/Text.h"
-#include "../render/StaticObservableSink.h"
-#include "../font/Character.h"
-#include "../font/Font.h"
+#include "../signeditor/SignWidget.h"
+#include "../../sign/cells/Display.h"
+#include "../../sign/cells/Text.h"
+#include "../../render/StaticObservableSink.h"
+#include "../../font/Character.h"
+#include "../../font/Font.h"
 
 class FontVisualEditor : public QWidget, public Observer {
     Q_OBJECT

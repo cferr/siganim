@@ -23,8 +23,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QWidget>
-#include "../../font/FontSet.h"
-#include "../../sign/cells/Text.h"
+#include "../../../font/FontSet.h"
+#include "../../../sign/cells/Text.h"
 
 class PageText : public QWidget {
     Q_OBJECT

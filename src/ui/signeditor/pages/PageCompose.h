@@ -15,34 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#ifndef UI_PAGES_PAGEDISPLAY_H_
-#define UI_PAGES_PAGEDISPLAY_H_
+#ifndef UI_PAGES_PAGECOMPOSE_H_
+#define UI_PAGES_PAGECOMPOSE_H_
 
-#include <QRadioButton>
-#include <QSpinBox>
+#include <QLabel>
 #include <QWidget>
-#include "../../sign/cells/Display.h"
+#include "../../../sign/cells/Compose.h"
 
-class PageDisplay : public QWidget {
+class PageCompose : public QWidget {
     Q_OBJECT
 private:
-    Display* treeNode;
-    QSpinBox* heightSpinner;
-    QSpinBox* widthSpinner;
-    QRadioButton* displayType_DISPLAY_RGB_LED;
-    QRadioButton* displayType_DISPLAY_MONOCHROME_LED;
-    QRadioButton* displayType_DISPLAY_FLIPDISC;
+    Compose* treeNode;
+    QLabel* indicator;
 
 public:
-    PageDisplay(Display* treeNode);
-    virtual ~PageDisplay() { }
-
-public slots:
-    void setHeight(int height);
-    void setWidth(int width);
-    void setDisplayType_DISPLAY_RGB_LED(bool set);
-    void setDisplayType_DISPLAY_MONOCHROME_LED(bool set);
-    void setDisplayType_DISPLAY_FLIPDISC(bool set);
+    PageCompose(Compose* treeNode);
+    virtual ~PageCompose() { }
 };
 
-#endif /* UI_PAGES_PAGEDISPLAY_H_ */
+#endif /* UI_PAGES_PAGECOMPOSE_H_ */

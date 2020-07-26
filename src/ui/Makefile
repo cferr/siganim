@@ -1,12 +1,17 @@
 # Makefile for Meta-Object Code (MOC) generation
 # Run this before invoking CDT's build process.
 
-Q_OBJECTS = SignEditor.h FontStudio.h SignWidget.h SiganimMainWindow.h \
-	SignTreeDetailsWidget.h pages/PageBlinkAnimation.h pages/PageCompose.h \
-	pages/PageDisplay.h pages/PageFill.h pages/PageMarqueeAnimation.h \
-	pages/PageSign.h pages/PageSplit.h pages/PageText.h pages/PageEmptyCell.h \
-	SignTreeWidget.h SignTreeQtModel.h SignTreeContextMenuProvider.h \
-	FontVisualEditor.h FontQtModel.h CharacterListWidget.h SiganimUICore.h
+Q_OBJECTS = signeditor/SignEditor.h signeditor/SignWidget.h \
+	signeditor/SignTreeDetailsWidget.h signeditor/pages/PageBlinkAnimation.h \
+	signeditor/pages/PageCompose.h signeditor/pages/PageDisplay.h \
+	signeditor/pages/PageFill.h signeditor/pages/PageMarqueeAnimation.h \
+	signeditor/pages/PageSign.h signeditor/pages/PageSplit.h \
+	signeditor/pages/PageText.h signeditor/pages/PageEmptyCell.h \
+	signeditor/SignTreeWidget.h signeditor/SignTreeQtModel.h \
+	signeditor/SignTreeContextMenuProvider.h \
+	fontstudio/FontStudio.h fontstudio/FontVisualEditor.h \
+	fontstudio/FontQtModel.h fontstudio/CharacterListWidget.h \
+	SiganimMainWindow.h SiganimUICore.h
 
 MOCS = $(join $(dir $(Q_OBJECTS)), $(addsuffix .cpp, $(addprefix moc_, $(basename $(notdir $(Q_OBJECTS))))))
 

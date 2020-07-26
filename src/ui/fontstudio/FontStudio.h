@@ -23,12 +23,12 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
-#include "../font/FontSet.h"
-#include "../render/RasterizerSet.h"
+#include "../../font/FontSet.h"
+#include "../../render/RasterizerSet.h"
 #include "FontVisualEditor.h"
 #include "FontQtModel.h"
 #include "CharacterListWidget.h"
-#include "SiganimUICore.h"
+#include "../SiganimUICore.h"
 
 class FontStudio : public QWidget {
     Q_OBJECT

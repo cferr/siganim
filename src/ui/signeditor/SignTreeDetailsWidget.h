@@ -19,8 +19,8 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include "../font/FontSet.h"
-#include "../sign/SignTree.h"
+#include "../../font/FontSet.h"
+#include "../../sign/SignTree.h"
 
 class SignTreeDetailsWidget: public QWidget, public SignTreeDispatcher {
     Q_OBJECT

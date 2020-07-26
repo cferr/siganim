@@ -21,11 +21,11 @@
 #include <QImage>
 #include <QPainter>
 #include <QObject>
-#include "../font/FontSet.h"
-#include "../render/AnimatedObservableSink.h"
-#include "../sign/Sign.h"
-#include "../sign/Observer.h"
-#include "../render/Rasterizer.h"
+#include "../../font/FontSet.h"
+#include "../../render/AnimatedObservableSink.h"
+#include "../../sign/Sign.h"
+#include "../../sign/Observer.h"
+#include "../../render/Rasterizer.h"
 
 class SignWidget: public QWidget, public Observer {
     Q_OBJECT

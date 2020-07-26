@@ -23,9 +23,9 @@
 #include <vector>
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include "../sign/SignCell.h"
-#include "../sign/SignTree.h"
-#include "../sign/Sign.h"
+#include "../../sign/SignCell.h"
+#include "../../sign/SignTree.h"
+#include "../../sign/Sign.h"
 #include "SignTreeDetailsWidget.h"
 
 class SignTreeQtModel: public QAbstractItemModel,

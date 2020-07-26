@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "../sign/Sign.h"
-#include "../sign/SignTreeVisitor.h"
-#include "../sign/cells/Display.h"
-#include "../sign/cells/Text.h"
-#include "../sign/cells/Split.h"
-#include "../sign/cells/MarqueeAnimation.h"
-#include "../sign/cells/BlinkAnimation.h"
-#include "../sign/cells/Compose.h"
-#include "../sign/cells/Fill.h"
+#include "../../sign/Sign.h"
+#include "../../sign/SignTreeVisitor.h"
+#include "../../sign/cells/Display.h"
+#include "../../sign/cells/Text.h"
+#include "../../sign/cells/Split.h"
+#include "../../sign/cells/MarqueeAnimation.h"
+#include "../../sign/cells/BlinkAnimation.h"
+#include "../../sign/cells/Compose.h"
+#include "../../sign/cells/Fill.h"
 #include "SignTreeQtModel.h"
 
 SignTreeQtModel::SignTreeQtModel(SignTree *tree) : tree(tree),

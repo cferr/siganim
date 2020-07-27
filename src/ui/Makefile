@@ -11,6 +11,7 @@ Q_OBJECTS = signeditor/SignEditor.h signeditor/SignWidget.h \
 	signeditor/SignTreeContextMenuProvider.h \
 	fontstudio/FontStudio.h fontstudio/FontVisualEditor.h \
 	fontstudio/FontQtModel.h fontstudio/CharacterListWidget.h \
+	fontstudio/NoSuchCharWidget.h \
 	SiganimMainWindow.h SiganimUICore.h
 
 MOCS = $(join $(dir $(Q_OBJECTS)), $(addsuffix .cpp, $(addprefix moc_, $(basename $(notdir $(Q_OBJECTS))))))

@@ -17,6 +17,7 @@
 #ifndef SRC_UI_FONTSTUDIO_H_
 #define SRC_UI_FONTSTUDIO_H_
 
+#include <unicode/uchar.h>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
@@ -28,6 +29,7 @@
 #include "FontVisualEditor.h"
 #include "FontQtModel.h"
 #include "CharacterListWidget.h"
+#include "NoSuchCharWidget.h"
 #include "../SiganimUICore.h"
 
 class FontStudio : public QWidget {
@@ -44,8 +46,10 @@ private:
     // TODO clean up this list of attributes and move some to an char editor
     // class (which will also have height/width spinners)
     Character* currentCharacter;
+    UChar32 currentCharacterCode;
     const Rasterizer* editorsRasterizer;
     FontVisualEditor* visualEditor;
+    NoSuchCharWidget* noSuchChar;
     FontSet* fontSet;
 
     const Rasterizer* modelRasterizer;
@@ -64,6 +68,8 @@ private:
 
     CharacterListWidget* characterList;
     FontQtModel* model;
+
+    QPushButton* commitButton;
 
     Font* currentFont;
 
@@ -85,10 +91,13 @@ public slots:
     void unicodeBlockChanged(const int block);
     void setRasterizer(const QString& rasterizer);
     void setEditedCharacter(Character* c);
+    void unavailableCharacterPrompt(UChar32 code);
     void setCharacterHeight(int height);
     void setCharacterWidth(int width);
     void promptRenameFont();
     void promptChangeStyle();
+    void commitFontChanges();
+    void createCharacterInFont();
 };
 
 #endif /* SRC_UI_FONTSTUDIO_H_ */

@@ -45,6 +45,7 @@ private:
     QImage* image;
     unsigned char* pixelData;
 
+
 protected:
     void paintEvent(QPaintEvent* event) override;
 

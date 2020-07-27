@@ -31,7 +31,6 @@ FontVisualEditor::FontVisualEditor(const Rasterizer* rasterizer,
     this->sink = new StaticObservableSink(this->sign, this->fontSet,
             rasterizer, 2);
     this->sink->attach(this);
-
 }
 
 FontVisualEditor::~FontVisualEditor() {

@@ -27,6 +27,8 @@ void CharacterListWidget::currentChanged(const QModelIndex &current,
             (FontQtModel::CharacterOption*)current.internalPointer();
     if(c != nullptr && c->hasCharacter) {
         emit characterSelected(c->character);
+    } else if(c != nullptr) {
+        emit unavailableCharacterSelected(c->code);
     }
 }
 

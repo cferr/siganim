@@ -60,9 +60,15 @@ FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
     QGridLayout* editorLayout = new QGridLayout();
     this->heightSpinner = new QSpinBox(this);
     this->widthSpinner = new QSpinBox(this);
+    this->noSuchChar = new NoSuchCharWidget(this);
+    editorLayout->addWidget(this->noSuchChar, 0, 0, 1, 2, Qt::AlignCenter);
     editorLayout->addWidget(this->visualEditor, 0, 0, 1, 2, Qt::AlignCenter);
     editorLayout->addWidget(this->widthSpinner, 1, 0);
     editorLayout->addWidget(this->heightSpinner, 2, 0);
+
+    this->noSuchChar->setVisible(false);
+
+    this->commitButton = new QPushButton("Commit changes", this);
 
     this->mainLayout->addWidget(this->welcome, 0, 1);
     this->mainLayout->addWidget(this->rasterizerCombo, 1, 1);
@@ -71,6 +77,8 @@ FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
     this->mainLayout->addWidget(this->characterList, 4, 1);
     this->mainLayout->addLayout(editorLayout, 0, 0, 5, 1,
             Qt::AlignCenter);
+    this->mainLayout->addWidget(this->commitButton, 5, 0, 1, 2,
+                Qt::AlignCenter);
     this->mainLayout->setColumnMinimumWidth(0, 200);
     this->setLayout(this->mainLayout);
 
@@ -105,6 +113,10 @@ FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
             &CharacterListWidget::characterSelected,
             this,
             &FontStudio::setEditedCharacter);
+    connect(this->characterList,
+            &CharacterListWidget::unavailableCharacterSelected,
+            this,
+            &FontStudio::unavailableCharacterPrompt);
     connect(this->heightSpinner,
             SIGNAL(valueChanged(int)),
             this,
@@ -125,7 +137,14 @@ FontStudio::FontStudio(SiganimUICore* uiCore, QWidget* parent) :
             SIGNAL(currentIndexChanged(int)),
             this,
             SLOT(unicodeBlockChanged(int)));
-
+    connect(this->commitButton,
+            &QPushButton::clicked,
+            this,
+            &FontStudio::commitFontChanges);
+    connect(this->noSuchChar,
+            &NoSuchCharWidget::createCharacter,
+            this,
+            &FontStudio::createCharacterInFont);
 
     this->populateFontFamilies();
     this->populateUnicodeBlocks();
@@ -217,6 +236,19 @@ void FontStudio::setEditedCharacter(Character* c) {
     this->visualEditor->setCharacter(c);
     this->heightSpinner->setValue(c->getHeight());
     this->widthSpinner->setValue(c->getWidth());
+
+    this->visualEditor->setVisible(true);
+    this->widthSpinner->setVisible(true);
+    this->heightSpinner->setVisible(true);
+    this->noSuchChar->setVisible(false);
+}
+
+void FontStudio::unavailableCharacterPrompt(UChar32 code) {
+    this->visualEditor->setVisible(false);
+    this->widthSpinner->setVisible(false);
+    this->heightSpinner->setVisible(false);
+    this->noSuchChar->setVisible(true);
+    this->currentCharacterCode = code;
 }
 
 void FontStudio::setCharacterHeight(int height) {
@@ -274,4 +306,18 @@ void FontStudio::populateUnicodeBlocks() {
 
 void FontStudio::unicodeBlockChanged(const int block) {
     this->model->setBlockNumber(block);
+}
+
+
+void FontStudio::commitFontChanges() {
+    this->uiCore->getCore()->saveDatabase();
+}
+
+void FontStudio::createCharacterInFont() {
+    if(this->currentFont != nullptr) {
+        Character* c = new Character(this->currentCharacterCode,
+                10, 10); // TODO refrain from giving such a default value
+        this->currentFont->addCharacter(c);
+        this->setEditedCharacter(c);
+    }
 }

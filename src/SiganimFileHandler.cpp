@@ -76,7 +76,6 @@ void SiganimFileHandler::parseInputFile() {
                     this->fonts->addFonts(fontsParsed);
                 }
 
-                // TODO: parse sign
                 json_object* json_sign =
                         json_object_object_get(document, "sign");
                 if(json_sign != nullptr) {

@@ -36,7 +36,7 @@ public:
     SiganimCore(const std::string& databaseLocation);
 
     void setCurrentSignFile(const std::string& location = "");
-    void saveSignsToFile();
+    void saveSignFile();
     void saveDatabase();
     void exportDatabaseToFile(const std::string& location);
 

@@ -17,8 +17,9 @@
 #ifndef UI_CHARACTERLISTWIDGET_H_
 #define UI_CHARACTERLISTWIDGET_H_
 
+#include <unicode/uchar.h>
 #include <QListView>
-#include "../font/Character.h"
+#include "../../font/Character.h"
 
 class CharacterListWidget : public QListView {
     Q_OBJECT
@@ -33,6 +34,7 @@ public:
 
 signals:
     void characterSelected(Character* c);
+    void unavailableCharacterSelected(UChar32 code);
 };
 
 #endif /* UI_CHARACTERLISTWIDGET_H_ */

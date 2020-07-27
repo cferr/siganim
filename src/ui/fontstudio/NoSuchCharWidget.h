@@ -14,32 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef UI_SIGANIMUICORE_H_
-#define UI_SIGANIMUICORE_H_
+#ifndef UI_FONTSTUDIO_NOSUCHCHARWIDGET_H_
+#define UI_FONTSTUDIO_NOSUCHCHARWIDGET_H_
 
-#include <unicode/uchar.h>
-#include <QObject>
-#include "../SiganimCore.h"
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
-class SiganimMainWindow;
-
-class SiganimUICore : public QObject {
+class NoSuchCharWidget : public QWidget {
     Q_OBJECT
-
-    SiganimMainWindow* mainWindow;
-    SiganimCore* core;
+private:
+    QLabel* noCharLabel;
+    QPushButton* addCharButton;
+    QVBoxLayout* noCharLayout;
 
 public:
-    SiganimUICore(SiganimCore* core);
-    virtual ~SiganimUICore();
+    NoSuchCharWidget(QWidget *parent = nullptr);
+    virtual ~NoSuchCharWidget();
 
-    // General
-    void showUI();
+signals:
+    void createCharacter();
 
-    // Sign-related stuff
-    void saveSignToGIF();
-
-    SiganimCore* getCore() const;
+public slots:
+    void addCharacterClicked();
 };
 
-#endif /* UI_SIGANIMUICORE_H_ */
+#endif /* UI_FONTSTUDIO_NOSUCHCHARWIDGET_H_ */

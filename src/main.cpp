@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-//#define GUI
+#define GUI
 //#define TEST
 
 #ifdef GUI
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     // Core containing database
     SiganimCore core("fonts.json");
     core.setCurrentSignFile("sign.json");
-    core.saveSignsToFile();
+    core.saveSignFile();
 
 #ifdef GUI
     SiganimUICore uiCore(&core);

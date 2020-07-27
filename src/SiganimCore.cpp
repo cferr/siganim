@@ -53,12 +53,13 @@ void SiganimCore::setCurrentSignFile(const std::string &location) {
     }
 }
 
-void SiganimCore::saveSignsToFile() {
+void SiganimCore::saveSignFile() {
     this->currentSignFile->setSign(this->sign);
     this->currentSignFile->save();
 }
 
 void SiganimCore::saveDatabase() {
+    this->currentDatabase->save();
 }
 
 void SiganimCore::exportDatabaseToFile(const std::string &location) {

@@ -1,0 +1,2 @@
+#cmakedefine GUI
+#define SIGANIM_VERSION "@SIGANIM_VERSION@"

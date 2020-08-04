@@ -17,6 +17,7 @@
 #ifndef SRC_SIGNCELL_H_
 #define SRC_SIGNCELL_H_
 
+#include <inttypes.h>
 #include <iostream>
 #include <exception>
 #include "SignTree.h"
@@ -59,9 +60,9 @@ public:
     public:
         NoSuchChildException(const SignCell* sender,
                 const SignCell* child) : sender(sender), child(child) {
-            this->message = "Cell at " + std::to_string((unsigned long)sender) +
+            this->message = "Cell at " + std::to_string((uintptr_t)sender) +
                     " has no such child " +
-                    std::to_string((unsigned long)child);
+                    std::to_string((uintptr_t)child);
         }
 
         const char* what() const throw () {
@@ -78,7 +79,7 @@ public:
         std::string message;
     public:
         OrphanNodeException(const SignCell* sender) : sender(sender) {
-            this->message = "Cell at " + std::to_string((unsigned long)sender) +
+            this->message = "Cell at " + std::to_string((uintptr_t)sender) +
                     " is orphan ";
         }
 

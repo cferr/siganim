@@ -14,23 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QLabel>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QGridLayout>
 #include "PageDisplay.h"
 
 PageDisplay::PageDisplay(Display* treeNode) : treeNode(treeNode) {
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    QGridLayout* layout = new QGridLayout(this);
     QWidget* radioWidget_displayType = new QWidget(this);
     QHBoxLayout* radioLayout_displayType = new QHBoxLayout();
 
+    QLabel* widthLabel = new QLabel("Width:", this);
     this->widthSpinner = new QSpinBox(this);
     this->widthSpinner->setMinimum(0);
     this->widthSpinner->setMaximum(999);
     this->widthSpinner->setValue(treeNode->getWidth());
+    QLabel* heightLabel = new QLabel("Height:", this);
     this->heightSpinner = new QSpinBox(this);
     this->heightSpinner->setMinimum(0);
     this->heightSpinner->setMaximum(999);
     this->heightSpinner->setValue(treeNode->getHeight());
+    QLabel* displayTypeLabel = new QLabel("Display type:", this);
     this->displayType_DISPLAY_FLIPDISC = new QRadioButton("Flip disc",
             radioWidget_displayType);
     this->displayType_DISPLAY_MONOCHROME_LED = new QRadioButton(
@@ -78,9 +82,12 @@ PageDisplay::PageDisplay(Display* treeNode) : treeNode(treeNode) {
     radioLayout_displayType->addWidget(displayType_DISPLAY_MONOCHROME_LED);
     radioLayout_displayType->addWidget(displayType_DISPLAY_RGB_LED);
 
-    layout->addLayout(radioLayout_displayType);
-    layout->addWidget(this->widthSpinner);
-    layout->addWidget(this->heightSpinner);
+    layout->addWidget(displayTypeLabel, 0, 0);
+    layout->addLayout(radioLayout_displayType, 0, 1);
+    layout->addWidget(widthLabel, 1, 0);
+    layout->addWidget(this->widthSpinner, 1, 1);
+    layout->addWidget(heightLabel, 2, 0);
+    layout->addWidget(this->heightSpinner, 2, 1);
 
     this->setLayout(layout);
 

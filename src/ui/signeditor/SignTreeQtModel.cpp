@@ -305,6 +305,8 @@ QVariant SignTreeQtModel::data(const QModelIndex &index, int role) const {
     case Qt::DisplayRole:
         return ((Chain*)index.internalPointer())->getSignModelPtr()->getLabel();
         break;
+    case Qt::SizeHintRole:
+        return QSize(0, 20);
     default:
         return QVariant();
         break;

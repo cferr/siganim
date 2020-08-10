@@ -27,7 +27,8 @@ private:
 public:
     BlinkAnimation();
     BlinkAnimation(SignCell* subject, const unsigned int framesOn,
-            const unsigned int framesOff);
+            const unsigned int framesOff,
+            const unsigned int initialPhaseFrames);
     BlinkAnimation(const BlinkAnimation* a);
     SignCell* copy();
 

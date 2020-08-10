@@ -30,6 +30,7 @@ private:
 public:
     MarqueeAnimation();
     MarqueeAnimation(SignCell* subject, unsigned int durationFrames,
+            const unsigned int initialPhaseFrames,
             enum Direction direction, unsigned int space);
     MarqueeAnimation(const MarqueeAnimation* a);
     SignCell* copy();

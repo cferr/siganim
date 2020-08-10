@@ -17,15 +17,15 @@
 #include <iostream>
 #include "BlinkAnimation.h"
 
-BlinkAnimation::BlinkAnimation() : Animation(nullptr, 10+10), framesOn(10),
+BlinkAnimation::BlinkAnimation() : Animation(nullptr, 10+10, 0), framesOn(10),
     framesOff(10) {
 
 }
 
 BlinkAnimation::BlinkAnimation(SignCell* subject, const unsigned int framesOn,
-        const unsigned int framesOff) :
-        Animation(subject, framesOn + framesOff), framesOn(framesOn),
-        framesOff(framesOff) {
+        const unsigned int framesOff, const unsigned int initialPhaseFrames) :
+        Animation(subject, framesOn + framesOff, initialPhaseFrames),
+        framesOn(framesOn), framesOff(framesOff) {
 }
 
 BlinkAnimation::BlinkAnimation(const BlinkAnimation *a) :
@@ -88,7 +88,9 @@ json_object* BlinkAnimation::toJSON() const {
     json_object_object_add(ret, "framesOn",
             json_object_new_int(this->framesOn));
     json_object_object_add(ret, "framesOff",
-                json_object_new_int(this->framesOff));
+            json_object_new_int(this->framesOff));
+    json_object_object_add(ret, "initialPhaseFrames",
+            json_object_new_int(this->initialPhaseFrames));
     try {
         json_object_object_add(ret, "subject", this->getSubject()->toJSON());
     } catch(NoSuchChildException& e) {

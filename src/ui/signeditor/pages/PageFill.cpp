@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <QVBoxLayout>
+#include <QLabel>
+#include <QGridLayout>
 #include "PageFill.h"
 
 PageFill::PageFill(Fill* treeNode) : treeNode(treeNode) {
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    QGridLayout* layout = new QGridLayout(this);
 
-    this->pickColor = new QPushButton("Color");
+    QLabel* pickColorLabel = new QLabel("Color:", this);
+    this->pickColor = new QPushButton("Pick Color");
     this->colorPicker = new QColorDialog(this);
 
     this->pickColor->connect(this->pickColor,
@@ -33,7 +35,8 @@ PageFill::PageFill(Fill* treeNode) : treeNode(treeNode) {
             this,
             &PageFill::setColor);
 
-    layout->addWidget(pickColor);
+    layout->addWidget(pickColorLabel, 0, 0);
+    layout->addWidget(pickColor, 0, 1);
     this->setLayout(layout);
 }
 

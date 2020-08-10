@@ -38,6 +38,7 @@
               "type":"BlinkAnimation",
               "framesOn":5,
               "framesOff":5,
+              "initialPhaseFrames":0,
               "subject":{
                 "type":"Split",
                 "splitPos":0,
@@ -91,6 +92,7 @@
             "type":"MarqueeAnimation",
             "durationFrames":50,
             "space":20,
+            "initialPhaseFrames":0,
             "direction":"left",
             "subject":{
               "type":"Text",

@@ -28,6 +28,7 @@ private:
     BlinkAnimation* treeNode;
     QSpinBox* onFramesSpinner;
     QSpinBox* offFramesSpinner;
+    QSpinBox* phaseFramesSpinner;
 
 public:
     PageBlinkAnimation(BlinkAnimation* treeNode);
@@ -36,6 +37,7 @@ public:
 public slots:
     void setFramesOn(int frames);
     void setFramesOff(int frames);
+    void setPhaseFrames(int frames);
 };
 
 #endif /* UI_PAGES_PAGEBLINKANIMATION_H_ */

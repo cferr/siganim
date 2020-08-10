@@ -32,9 +32,11 @@ public:
 protected:
     SignCell* subject;
     unsigned int durationFrames;
+    unsigned int initialPhaseFrames;
 
 public:
-    Animation(SignCell* subject, unsigned int durationFrames);
+    Animation(SignCell* subject, unsigned int durationFrames,
+            unsigned int initialPhaseFrames);
     Animation(const Animation* a);
     virtual ~Animation();
 
@@ -47,7 +49,10 @@ public:
     SignCell* getSubject() const;
     SubjectBuilder* subjectBuilder();
 
+    void setInitialPhaseFrames(unsigned int initialPhaseFrames);
+
     unsigned int getDurationFrames() const;
+    unsigned int getInitialPhaseFrames() const;
 
     void deleteChild(SignTree* child);
 

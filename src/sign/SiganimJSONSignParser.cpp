@@ -31,6 +31,8 @@ BlinkAnimation* SiganimJSONSignParser::buildBlinkAnimation(json_object *obj) {
     unsigned int framesOn;
     json_object* framesOff_obj;
     unsigned int framesOff;
+    json_object* initialPhaseFrames_obj;
+    unsigned int initialPhaseFrames;
 
     if(!json_object_object_get_ex(obj, "subject", &subject_obj)) {
         subject = NULL;
@@ -50,7 +52,15 @@ BlinkAnimation* SiganimJSONSignParser::buildBlinkAnimation(json_object *obj) {
         framesOff = json_object_get_int(framesOff_obj);
     }
 
-    return new BlinkAnimation(subject, framesOn, framesOff);
+    if(!json_object_object_get_ex(obj, "initialPhaseFrames",
+            &initialPhaseFrames_obj)) {
+        throw MissingPropertyException("initialPhaseFrames");
+    } else {
+        initialPhaseFrames = json_object_get_int(initialPhaseFrames_obj);
+    }
+
+    return new BlinkAnimation(subject, framesOn, framesOff,
+            initialPhaseFrames);
 }
 
 Compose* SiganimJSONSignParser::buildCompose(json_object *obj) {
@@ -144,6 +154,8 @@ MarqueeAnimation* SiganimJSONSignParser::buildMarqueeAnimation(
     json_object* direction_obj;
     unsigned int space;
     json_object* space_obj;
+    json_object* initialPhaseFrames_obj;
+    unsigned int initialPhaseFrames;
 
     if(!json_object_object_get_ex(obj, "subject", &subject_obj)) {
         subject = NULL;
@@ -177,7 +189,15 @@ MarqueeAnimation* SiganimJSONSignParser::buildMarqueeAnimation(
         }
     }
 
-    return new MarqueeAnimation(subject, durationFrames, direction, space);
+    if(!json_object_object_get_ex(obj, "initialPhaseFrames",
+            &initialPhaseFrames_obj)) {
+        throw MissingPropertyException("initialPhaseFrames");
+    } else {
+        initialPhaseFrames = json_object_get_int(initialPhaseFrames_obj);
+    }
+
+    return new MarqueeAnimation(subject, durationFrames,
+            initialPhaseFrames, direction, space);
 }
 
 Split* SiganimJSONSignParser::buildSplit(json_object *obj) {

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <unicode/unistr.h>
+#include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -23,21 +24,27 @@
 
 PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     treeNode(treeNode), fontSet(fontSet) {
+    QLabel* textLabel = new QLabel("Text:", this);
     this->textLine = new QLineEdit(this);
     icu::UnicodeString* text = treeNode->getText();
     this->textLine->setText(
             QString::fromUtf16(text->getBuffer(), text->length()));
     delete text;
+    QLabel* halignLabel = new QLabel("Horizontal alignment:", this);
     this->halignLeft = new QPushButton("Left", this);
     this->halignCenter = new QPushButton("Center", this);
     this->halignRight = new QPushButton("Right", this);
     this->halignJustify = new QPushButton("Justify", this);
+    QLabel* pickColorLabel = new QLabel("Color:", this);
     this->pickColor = new QPushButton("Color", this);
     this->colorPicker = new QColorDialog(this);
+    QLabel* fontFamilyLabel = new QLabel("Font Family:", this);
     this->fontFamilyCombo = new QComboBox(this);
     this->fontFamilyCombo->setEditable(true);
+    QLabel* fontStyleLabel = new QLabel("Font Style:", this);
     this->fontStyleCombo = new QComboBox(this);
     this->fontStyleCombo->setEditable(true);
+    QLabel* valignLabel = new QLabel("Vertical alignment:", this);
     this->valignCombo = new QComboBox(this);
     this->valignCombo->setEditable(false);
 
@@ -80,13 +87,19 @@ PageText::PageText(Text* treeNode, const FontSet* fontSet) :
     alignBox->addWidget(this->halignRight);
     alignBox->addWidget(this->halignJustify);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(this->textLine);
-    layout->addWidget(this->fontFamilyCombo);
-    layout->addWidget(this->fontStyleCombo);
-    layout->addWidget(this->valignCombo);
-    layout->addLayout(alignBox);
-    layout->addWidget(this->pickColor);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(textLabel, 0, 0);
+    layout->addWidget(this->textLine, 0, 1);
+    layout->addWidget(fontFamilyLabel, 1, 0);
+    layout->addWidget(this->fontFamilyCombo, 1, 1);
+    layout->addWidget(fontStyleLabel, 2, 0);
+    layout->addWidget(this->fontStyleCombo, 2, 1);
+    layout->addWidget(valignLabel, 3, 0);
+    layout->addWidget(this->valignCombo, 3, 1);
+    layout->addWidget(halignLabel, 4, 0);
+    layout->addLayout(alignBox, 4, 1);
+    layout->addWidget(pickColorLabel, 5, 0);
+    layout->addWidget(this->pickColor, 5, 1);
     this->setLayout(layout);
 
     this->textLine->connect(this->textLine,

@@ -14,19 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <QGroupBox>
+#include <QLabel>
+#include <QGridLayout>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include "PageSplit.h"
 
-
 PageSplit::PageSplit(Split* treeNode) : treeNode(treeNode) {
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QWidget* directionRadioWidget = new QWidget(this);
-    QHBoxLayout* radioLayout = new QHBoxLayout(directionRadioWidget);
+    QGridLayout *layout = new QGridLayout(this);
+    QGroupBox* directionRadioWidget = new QGroupBox("Split direction:", this);
+    QVBoxLayout* radioLayout = new QVBoxLayout(directionRadioWidget);
 
+    QLabel* posLabel = new QLabel("Split position:", this);
     this->posSpinner = new QSpinBox();
     this->posSpinner->setValue(treeNode->getSplitPos());
     this->posSpinner->setMinimum(0);
+//    QLabel* dirLabel = new QLabel("Split direction:", this);
     this->radioDirHorizontal = new QRadioButton("Horizontal",
             directionRadioWidget);
     this->radioDirVertical = new QRadioButton("Vertical",
@@ -72,14 +75,16 @@ PageSplit::PageSplit(Split* treeNode) : treeNode(treeNode) {
             this,
             &PageSplit::setDirDiagonalSWNE);
 
-    layout->addWidget(this->posSpinner);
+    layout->addWidget(posLabel, 0, 0);
+    layout->addWidget(this->posSpinner, 0, 1);
     radioLayout->addWidget(this->radioDirHorizontal);
     radioLayout->addWidget(this->radioDirVertical);
     radioLayout->addWidget(this->radioDirDiagonalSWNE);
     radioLayout->addWidget(this->radioDirDiagonalNWSE);
 
     directionRadioWidget->setLayout(radioLayout);
-    layout->addWidget(directionRadioWidget);
+//    layout->addWidget(dirLabel, 1, 0);
+    layout->addWidget(directionRadioWidget, 1, 0, 1, 2);
 
     this->setLayout(layout);
 }

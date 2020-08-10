@@ -31,6 +31,7 @@ private:
     QRadioButton* direction_RIGHT;
     QSpinBox* spaceSpinner;
     QSpinBox* durationSpinner;
+    QSpinBox* phaseFramesSpinner;
 
 public:
     PageMarqueeAnimation(MarqueeAnimation* treeNode);
@@ -41,6 +42,7 @@ public slots:
     void setDurationFrames(int frames);
     void setDirection_LEFT(bool set);
     void setDirection_RIGHT(bool set);
+    void setPhaseFrames(int frames);
 };
 
 #endif /* UI_PAGES_PAGEMARQUEEANIMATION_H_ */

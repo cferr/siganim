@@ -16,15 +16,16 @@
 
 #include "MarqueeAnimation.h"
 
-MarqueeAnimation::MarqueeAnimation() : MarqueeAnimation(nullptr, 20,
+MarqueeAnimation::MarqueeAnimation() : MarqueeAnimation(nullptr, 20, 0,
         Direction::LEFT, 10) {
 
 }
 
 MarqueeAnimation::MarqueeAnimation(SignCell *subject,
-        unsigned int durationFrames, enum Direction direction,
-        unsigned int space) : Animation(subject, durationFrames),
-        direction(direction), space(space) {
+        unsigned int durationFrames, const unsigned int initialPhaseFrames,
+        enum Direction direction, unsigned int space) :
+                Animation(subject, durationFrames, initialPhaseFrames),
+                direction(direction), space(space) {
 }
 
 MarqueeAnimation::MarqueeAnimation(const MarqueeAnimation *a) :
@@ -92,7 +93,9 @@ json_object* MarqueeAnimation::toJSON() const {
     json_object_object_add(ret, "durationFrames",
             json_object_new_int(this->durationFrames));
     json_object_object_add(ret, "space",
-                json_object_new_int(this->space));
+            json_object_new_int(this->space));
+    json_object_object_add(ret, "initialPhaseFrames",
+            json_object_new_int(this->initialPhaseFrames));
 
     std::string directionStr;
     switch(this->direction) {

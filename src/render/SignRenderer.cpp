@@ -84,6 +84,8 @@ void SignRenderer::SignRenderVisitor::visit(const Sign &s) {
             totalWidth += bmap->getWidth();
             maxHeight = std::max(maxHeight, bmap->getHeight());
             delete displayImage;
+            delete this->resultTree;
+            this->resultTree = nullptr;
         } catch(std::exception& e) {
             // Don't go any further with this display, but don't fail.
 //            std::cout << "Exception caught on rendering Sign" << std::endl;
@@ -348,7 +350,8 @@ void SignRenderer::SignRenderVisitor::visit(const MarqueeAnimation &s) {
         enum MarqueeAnimation::Direction direction = s.getDirection();
 
         unsigned int duration = s.getDurationFrames();
-        unsigned int frame = (this->frame % duration);
+        unsigned int phase = s.getInitialPhaseFrames();
+        unsigned int frame = ((this->frame + phase) % duration);
         unsigned int totalSpace = subjectImage->getWidth() + s.getSpace();
         unsigned int subjectWidth = subjectImage->getWidth();
 
@@ -383,8 +386,9 @@ void SignRenderer::SignRenderVisitor::visit(const BlinkAnimation &s) {
         s.getSubject()->accept(*this);
         unsigned int framesOn = s.getFramesOn();
         unsigned int framesOff = s.getFramesOff();
+        unsigned int phase = s.getInitialPhaseFrames();
 
-        if(this->frame % (framesOn + framesOff) > framesOn) {
+        if((this->frame + phase) % (framesOn + framesOff) > framesOn) {
             SignImage* empty = new SignImage(s.getWidth(), s.getHeight(),
                     s.getWidth(), s.getHeight());
             delete this->resultTree;

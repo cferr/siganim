@@ -16,13 +16,16 @@
 
 #include "Animation.h"
 
-Animation::Animation(SignCell* subject, unsigned int durationFrames) :
-    subject(subject), durationFrames(durationFrames) {
+Animation::Animation(SignCell* subject, unsigned int durationFrames,
+        unsigned int initialPhaseFrames) :
+    subject(subject), durationFrames(durationFrames),
+    initialPhaseFrames(initialPhaseFrames) {
     if(subject != nullptr)
         subject->setParent(this);
 }
 
-Animation::Animation(const Animation* a) : durationFrames(a->durationFrames) {
+Animation::Animation(const Animation* a) : durationFrames(a->durationFrames),
+        initialPhaseFrames(a->initialPhaseFrames) {
     try {
         this->subject = a->getSubject()->copy();
         this->subject->setParent(this);
@@ -112,4 +115,13 @@ void Animation::deepDetachStructureObserver(
     try {
         this->getSubject()->deepDetachStructureObserver(observer);
     } catch(NoSuchChildException& e) { }
+}
+
+void Animation::setInitialPhaseFrames(unsigned int initialPhaseFrames) {
+    this->initialPhaseFrames = initialPhaseFrames;
+    this->modified();
+}
+
+unsigned int Animation::getInitialPhaseFrames() const {
+    return this->initialPhaseFrames;
 }

@@ -44,6 +44,8 @@ private:
     SignTreeWidget *tree;
     SignTreeDetailsWidget* details;
     SignTreeQtModel* model;
+    SignTreeWidget *orphans;
+    SignTreeQtModel* orphansModel;
     Sign* sign;
     const FontSet* fontSet;
     const RasterizerSet* rasterizerSet;

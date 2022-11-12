@@ -26,6 +26,7 @@ class SiganimMainWindow;
 class SiganimUICore : public QObject {
     Q_OBJECT
 
+private:
     SiganimMainWindow* mainWindow;
     SiganimCore* core;
 
@@ -35,11 +36,14 @@ public:
 
     // General
     void showUI();
+    SiganimCore* getCore() const;
 
     // Sign-related stuff
     void saveSignToGIF();
+    void loadSign();
+    void saveSign();
+    void saveSignAs();
 
-    SiganimCore* getCore() const;
 };
 
 #endif /* UI_SIGANIMUICORE_H_ */

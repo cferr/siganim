@@ -79,6 +79,18 @@ SiganimMainWindow::SiganimMainWindow(SiganimUICore* uiCore) : uiCore(uiCore)
     menuBar->addMenu(helpMenu);
 
     // Connect signals
+    connect(fileOpenAction,
+            &QAction::triggered,
+            uiCore,
+            &SiganimUICore::loadSign);
+    connect(fileSaveAction,
+            &QAction::triggered,
+            uiCore,
+            &SiganimUICore::saveSign);
+    connect(fileSaveAsAction,
+            &QAction::triggered,
+            uiCore,
+            &SiganimUICore::saveSignAs);
     connect(fileExportToGIFAction,
             &QAction::triggered,
             uiCore,
@@ -87,6 +99,7 @@ SiganimMainWindow::SiganimMainWindow(SiganimUICore* uiCore) : uiCore(uiCore)
             &QAction::triggered,
             this,
             &QMainWindow::close);
+
 
 }
 

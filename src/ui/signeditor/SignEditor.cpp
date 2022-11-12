@@ -109,24 +109,6 @@ void SignEditor::populateRasterizers() {
     }
 }
 
-//void SignEditor::saveToGIF() {
-//    // Show "Save as" dialog
-//    QFileDialog saveDialog(this, "Save GIF to...", ".", "*.gif");
-//    saveDialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
-//
-//    if(saveDialog.exec() == QFileDialog::Accepted) {
-//        QStringList selectedFiles = saveDialog.selectedFiles();
-//        // There should be only one - take it
-//        QString fileName = selectedFiles.first();
-//        GIFSink s(sign, fontSet, currentRasterizer, 1);
-//        std::string fileNameAsString = fileName.toStdString();
-//        s.render(fileNameAsString.data());
-//    }
-//}
-
-void SignEditor::getRasterizer() {
-}
-
 const Rasterizer* SignEditor::getCurrentRasterizer() const {
     return this->currentRasterizer;
 }

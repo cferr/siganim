@@ -33,6 +33,10 @@ void SiganimUICore::showUI() {
     this->mainWindow->show();
 }
 
+SiganimCore* SiganimUICore::getCore() const {
+    return this->core;
+}
+
 void SiganimUICore::saveSignToGIF() {
     // Show "Save as" dialog
     QFileDialog saveDialog(this->mainWindow, "Save GIF to...", ".", "*.gif");
@@ -49,6 +53,32 @@ void SiganimUICore::saveSignToGIF() {
     }
 }
 
-SiganimCore* SiganimUICore::getCore() const {
-    return this->core;
+void SiganimUICore::loadSign() {
+    QFileDialog openDialog(this->mainWindow, "Load sign from...", ".",
+            "*.json");
+    openDialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+    if(openDialog.exec() == QFileDialog::Accepted) {
+        QStringList selectedFiles = openDialog.selectedFiles();
+        // There should be only one - take it
+        QString fileName = selectedFiles.first();
+        this->getCore()->setCurrentSignFile(fileName.toStdString());
+    }
+}
+
+void SiganimUICore::saveSign() {
+    this->getCore()->saveSignFile();
+}
+
+void SiganimUICore::saveSignAs() {
+    // Show "Save as" dialog
+    QFileDialog saveDialog(this->mainWindow, "Save sign to...", ".", "*.json");
+    saveDialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+
+    if(saveDialog.exec() == QFileDialog::Accepted) {
+        QStringList selectedFiles = saveDialog.selectedFiles();
+        // There should be only one - take it
+        QString fileName = selectedFiles.first();
+        this->getCore()->setCurrentSignFile(fileName.toStdString());
+        this->getCore()->saveSignFile();
+    }
 }

@@ -25,6 +25,7 @@
 #include "render/RasterizerSet.h"
 
 class SiganimCore {
+private:
     SiganimDefaults* defaults;
     Sign* sign;
     FontSet* fonts;

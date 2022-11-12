@@ -94,6 +94,7 @@ SignEditor::~SignEditor() {
     delete this->tree;
     delete this->details;
     delete this->model;
+    delete this->orphansModel;
 }
 
 void SignEditor::setRasterizer(const QString &rasterizer) {

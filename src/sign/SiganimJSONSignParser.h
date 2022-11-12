@@ -75,12 +75,12 @@ private:
     static Split* buildSplit(json_object* obj);
     static Text* buildText(json_object* obj);
     static SignColor buildSignColor(json_object* obj);
-    static SignCell* buildCell(json_object* obj);
 
 public:
     virtual ~SiganimJSONSignParser() {};
 
     static Sign* parseJSON(json_object* obj);
+    static SignCell* buildCell(json_object* obj);
 
 };
 

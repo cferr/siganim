@@ -24,6 +24,9 @@ SignTreeWidget::SignTreeWidget(QWidget* parent,
         SignTreeDetailsWidget* detailsWidget) : QTreeView(parent),
         detailsWidget(detailsWidget) {
     this->setUniformRowHeights(true);
+    this->setDragEnabled(true);
+    this->setAcceptDrops(true);
+    this->setDragDropMode(QAbstractItemView::DragDropMode::DragDrop);
 }
 
 void SignTreeWidget::contextMenuEvent(QContextMenuEvent* event) {

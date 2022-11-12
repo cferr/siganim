@@ -23,7 +23,11 @@
 #include "../../sign/cells/BlinkAnimation.h"
 #include "../../sign/cells/Compose.h"
 #include "../../sign/cells/Fill.h"
+#include "../../sign/SiganimJSONSignParser.h"
 #include "SignTreeQtModel.h"
+
+#include <QMimeData>
+#include <json-c/json_tokener.h>
 
 SignTreeQtModel::SignTreeQtModel(SignTree *tree) : tree(tree),
     treeAsChain(nullptr) {
@@ -602,5 +606,133 @@ SignTreeQtModel::IRPointer::~IRPointer() {
         delete this->displayBuilder;
     if(this->type == SIGN_CELL_BUILDER)
         delete this->signCellBuilder;
+}
+
+/** Drag and Drop actions **/
+
+Qt::ItemFlags SignTreeQtModel::flags(const QModelIndex &idx) const {
+    if(idx.isValid()) {
+        return Qt::ItemFlag::ItemIsDragEnabled
+                | Qt::ItemFlag::ItemIsDropEnabled
+                | Qt::ItemFlag::ItemIsEnabled
+                | Qt::ItemFlag::ItemIsSelectable;
+    } else return Qt::ItemFlag::NoItemFlags;
+}
+
+Qt::DropActions SignTreeQtModel::supportedDropActions() const {
+    return Qt::MoveAction;
+}
+
+/* Only allow dropping sign cells onto existing elements that are sign cell
+ * builders, or displays on display builders.
+ */
+bool SignTreeQtModel::canDropMimeData(const QMimeData *data,
+        Qt::DropAction action, int row, int column,
+        const QModelIndex &parent) const {
+
+    if(action == Qt::MoveAction && data->hasText()) {
+        // Try to make JSON, then a node out of this text
+        json_object* json_from_text = json_tokener_parse(
+                data->text().toStdString().c_str());
+        if(json_from_text != nullptr) {
+            if(parent.isValid()) {
+                Chain* indexAsChain = (Chain*)parent.internalPointer();
+                try {
+                    // If a cell can be successfully built, then the drop may
+                    // be valid.
+                    SignCell* cell = SiganimJSONSignParser::buildCell(
+                            json_from_text);
+                    delete cell;
+
+                    // Having row == -1 means drop happens onto parent element
+                    // (and not in between elements).
+                    if(row == -1) {
+                        Chain* subjectNode = indexAsChain;
+
+                        if(subjectNode->getSignModelPtr()->getSignCellBuilder()
+                                != nullptr) {
+                            return true;
+                        }
+                    }
+
+                } catch(Chain::EndOfChainException& e) {
+                } catch(IRPointer::NoSuchItemException& e) {
+                } catch(std::exception& e) {
+                    // JSON parser exceptions are all caught there
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+
+bool SignTreeQtModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+        int row, int column, const QModelIndex &parent) {
+    if(row == -1 && action == Qt::MoveAction && data->hasText()) {
+        // Try to make JSON, then a node out of this text
+        json_object* json_from_text = json_tokener_parse(
+                data->text().toStdString().c_str());
+        if(json_from_text != nullptr) {
+            if(parent.isValid()) {
+                Chain* indexAsChain = (Chain*)parent.internalPointer();
+                try {
+                    // If a cell can be successfully built, then the drop may
+                    // be valid.
+                    SignCell* cell = SiganimJSONSignParser::buildCell(
+                            json_from_text);
+
+                    // Having row == -1 means drop happens onto parent element
+                    // (and not in between elements).
+                    if(row == -1) {
+                        Chain* subjectNode = indexAsChain;
+
+                        if(subjectNode->getSignModelPtr()->getSignCellBuilder()
+                                != nullptr) {
+                            // Actually insert the node here.
+                            if(!subjectNode->getSignModelPtr()->
+                                    getSignCellBuilder()->build(cell))
+                            {
+                                delete cell;
+                                return false;
+                            } else return true;
+                        }
+                    }
+
+                } catch(Chain::EndOfChainException& e) {
+                } catch(IRPointer::NoSuchItemException& e) {
+                } catch(std::exception& e) {
+                    // JSON parser exceptions are all caught there
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+QMimeData* SignTreeQtModel::mimeData(const QModelIndexList &indexes) const {
+    QMimeData* ret = new QMimeData();
+    QString ret_str = "";
+    for(QModelIndexList::const_iterator i = indexes.begin();
+            i != indexes.end(); ++i) {
+        QModelIndex idx = *i;
+        if(idx.isValid()) {
+            Chain* internalPtr = (Chain*)idx.internalPointer();
+            IRPointer* irPtr = internalPtr->getSignModelPtr();
+            try {
+                SignTree* underlyingTree = irPtr->getTree();
+                json_object* json_obj = underlyingTree->toJSON();
+                const char* json_as_text = json_object_to_json_string(json_obj);
+                ret_str.append(json_as_text);
+                json_object_put(json_obj);
+            } catch(IRPointer::NoSuchItemException& e) {
+
+            }
+        }
+    }
+    ret->setText(ret_str);
+    return ret;
 }
 

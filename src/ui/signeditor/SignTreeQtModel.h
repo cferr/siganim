@@ -35,6 +35,10 @@ class SignTreeQtModel: public QAbstractItemModel,
 
 public:
 
+    /** Intermediate class providing pointers to either a node or a builder.
+     *  Builders display as "Add <item>..." in the tree.
+     */
+
     class IRPointer {
     public:
         class NoSuchItemException : public std::exception {
@@ -75,6 +79,11 @@ public:
         QString getLabel() { return label; };
 
     };
+
+    /** Wrapper representation of a Sign AST as constant-depth chains.
+     * This representation is compatible with Qt's row-column navigation pattern
+     * for models.
+     */
 
     class Chain {
     public:
@@ -122,10 +131,10 @@ public:
 
     };
 private:
+    /** Visitor to build the chain representation from a Sign AST.
+     */
     class ModelBuilder : public SignTreeVisitor {
     private:
-//        QModelIndex parentIndex;
-//        unsigned int currentRow;
         Chain* parent;
         Chain* previous;
         Chain* next;
@@ -155,6 +164,15 @@ private:
     void addNode(Chain* node);
     void removeNode(QModelIndex& index, bool removeNext);
     QModelIndex indexFrom(Chain* chain) const;
+
+    // Drag and Drop support through Qt's MIME data passing system
+    Qt::ItemFlags flags(const QModelIndex& idx) const;
+    Qt::DropActions supportedDropActions() const;
+    bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+            int column, const QModelIndex &parent) const;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+            int column, const QModelIndex &parent);
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
 
 public:
     SignTreeQtModel(SignTree* tree);

@@ -58,9 +58,6 @@ public:
     virtual ~SignEditor();
 
     void setRasterizer(const QString& rasterizer);
-
-    void getRasterizer();
-
     const Rasterizer* getCurrentRasterizer() const;
 
 };

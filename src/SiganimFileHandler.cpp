@@ -90,6 +90,9 @@ void SiganimFileHandler::parseInputFile() {
 }
 
 bool SiganimFileHandler::save() {
+    if(this->location.empty()) {
+        throw EmptyFileLocationException();
+    }
     json_object* document = json_object_new_object();
     if(!this->fonts->getFonts().empty())
         json_object_object_add(document, "fonts", this->fonts->toJSON());

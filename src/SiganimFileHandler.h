@@ -17,12 +17,20 @@
 #ifndef SIGANIMFILEHANDLER_H_
 #define SIGANIMFILEHANDLER_H_
 
+#include <exception>
 #include <vector>
 #include "font/FontSet.h"
 #include "sign/Sign.h"
 #include "render/RasterizerSet.h"
 
 class SiganimFileHandler {
+public:
+    class EmptyFileLocationException : public std::exception {
+    public:
+        virtual ~EmptyFileLocationException() {}
+        EmptyFileLocationException() {}
+    };
+
 private:
     std::string location;
     FontSet* fonts;
